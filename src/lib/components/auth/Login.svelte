@@ -18,9 +18,10 @@
         })
             .then(res => res.json())
             .then(data => {
-                const artistName = data.data[0].artistName
-                goto(`/profile/${artistName}`)
+                //const artistName = data.data[0].artistName
+                goto(`/profile`)
             })
+
 
     }
 

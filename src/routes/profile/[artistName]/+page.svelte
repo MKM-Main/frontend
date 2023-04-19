@@ -1,6 +1,7 @@
 <script>
 
     export let data
+    const cookie = data.cookie
 
 </script>
 
@@ -8,5 +9,11 @@
 <pre>
     <code>
         {JSON.stringify(data.json)}
+    </code>
+</pre>
+
+<pre>
+    <code>
+        {cookie}
     </code>
 </pre>
