@@ -1,5 +1,5 @@
 <script>
-    let pages = ["login", "forum", "artists"]
+    let pages = ["/login", "/forum", "/artists"]
 
 
 </script>
@@ -10,7 +10,7 @@
     <img alt="HOME" src="">
 
     {#each pages as page}
-        <a href="{page}">{page}</a>
+        <a href="{page}">{page.substring(1)}</a>
     {/each}
 
 </div>
