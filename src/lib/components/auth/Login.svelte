@@ -15,11 +15,13 @@
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
-        }).then(res => {
-            if (res.status === 200) {
-                goto(`/profile`)
-            }
         })
+            .then(res => res.json())
+            .then(data => {
+                const artistName = data.data[0].artistName
+                goto(`/profile/${artistName}`)
+            })
+
     }
 
 

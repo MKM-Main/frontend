@@ -1,6 +1,7 @@
 <script>
 
     import {BASE_URL_LOCAL} from "../../stores.js";
+    import {goto} from "$app/navigation";
     let firstName, lastName, artistName, email, password
 
 
@@ -20,6 +21,11 @@
             },
             body: JSON.stringify(data)
         })
+            .then(res => res.json())
+            .then(data => {
+                const artistName = data.data.artistName
+                goto(`/profile/${artistName}`)
+            })
 
     }
 
