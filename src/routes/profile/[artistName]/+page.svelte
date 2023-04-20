@@ -1,5 +1,5 @@
 <script>
-
+    import {goto} from "$app/navigation";
     export let data
     const cookie = data.cookie
     const wallposts = data.wallposts
@@ -7,6 +7,7 @@
 </script>
 
 <h1>In Profile</h1>
+<h1><a href="/profile/Funch">funch profile</a></h1>
 <pre>
     <code>
         {JSON.stringify(data.json)}
