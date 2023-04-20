@@ -5,7 +5,7 @@ export const load = async ({fetch, params, cookies}) => {
     const response = await fetch(`http://localhost:8080/api/users/${artistName}`);
     const jsonData = await response.json();
 
-    const wallpostResponse = await fetch("http://localhost:8080/api/posts/wallpost", {
+    const wallpostResponse = await fetch(`http://localhost:8080/api/posts/wallposts/${artistName}`, {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
