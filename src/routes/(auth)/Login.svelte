@@ -1,5 +1,5 @@
 <script>
-    import {BASE_URL_LOCAL} from "../../stores.js";
+    import {BASE_URL_LOCAL} from "../../lib/stores.js";
     import {goto} from "$app/navigation";
     let email, password
 
@@ -16,13 +16,11 @@
             },
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
-            .then(data => {
-                //const artistName = data.data[0].artistName
-                goto(`/profile`)
+            .then(res => {
+                if (res.status === 200) {
+                    goto(`/profile`)
+                }
             })
-
-
     }
 
 

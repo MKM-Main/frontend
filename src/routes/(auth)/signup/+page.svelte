@@ -1,5 +1,5 @@
 <script>
-    import Signup from "../../../lib/components/auth/Signup.svelte";
+    import Signup from "../Signup.svelte";
 </script>
 
 <h1>Signup</h1>
