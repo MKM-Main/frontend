@@ -1,13 +1,22 @@
 <script>
-    let pages = ["/login", "/forum", "/artists"]
+    let pages = ["/forum", "/artists", "/login"]
 
+    export let artistName = ""
+    export let jwt
 
 </script>
 
 
 <div class="header">
-    <img alt="YOU" src="">
-    <img alt="HOME" src="">
+    {#if jwt}
+        <a href="/profile/{artistName}">
+            <img alt={artistName} src="">
+        </a>
+    {/if}
+
+    <a href="/">
+        <img alt="HOME" class="home" src="./src/lib/note.svg">
+    </a>
 
     {#each pages as page}
         <a href="{page}">{page.substring(1)}</a>
@@ -28,6 +37,10 @@
     a {
       margin: 0 2em;
       text-transform: capitalize;
+
+      .home {
+        height: 2em;
+      }
     }
   }
 </style>

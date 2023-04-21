@@ -1,10 +1,13 @@
 <script>
+    export let data
+    const Header = data.Header
+    const Footer = data.Footer
+    const jwt = data.jwt
+    const artistName = data?.userData?.customMessage?.artistName
 
-
-    import Footer from "../lib/components/Footer.svelte";
-    import Header from "../lib/components/Header.svelte";
 </script>
 
-<Header/>
+<Header artistName={artistName}
+        jwt={jwt}/>
 <slot/>
 <Footer/>

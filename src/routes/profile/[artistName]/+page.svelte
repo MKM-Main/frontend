@@ -20,7 +20,7 @@
         <div class="artist-div">
             <b>{wallpost.artistName}</b>
         </div>
-        
+
         <div class="wallpost-body">
             <p>{wallpost.body}</p>
         </div>
@@ -35,9 +35,9 @@
                 <p>{wallpost.comments}</p>
             </div>
         </div>
-        
+
     </div>
-    
+
     <br>
     {/each}
 </div>

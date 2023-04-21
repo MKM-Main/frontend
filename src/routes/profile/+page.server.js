@@ -1,4 +1,3 @@
-import {redirect} from "@sveltejs/kit";
 export const load = async ({cookies, fetch}) => {
 
     let responseData
@@ -11,11 +10,13 @@ export const load = async ({cookies, fetch}) => {
             "Authorization": `Bearer ${cookie}`
         }
     })
-        .then(res => res.json())
-        .then(data => {
-            responseData = data.customMessage
-            throw redirect(302, `/profile/${responseData.artistName}`)
-        })
+    /* .then(res => res.json())
+    .then(data => {
+        responseData = data.customMessage
+        throw redirect(302, `/profile/${responseData.artistName}`)
+    })
+
+     */
 
     return {
         responseData

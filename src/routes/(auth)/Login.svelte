@@ -18,7 +18,7 @@
         })
             .then(res => {
                 if (res.status === 200) {
-                    goto(`/profile`)
+                    goto(`/news`)
                 }
             })
     }
