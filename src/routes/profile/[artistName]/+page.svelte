@@ -1,76 +1,207 @@
 <script>
-    import {goto} from "$app/navigation";
-    export let data
-    const cookie = data.cookie
-    const wallposts = data.wallposts
+    import { page } from "$app/stores";
+    import { onMount } from "svelte";
 
+    // const pageParams = $page.params.artistName
+    // console.log(pageParams)
+    // onMount(() => {
+    //     const unsubscribe = page.subscribe(pageParams);
+    //     return unsubscribe;
+    // });
+
+    
+
+    export let data;
+    const cookie = data.cookie;
+    const wallposts = data.wallposts;
+    const pageArtistName = data.json.user.artistName;
+    const followersInCount = data.json.user.followers.length;
+    const followingInCount = data.json.user.following.length;
+
+    const whoAmI = data?.userData?.customMessage?.artistName;
+    const whoIFollow = data?.userData?.customMessage.following;
+
+    const patchFollowing = async () => {
+        await fetch("http://localhost:8080/api/users/follow", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${data.cookie}`,
+            },
+            body: JSON.stringify({
+                userId: data.json.user._id,
+            }),
+        });
+    };
+
+    const patchUnFollowing = async () => {
+        await fetch("http://localhost:8080/api/users/unfollow", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${data.cookie}`,
+            },
+            body: JSON.stringify({
+                userId: data.json.user._id,
+            }),
+        });
+    };
 </script>
 
-<h1>In Profile</h1>
-<h1><a href="/profile/Funch">funch profile</a></h1>
+<a href="http://localhost:5173/profile/Funch">Funch</a>
 <pre>
-    <code>
-        {JSON.stringify(data.json)}
-    </code>
+    
+        {JSON.stringify(data.json.user.artistName)}
+    
 </pre>
-
-<div>
-    {#each wallposts as wallpost}
-    <div class="wallpost-div">
-        <div class="artist-div">
-            <b>{wallpost.artistName}</b>
+<div class="header-div">
+    <div class="profile-picture">
+        <img
+            class="img-pic"
+            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+            alt="profile-picture"
+        />
+    </div>
+    <div class="allign-items">
+        <div class="artist-name"><h3>{pageArtistName}</h3></div>
+        <div class="follow-div">
+            <p>{followersInCount} Followers | {followingInCount} Following</p>
         </div>
-
-        <div class="wallpost-body">
-            <p>{wallpost.body}</p>
-        </div>
-
-        <div class="splitter"></div>
-
-        <div>
-            <div>
-                <input type="text" placeholder="comment">
+        <div class="bio-div">Import bio here: Artist making music</div>
+        <div class="btn-div">
+            {#if whoAmI === pageArtistName}
+                <div />
+            {:else if whoIFollow.includes(pageArtistName)}
+                <div class="follow-div">
+                    <button on:click={patchUnFollowing} class="btn-follow"
+                        >Unfollow</button
+                    >
+                </div>
+            {:else}
+                <div class="follow-div">
+                    <button on:click={patchFollowing} class="btn-follow"
+                        >Follow</button
+                    >
+                </div>
+            {/if}
+            <div class="message-div">
+                <button class="btn-message">Message</button>
             </div>
-            <div class="wallpost-comment">
-                <p>{wallpost.comments}</p>
-            </div>
         </div>
+    </div>
+</div>
+<div class="main-div">
+    <div>
+        {#each wallposts as wallpost}
+            <div class="wallpost-div">
+                <div class="artist-div">
+                    <b>{wallpost.artistName}</b>
+                </div>
 
+                <div class="wallpost-body">
+                    <p>{wallpost.body}</p>
+                </div>
+
+                <div class="splitter" />
+
+                <div>
+                    <div>
+                        <input type="text" placeholder="comment" />
+                    </div>
+                    <div class="wallpost-comment">
+                        <p>{wallpost.comments}</p>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+        {/each}
     </div>
 
-    <br>
-    {/each}
-</div>
-
-<pre>
+    <pre>
     <code>
         {cookie}
     </code>
 </pre>
+</div>
 
+<style lang="scss">
+    .main-div {
+        margin-left: 60px;
+        margin-right: 60px;
+    }
+    .header-div {
+        display: flex;
+        align-items: center;
+        margin-left: 60px;
+        margin-right: 60px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .img-pic {
+        height: 250px;
+        border-radius: 100px;
+    }
+    .allign-items {
+        margin-left: 40px;
+        font-size: 20px;
+        width: 50%;
+    }
+    .artist-name {
+        font-size: 50px;
+    }
 
-<style>
-    .wallpost-div{
+    .follow-div {
+        margin-bottom: 10px;
+    }
+
+    .bio-div {
+        margin-bottom: 10px;
+    }
+
+    .btn-div {
+        display: flex;
+        width: 100%;
+    }
+    .btn-follow {
+        border: 2px solid black;
+        border-radius: 15px;
+        padding: 2px;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .btn-message {
+        border: 2px solid black;
+        border-radius: 15px;
+        padding: 2px;
+        width: 100%;
+        padding: 10px;
+        margin-left: 5px;
+    }
+
+    .wallpost-div {
         border: 2px solid #000;
         border-radius: 15px;
         padding: 50px;
-        margin: 30px;
     }
-    .wallpost-body{
+    .wallpost-body {
         margin-bottom: 10px;
     }
-    .artist-div{
+    .artist-div {
         padding-bottom: 5px;
     }
-    input{
+    input {
         border: 2px solid #000;
         width: 50%;
         border-radius: 5px;
         padding: 2px;
         padding-left: 5px;
     }
-    .splitter{
+    .splitter {
         border: 1px solid #000;
-        margin: 10px
+        margin: 10px;
     }
 </style>
