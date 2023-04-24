@@ -1,6 +1,5 @@
 <script>
     import {BASE_URL_LOCAL} from "../../lib/stores.js";
-    import {goto} from "$app/navigation";
     let email, password
 
     const handleLogin = async () => {
@@ -18,7 +17,12 @@
         })
             .then(res => {
                 if (res.status === 200) {
-                    goto(`/news`)
+                    /* goto(`/news`, {
+                         replaceState: true,
+                     })
+
+                     */
+                    location.href = "/news"
                 }
             })
     }

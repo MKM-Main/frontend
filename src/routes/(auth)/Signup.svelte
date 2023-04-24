@@ -1,7 +1,6 @@
 <script>
 
     import {BASE_URL_LOCAL} from "../../lib/stores.js";
-    import {goto} from "$app/navigation";
     let firstName, lastName, artistName, email, password
 
 
@@ -23,7 +22,8 @@
         })
             .then(res => {
                 if (res.status === 200) {
-                    goto(`/profile`)
+                    // goto(`/profile`)
+                    location.href = "/news"
                 }
             })
 
