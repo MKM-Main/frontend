@@ -1,5 +1,7 @@
 <script>
-    import { onMount } from "svelte";
+    import {onMount} from "svelte";
+    import Modal from './Modal.svelte';
+    import {env} from "$env/dynamic/public";
 
     export let data;
     const wallposts = data.wallposts;
@@ -7,10 +9,14 @@
     let followersInCount = data.json.user.followers.length;
     let followingInCount = data.json.user.following.length;
 
+    const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
+    const profilePictureKey = data.json.user.profilePictureKey
+    const imageSource = `${imageSourcePrefix}${profilePictureKey}`
+
+
     const loggedInUser = data?.userData?.customMessage?.artistName;
     let loggedInUserFollow = [];
     let currentPageArtist = [];
-    
     let fetchAction = "";
     const fetchPageUser = async () => {
         const res = await fetch(`http://localhost:8080/api/users/${fetchAction}/${pageArtistName}`);
@@ -52,10 +58,10 @@
                 userId: data.json.user._id,
             }),
         }).then(res => {
-            if(action === "unfollow"){
+            if (action === "unfollow") {
                 followersInCount--
                 followingState = "follow"
-            }else{
+            } else {
                 followersInCount++
                 followingState = "unfollow"
             }
@@ -81,35 +87,37 @@
         })
     }
 
-    import Modal from './Modal.svelte';
-  
     let modal = false
 </script>
 <a href="http://localhost:5173/profile/Funch">Funch</a>
 <pre>
-    
+
         {JSON.stringify(data.json.user.artistName)}
-    
+
 </pre>
 <div class="header-div">
     <div class="profile-picture">
-        <img alt="" class="img-pic" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
+        <img alt="" class="img-pic"
+             src={imageSource}/>
     </div>
 
     <div class="allign-items">
         <div class="artist-name"><h3>{pageArtistName}</h3></div>
         <div class="follow-div">
-            <button on:click={() => { modal = true; fetchAction = "followers"; fetchPageUser(); }}>Followers {followersInCount} | </button>
-            <button on:click={() => { modal = true; fetchAction = "following"; fetchPageUser(); }}>Following {followingInCount}</button>
+            <button on:click={() => { modal = true; fetchAction = "followers"; fetchPageUser(); }}>
+                Followers {followersInCount} |
+            </button>
+            <button on:click={() => { modal = true; fetchAction = "following"; fetchPageUser(); }}>
+                Following {followingInCount}</button>
         </div>
         <div class="bio-div">Import bio here: Artist making music</div>
         <div class="btn-div">
             {#if loggedInUser === pageArtistName}
-            <div></div>
+                <div></div>
             {:else}
                 <div class="follow-div">
                     <button class="btn-follow" on:click={patchAllFollowing(followingState)}>{followingState}</button>
-                </div> 
+                </div>
             {/if}
             <div class="message-div">
                 <button class="btn-message">Message</button>
@@ -130,18 +138,18 @@
                     <p>{wallpost.body}</p>
                 </div>
 
-                <div class="splitter" />
+                <div class="splitter"/>
 
                 <div>
                     <div>
-                        <input type="text" placeholder="comment" />
+                        <input type="text" placeholder="comment"/>
                     </div>
                     <div class="wallpost-comment">
                         <p>{wallpost.comments}</p>
                     </div>
                 </div>
             </div>
-            <br />
+            <br/>
         {/each}
     </div>
 </div>
@@ -153,15 +161,16 @@
             {#each currentPageArtist as artist}
                 <div class="modal-each-div">
                     <div class="modal-profile-picture">
-                        <img alt="" class="img-pic-modal" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
+                        <img alt="" class="img-pic-modal"
+                             src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
                     </div>
                     <div class="modal-artistname">
                         {artist.artistName}
                     </div>
                     {#if loggedInUser === pageArtistName && fetchAction === "following"}
-                    <div class="div-btn-modal">
-                        <button class="btn-follow" on:click={patchFollowingModal(artist._id)}>unfollow</button>
-                    </div>
+                        <div class="div-btn-modal">
+                            <button class="btn-follow" on:click={patchFollowingModal(artist._id)}>unfollow</button>
+                        </div>
                     {/if}
                 </div>
             {/each}
@@ -170,93 +179,102 @@
 {/if}
 
 <style lang="scss">
-    .main-div {
-        margin-left: 60px;
-        margin-right: 60px;
-    }
-    .header-div {
-        display: flex;
-        align-items: center;
-        margin-left: 60px;
-        margin-right: 60px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    .img-pic {
-        height: 250px;
-        border-radius: 100px;
-    }
-    .allign-items {
-        margin-left: 40px;
-        font-size: 20px;
-        width: 50%;
-    }
-    .artist-name {
-        font-size: 50px;
-    }
+  .main-div {
+    margin-left: 60px;
+    margin-right: 60px;
+  }
 
-    .follow-div {
-        margin-bottom: 10px;
-    }
+  .header-div {
+    display: flex;
+    align-items: center;
+    margin-left: 60px;
+    margin-right: 60px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
-    .bio-div {
-        margin-bottom: 10px;
-    }
+  .img-pic {
+    height: 250px;
+    border-radius: 100px;
+  }
 
-    .btn-div {
-        display: flex;
-        width: 100%;
-    }
-    .btn-follow {
-        border: 2px solid black;
-        border-radius: 15px;
-        padding: 2px;
-        width: 100%;
-        padding: 10px;
-    }
+  .allign-items {
+    margin-left: 40px;
+    font-size: 20px;
+    width: 50%;
+  }
 
-    .btn-message {
-        border: 2px solid black;
-        border-radius: 15px;
-        padding: 2px;
-        width: 100%;
-        padding: 10px;
-        margin-left: 5px;
-    }
+  .artist-name {
+    font-size: 50px;
+  }
 
-    .wallpost-div {
-        border: 2px solid #000;
-        border-radius: 15px;
-        padding: 50px;
-    }
-    .wallpost-body {
-        margin-bottom: 10px;
-    }
-    .artist-div {
-        padding-bottom: 5px;
-    }
-    input {
-        border: 2px solid #000;
-        width: 50%;
-        border-radius: 5px;
-        padding: 2px;
-        padding-left: 5px;
-    }
-    .splitter {
-        border: 1px solid #000;
-        margin: 10px;
-    }
+  .follow-div {
+    margin-bottom: 10px;
+  }
 
-    .modal-each-div{
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        width: 100%;
-        justify-content: space-between;
-    }
+  .bio-div {
+    margin-bottom: 10px;
+  }
 
-    .img-pic-modal{
-        height: 100px;
-        border-radius: 100px;
-    }
+  .btn-div {
+    display: flex;
+    width: 100%;
+  }
+
+  .btn-follow {
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 2px;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .btn-message {
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 2px;
+    width: 100%;
+    padding: 10px;
+    margin-left: 5px;
+  }
+
+  .wallpost-div {
+    border: 2px solid #000;
+    border-radius: 15px;
+    padding: 50px;
+  }
+
+  .wallpost-body {
+    margin-bottom: 10px;
+  }
+
+  .artist-div {
+    padding-bottom: 5px;
+  }
+
+  input {
+    border: 2px solid #000;
+    width: 50%;
+    border-radius: 5px;
+    padding: 2px;
+    padding-left: 5px;
+  }
+
+  .splitter {
+    border: 1px solid #000;
+    margin: 10px;
+  }
+
+  .modal-each-div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .img-pic-modal {
+    height: 100px;
+    border-radius: 100px;
+  }
 </style>
