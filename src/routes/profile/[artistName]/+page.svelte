@@ -3,40 +3,44 @@
     import { onMount } from "svelte";
 
     // const pageParams = $page.params.artistName
-    // console.log(pageParams)
     // onMount(() => {
     //     const unsubscribe = page.subscribe(pageParams);
     //     return unsubscribe;
     // });
 
-    
-
     export let data;
     const cookie = data.cookie;
     const wallposts = data.wallposts;
     const pageArtistName = data.json.user.artistName;
-    const followersInCount = data.json.user.followers.length;
-    const followingInCount = data.json.user.following.length;
+    let followersInCount = data.json.user.followers.length;
+    let followingInCount = data.json.user.following.length;
 
-    const whoAmI = data?.userData?.customMessage?.artistName;
-    const whoIFollow = data?.userData?.customMessage.following;
+    const loggedInUser = data?.userData?.customMessage?.artistName;
+    let loggedInUserFollow = [];
 
-    const patchFollowing = async () => {
-        await fetch("http://localhost:8080/api/users/follow", {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: `Bearer ${data.cookie}`,
-            },
-            body: JSON.stringify({
-                userId: data.json.user._id,
-            }),
-        });
+    const fetchLoggedInUser = async () => {
+        const res = await fetch(`http://localhost:8080/api/users/${loggedInUser}`);
+        const result = await res.json();
+        loggedInUserFollow = result.user.following;
     };
 
-    const patchUnFollowing = async () => {
-        await fetch("http://localhost:8080/api/users/unfollow", {
+    let followingState = "";
+    let checkForFollowing = async () => {
+        await fetchLoggedInUser();
+        if (loggedInUserFollow.includes(pageArtistName)) {
+            followingState = "unfollow";
+            return "unfollow";
+        } else {
+            followingState = "follow";
+            return "follow";
+        }
+    }
+    onMount(async () => {
+        await checkForFollowing()
+    });
+
+    const patchAllFollowing = async (action) => {
+        await fetch(`http://localhost:8080/api/users/${action}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -46,10 +50,18 @@
             body: JSON.stringify({
                 userId: data.json.user._id,
             }),
-        });
+        }).then(res => {
+            if(action === "unfollow"){
+                followersInCount--
+                followingState = "follow"
+            }else{
+                followersInCount++
+                followingState = "unfollow"
+            }
+        })
+        
     };
 </script>
-
 <a href="http://localhost:5173/profile/Funch">Funch</a>
 <pre>
     
@@ -58,12 +70,9 @@
 </pre>
 <div class="header-div">
     <div class="profile-picture">
-        <img
-            class="img-pic"
-            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-            alt="profile-picture"
-        />
+        <img alt="" class="img-pic" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
     </div>
+
     <div class="allign-items">
         <div class="artist-name"><h3>{pageArtistName}</h3></div>
         <div class="follow-div">
@@ -71,20 +80,12 @@
         </div>
         <div class="bio-div">Import bio here: Artist making music</div>
         <div class="btn-div">
-            {#if whoAmI === pageArtistName}
-                <div />
-            {:else if whoIFollow.includes(pageArtistName)}
-                <div class="follow-div">
-                    <button on:click={patchUnFollowing} class="btn-follow"
-                        >Unfollow</button
-                    >
-                </div>
+            {#if loggedInUserFollow === pageArtistName}
+            <div></div>
             {:else}
                 <div class="follow-div">
-                    <button on:click={patchFollowing} class="btn-follow"
-                        >Follow</button
-                    >
-                </div>
+                    <button class="btn-follow" on:click={patchAllFollowing(followingState)}>{followingState}</button>
+                </div> 
             {/if}
             <div class="message-div">
                 <button class="btn-message">Message</button>
@@ -92,6 +93,7 @@
         </div>
     </div>
 </div>
+
 <div class="main-div">
     <div>
         {#each wallposts as wallpost}
@@ -115,7 +117,6 @@
                     </div>
                 </div>
             </div>
-
             <br />
         {/each}
     </div>
