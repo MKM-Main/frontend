@@ -1,15 +1,7 @@
 <script>
-    import { page } from "$app/stores";
     import { onMount } from "svelte";
 
-    // const pageParams = $page.params.artistName
-    // onMount(() => {
-    //     const unsubscribe = page.subscribe(pageParams);
-    //     return unsubscribe;
-    // });
-
     export let data;
-    const cookie = data.cookie;
     const wallposts = data.wallposts;
     const pageArtistName = data.json.user.artistName;
     let followersInCount = data.json.user.followers.length;
@@ -17,6 +9,14 @@
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
     let loggedInUserFollow = [];
+    let currentPageArtist = [];
+    
+    let fetchAction = "";
+    const fetchPageUser = async () => {
+        const res = await fetch(`http://localhost:8080/api/users/${fetchAction}/${pageArtistName}`);
+        const result = await res.json();
+        currentPageArtist = result;
+    };
 
     const fetchLoggedInUser = async () => {
         const res = await fetch(`http://localhost:8080/api/users/${loggedInUser}`);
@@ -37,6 +37,7 @@
     }
     onMount(async () => {
         await checkForFollowing()
+        await fetchPageUser()
     });
 
     const patchAllFollowing = async (action) => {
@@ -59,8 +60,30 @@
                 followingState = "unfollow"
             }
         })
-        
     };
+
+    const patchFollowingModal = async (action) => {
+        await fetch(`http://localhost:8080/api/users/unfollow`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${data.cookie}`,
+            },
+            body: JSON.stringify({
+                userId: action,
+            }),
+        }).then(res => {
+            const arrayObject = currentPageArtist.findIndex(artist => artist._id === action)
+            currentPageArtist.splice(arrayObject, 1)
+            currentPageArtist = [...currentPageArtist]
+            followingInCount--
+        })
+    }
+
+    import Modal from './Modal.svelte';
+  
+    let modal = false
 </script>
 <a href="http://localhost:5173/profile/Funch">Funch</a>
 <pre>
@@ -76,11 +99,12 @@
     <div class="allign-items">
         <div class="artist-name"><h3>{pageArtistName}</h3></div>
         <div class="follow-div">
-            <p>{followersInCount} Followers | {followingInCount} Following</p>
+            <button on:click={() => { modal = true; fetchAction = "followers"; fetchPageUser(); }}>Followers {followersInCount} | </button>
+            <button on:click={() => { modal = true; fetchAction = "following"; fetchPageUser(); }}>Following {followingInCount}</button>
         </div>
         <div class="bio-div">Import bio here: Artist making music</div>
         <div class="btn-div">
-            {#if loggedInUserFollow === pageArtistName}
+            {#if loggedInUser === pageArtistName}
             <div></div>
             {:else}
                 <div class="follow-div">
@@ -120,13 +144,30 @@
             <br />
         {/each}
     </div>
-
-    <pre>
-    <code>
-        {cookie}
-    </code>
-</pre>
 </div>
+
+
+{#if modal}
+    <Modal on:close={() => modal = false}>
+        <div class="modal">
+            {#each currentPageArtist as artist}
+                <div class="modal-each-div">
+                    <div class="modal-profile-picture">
+                        <img alt="" class="img-pic-modal" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
+                    </div>
+                    <div class="modal-artistname">
+                        {artist.artistName}
+                    </div>
+                    {#if loggedInUser === pageArtistName && fetchAction === "following"}
+                    <div class="div-btn-modal">
+                        <button class="btn-follow" on:click={patchFollowingModal(artist._id)}>unfollow</button>
+                    </div>
+                    {/if}
+                </div>
+            {/each}
+        </div>
+    </Modal>
+{/if}
 
 <style lang="scss">
     .main-div {
@@ -204,5 +245,18 @@
     .splitter {
         border: 1px solid #000;
         margin: 10px;
+    }
+
+    .modal-each-div{
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .img-pic-modal{
+        height: 100px;
+        border-radius: 100px;
     }
 </style>
