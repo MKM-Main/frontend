@@ -1,18 +1,53 @@
 <script>
-
+    import {onMount} from "svelte";
+    import Modal from './Modal.svelte';
+    import {env} from "$env/dynamic/public";
 
     export let data;
-    const cookie = data.cookie;
     const wallposts = data.wallposts;
     const pageArtistName = data.json.user.artistName;
-    const followersInCount = data.json.user.followers.length;
-    const followingInCount = data.json.user.following.length;
+    let followersInCount = data.json.user.followers.length;
+    let followingInCount = data.json.user.following.length;
 
-    const whoAmI = data?.userData?.customMessage?.artistName;
-    const whoIFollow = data?.userData?.customMessage.following;
+    const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
+    const profilePictureKey = data.json.user.profilePictureKey
+    const imageSource = `${imageSourcePrefix}${profilePictureKey}`
 
-    const patchFollowing = async () => {
-        await fetch("http://localhost:8080/api/users/follow", {
+
+    const loggedInUser = data?.userData?.customMessage?.artistName;
+    let loggedInUserFollow = [];
+    let currentPageArtist = [];
+    let fetchAction = "";
+    const fetchPageUser = async () => {
+        const res = await fetch(`http://localhost:8080/api/users/${fetchAction}/${pageArtistName}`);
+        const result = await res.json();
+        currentPageArtist = result;
+    };
+
+    const fetchLoggedInUser = async () => {
+        const res = await fetch(`http://localhost:8080/api/users/${loggedInUser}`);
+        const result = await res.json();
+        loggedInUserFollow = result.user.following;
+    };
+
+    let followingState = "";
+    let checkForFollowing = async () => {
+        await fetchLoggedInUser();
+        if (loggedInUserFollow.includes(pageArtistName)) {
+            followingState = "unfollow";
+            return "unfollow";
+        } else {
+            followingState = "follow";
+            return "follow";
+        }
+    }
+    onMount(async () => {
+        await checkForFollowing()
+        await fetchPageUser()
+    });
+
+    const patchAllFollowing = async (action) => {
+        await fetch(`http://localhost:8080/api/users/${action}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -22,11 +57,19 @@
             body: JSON.stringify({
                 userId: data.json.user._id,
             }),
-        });
+        }).then(res => {
+            if (action === "unfollow") {
+                followersInCount--
+                followingState = "follow"
+            } else {
+                followersInCount++
+                followingState = "unfollow"
+            }
+        })
     };
 
-    const patchUnFollowing = async () => {
-        await fetch("http://localhost:8080/api/users/unfollow", {
+    const patchFollowingModal = async (action) => {
+        await fetch(`http://localhost:8080/api/users/unfollow`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -34,12 +77,18 @@
                 Authorization: `Bearer ${data.cookie}`,
             },
             body: JSON.stringify({
-                userId: data.json.user._id,
+                userId: action,
             }),
-        });
-    };
+        }).then(res => {
+            const arrayObject = currentPageArtist.findIndex(artist => artist._id === action)
+            currentPageArtist.splice(arrayObject, 1)
+            currentPageArtist = [...currentPageArtist]
+            followingInCount--
+        })
+    }
+
+    let modal = false
 </script>
-
 <a href="http://localhost:5173/profile/Funch">Funch</a>
 <pre>
 
@@ -48,34 +97,26 @@
 </pre>
 <div class="header-div">
     <div class="profile-picture">
-        <img
-                alt="profile-picture"
-                class="img-pic"
-                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        />
+        <img alt="" class="img-pic"
+             src={imageSource}/>
     </div>
+
     <div class="allign-items">
         <div class="artist-name"><h3>{pageArtistName}</h3></div>
         <div class="follow-div">
-            <p>{followersInCount} Followers | {followingInCount} Following</p>
+            <button on:click={() => { modal = true; fetchAction = "followers"; fetchPageUser(); }}>
+                Followers {followersInCount} |
+            </button>
+            <button on:click={() => { modal = true; fetchAction = "following"; fetchPageUser(); }}>
+                Following {followingInCount}</button>
         </div>
         <div class="bio-div">Import bio here: Artist making music</div>
         <div class="btn-div">
-            {#if whoAmI === pageArtistName}
-                <div/>
-            {:else if whoIFollow.includes(pageArtistName)}
-                <div class="follow-div">
-                    <button on:click={patchUnFollowing} class="btn-follow"
-                    >Unfollow
-                    </button
-                    >
-                </div>
+            {#if loggedInUser === pageArtistName}
+                <div></div>
             {:else}
                 <div class="follow-div">
-                    <button on:click={patchFollowing} class="btn-follow"
-                    >Follow
-                    </button
-                    >
+                    <button class="btn-follow" on:click={patchAllFollowing(followingState)}>{followingState}</button>
                 </div>
             {/if}
             <div class="message-div">
@@ -84,6 +125,7 @@
         </div>
     </div>
 </div>
+
 <div class="main-div">
     <div>
         {#each wallposts as wallpost}
@@ -107,17 +149,34 @@
                     </div>
                 </div>
             </div>
-
             <br/>
         {/each}
     </div>
-
-    <pre>
-    <code>
-        {cookie}
-    </code>
-</pre>
 </div>
+
+
+{#if modal}
+    <Modal on:close={() => modal = false}>
+        <div class="modal">
+            {#each currentPageArtist as artist}
+                <div class="modal-each-div">
+                    <div class="modal-profile-picture">
+                        <img alt="" class="img-pic-modal"
+                             src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
+                    </div>
+                    <div class="modal-artistname">
+                        {artist.artistName}
+                    </div>
+                    {#if loggedInUser === pageArtistName && fetchAction === "following"}
+                        <div class="div-btn-modal">
+                            <button class="btn-follow" on:click={patchFollowingModal(artist._id)}>unfollow</button>
+                        </div>
+                    {/if}
+                </div>
+            {/each}
+        </div>
+    </Modal>
+{/if}
 
 <style lang="scss">
   .main-div {
@@ -204,5 +263,18 @@
   .splitter {
     border: 1px solid #000;
     margin: 10px;
+  }
+
+  .modal-each-div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .img-pic-modal {
+    height: 100px;
+    border-radius: 100px;
   }
 </style>
