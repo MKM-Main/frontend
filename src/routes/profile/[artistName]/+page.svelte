@@ -1,15 +1,5 @@
 <script>
-    import { page } from "$app/stores";
-    import { onMount } from "svelte";
 
-    // const pageParams = $page.params.artistName
-    // console.log(pageParams)
-    // onMount(() => {
-    //     const unsubscribe = page.subscribe(pageParams);
-    //     return unsubscribe;
-    // });
-
-    
 
     export let data;
     const cookie = data.cookie;
@@ -52,16 +42,16 @@
 
 <a href="http://localhost:5173/profile/Funch">Funch</a>
 <pre>
-    
+
         {JSON.stringify(data.json.user.artistName)}
-    
+
 </pre>
 <div class="header-div">
     <div class="profile-picture">
         <img
-            class="img-pic"
-            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-            alt="profile-picture"
+                alt="profile-picture"
+                class="img-pic"
+                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
         />
     </div>
     <div class="allign-items">
@@ -72,17 +62,19 @@
         <div class="bio-div">Import bio here: Artist making music</div>
         <div class="btn-div">
             {#if whoAmI === pageArtistName}
-                <div />
+                <div/>
             {:else if whoIFollow.includes(pageArtistName)}
                 <div class="follow-div">
                     <button on:click={patchUnFollowing} class="btn-follow"
-                        >Unfollow</button
+                    >Unfollow
+                    </button
                     >
                 </div>
             {:else}
                 <div class="follow-div">
                     <button on:click={patchFollowing} class="btn-follow"
-                        >Follow</button
+                    >Follow
+                    </button
                     >
                 </div>
             {/if}
@@ -104,11 +96,11 @@
                     <p>{wallpost.body}</p>
                 </div>
 
-                <div class="splitter" />
+                <div class="splitter"/>
 
                 <div>
                     <div>
-                        <input type="text" placeholder="comment" />
+                        <input type="text" placeholder="comment"/>
                     </div>
                     <div class="wallpost-comment">
                         <p>{wallpost.comments}</p>
@@ -116,7 +108,7 @@
                 </div>
             </div>
 
-            <br />
+            <br/>
         {/each}
     </div>
 
@@ -128,80 +120,89 @@
 </div>
 
 <style lang="scss">
-    .main-div {
-        margin-left: 60px;
-        margin-right: 60px;
-    }
-    .header-div {
-        display: flex;
-        align-items: center;
-        margin-left: 60px;
-        margin-right: 60px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    .img-pic {
-        height: 250px;
-        border-radius: 100px;
-    }
-    .allign-items {
-        margin-left: 40px;
-        font-size: 20px;
-        width: 50%;
-    }
-    .artist-name {
-        font-size: 50px;
-    }
+  .main-div {
+    margin-left: 60px;
+    margin-right: 60px;
+  }
 
-    .follow-div {
-        margin-bottom: 10px;
-    }
+  .header-div {
+    display: flex;
+    align-items: center;
+    margin-left: 60px;
+    margin-right: 60px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
-    .bio-div {
-        margin-bottom: 10px;
-    }
+  .img-pic {
+    height: 250px;
+    border-radius: 100px;
+  }
 
-    .btn-div {
-        display: flex;
-        width: 100%;
-    }
-    .btn-follow {
-        border: 2px solid black;
-        border-radius: 15px;
-        padding: 2px;
-        width: 100%;
-        padding: 10px;
-    }
+  .allign-items {
+    margin-left: 40px;
+    font-size: 20px;
+    width: 50%;
+  }
 
-    .btn-message {
-        border: 2px solid black;
-        border-radius: 15px;
-        padding: 2px;
-        width: 100%;
-        padding: 10px;
-        margin-left: 5px;
-    }
+  .artist-name {
+    font-size: 50px;
+  }
 
-    .wallpost-div {
-        border: 2px solid #000;
-        border-radius: 15px;
-        padding: 50px;
-    }
-    .wallpost-body {
-        margin-bottom: 10px;
-    }
-    .artist-div {
-        padding-bottom: 5px;
-    }
-    input {
-        border: 2px solid #000;
-        width: 50%;
-        border-radius: 5px;
-        padding: 2px;
-        padding-left: 5px;
-    }
-    .splitter {
-        border: 1px solid #000;
-        margin: 10px;
-    }
+  .follow-div {
+    margin-bottom: 10px;
+  }
+
+  .bio-div {
+    margin-bottom: 10px;
+  }
+
+  .btn-div {
+    display: flex;
+    width: 100%;
+  }
+
+  .btn-follow {
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 2px;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .btn-message {
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 2px;
+    width: 100%;
+    padding: 10px;
+    margin-left: 5px;
+  }
+
+  .wallpost-div {
+    border: 2px solid #000;
+    border-radius: 15px;
+    padding: 50px;
+  }
+
+  .wallpost-body {
+    margin-bottom: 10px;
+  }
+
+  .artist-div {
+    padding-bottom: 5px;
+  }
+
+  input {
+    border: 2px solid #000;
+    width: 50%;
+    border-radius: 5px;
+    padding: 2px;
+    padding-left: 5px;
+  }
+
+  .splitter {
+    border: 1px solid #000;
+    margin: 10px;
+  }
 </style>

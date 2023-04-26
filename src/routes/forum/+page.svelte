@@ -1,14 +1,14 @@
 <script>
     export let data
-    
+
     const forums = data.forumData
-    
+
     function replaceSpacesWithHyphens(title) {
-    if (title.includes(" ")) {
-      return title.replace(/ /g, "-");
+        if (title.includes(" ")) {
+            return title.replace(/ /g, "-");
+        }
+        return title;
     }
-    return title;
-  }
 
 </script>
 
@@ -18,7 +18,7 @@
 
     {#each forums.forum as forum}
         <div class="forum">
-            
+
             <a href="/forum/{replaceSpacesWithHyphens(forum.forumTitle)}">Forum name: {forum.forumTitle}</a>
             <p>Forum Created: {forum.creationDate}</p>
             <br>

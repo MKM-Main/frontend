@@ -15,7 +15,7 @@
     {/if}
 
     <a href="/">
-        <img alt="HOME" class="home" src="./src/lib/note.svg">
+        <img alt="HOME" class="home" src="">
     </a>
 
     {#each pages as page}
