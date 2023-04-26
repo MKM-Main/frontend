@@ -17,11 +17,6 @@
         </a>
     </div>
 
-    <div>
-        {#each pages as page}
-            <a href="{page}">{page.substring(1)}</a>
-        {/each}
-    </div>
 
     {#if jwt}
         <div>
