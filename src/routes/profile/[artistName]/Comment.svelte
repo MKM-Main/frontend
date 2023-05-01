@@ -3,9 +3,9 @@
   </script>
   
   <div class="comment">
-    <b><p>{comment.commentedBy}</p></b>
+    <b><p>{comment.commentAuthor}</p></b>
     <p>Comment: {comment.body}</p>
-    <p>{comment.timeStamp}</p>
+    <p>{comment.timeCreated}</p>
   </div>
 
 <style>
