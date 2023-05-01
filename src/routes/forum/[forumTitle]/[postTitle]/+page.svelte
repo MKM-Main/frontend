@@ -1,13 +1,20 @@
 <script>
-    import Comment from './Comment.svelte';
+    import CreateComment from '../../../../lib/components/comments/CreateComment.svelte';
+    import ShowComment from '../../../../lib/components/comments/ShowComment.svelte';
+    import DeleteComment from '../../../../lib/components/comments/DeleteComment.svelte';
+
+
     export let data;
     const posts = data.json.post
-    const commentsArray = posts.comments
-    const loggedInUser = data?.userData?.customMessage?.artistName
     const jwt = data.jwt
+    const loggedInUser = data?.userData?.customMessage?.artistName;
 
     const updateComments = (newComment) => {
         posts.comments = [...posts.comments, newComment];
+    }
+
+    const deleteComments = (commentId) => {
+        posts.comments = posts.comments.filter((comment) => comment._id !== commentId);
     }
 
 </script>
@@ -17,28 +24,13 @@
 <br>
 <h3>Comments</h3>
 {#each posts.comments as comment}
-    <div class="post-container">
-        <a href="/profile/{comment.commentAuthor}">{comment.commentAuthor}</a>
-        <p>{comment.commentBody}</p>
-        <p>{comment.rating}</p>
-    </div>
-    <br>
+    <ShowComment comment={comment}/>
+    {#if comment.commentAuthor === loggedInUser}
+    <DeleteComment postid={posts._id} commentid={comment._id} deleteComments={deleteComments}/>
+    {/if}
 {/each}
 {#if jwt}
-    <Comment jwt={jwt} commentAuthor={loggedInUser} postTitle={posts.postTitle}
+    <CreateComment jwt={jwt} reference={"forum"} search={posts.postTitle}
              updateComments={updateComments}/>
 {/if}
 
-
-<style>
-    .post-container {
-        border-bottom: 1px solid black;
-        border-top: 1px solid black;
-    }
-
-    input {
-        background-color: black;
-        color: white;
-    }
-
-</style>

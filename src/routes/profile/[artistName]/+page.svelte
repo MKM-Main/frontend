@@ -1,10 +1,13 @@
 <script>
     import {onMount} from "svelte";
     import Modal from './Modal.svelte';
-    import Comment from "./Comment.svelte";
+    import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
+    import CreateComment from "../../../lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
 
+    
     export let data;
+    const jwt = data.jwt
     let wallposts = data.wallposts;
     const pageArtistName = data.json.user.artistName;
     let followersInCount = data.json.user.followers.length;
@@ -87,24 +90,9 @@
         })
     }
 
-    let commentBody;
-    const patchComments = async (action) => {
-        await fetch(`http://localhost:8080/api/posts/comments/wallposts/${action}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: `Bearer ${data.cookie}`,
-            },
-            body: JSON.stringify({
-                body: commentBody,
-            }),
-        }).then(res => res.json())
-            .then(res => {
-                const arrayObject = wallposts.findIndex(wallpost => wallpost._id === action)
-                wallposts[arrayObject].comments.push(res.message)
-                wallposts = [...wallposts]
-        })
+    const updateComments = (newComment, search) => {
+        const arrayObject = wallposts.findIndex(wallpost => wallpost._id === search)
+        wallposts[arrayObject].comments = [...wallposts[arrayObject].comments, newComment.message]
     }
 
     let modal = false
@@ -161,14 +149,12 @@
                 <div class="splitter"/>
 
                 <div>
-                    <div>
-                        <form on:submit|preventDefault={() => patchComments(wallpost._id)}>
-                            <input type="text" placeholder="comment" bind:value={commentBody}/>
-                            <button class="btn-comment" type="submit">Send comment</button>
-                        </form>
-                    </div>
+                    {#if jwt}
+                        <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost._id}
+                            updateComments={updateComments}/>
+                    {/if}
                     {#each wallpost.comments as comment}
-                        <Comment comment={comment} />
+                        <ShowComment comment={comment}/>
                     {/each}
                 </div>
             </div>

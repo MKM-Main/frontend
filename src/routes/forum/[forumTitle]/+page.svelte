@@ -18,14 +18,17 @@
 <div class="forum-container">
     {#each forums as forum}
         <!-- <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}"> -->
-        <a href="/forum/{forum.referenceName}/{forum.postTitle}">
-            <p>Post Title: {forum.postTitle}</p>
-            <p>Body: {forum.body} </p>
-            <p>User who created post: {forum.artistName} </p>
-            <p>Created at: {forum.timeStamp}</p>
-            <p>Rating: {forum.rating}</p>
-            <p>Number of comments: {forum.comments.length}</p>
-        </a>
+        <div class="posts">
+            <a href="/forum/{forum.referenceName}/{forum.postTitle}">
+                <p>Post Title: {forum.postTitle}</p>
+                <p>Body: {forum.body} </p>
+                <p>User who created post: {forum.artistName} </p>
+                <p>Created at: {forum.timeStamp}</p>
+                <p>Rating: {forum.rating}</p>
+                <p>Number of comments: {forum.comments.length}</p>
+            </a>
+        </div>
+            
     {/each}
 </div>
 
@@ -39,7 +42,7 @@
         text-decoration: none;
     }
 
-    .forum-container:hover {
+    .posts:hover {
         background-color: grey;
     }
 </style>

@@ -1,13 +1,13 @@
 <script>
     export let jwt;
-    export let commentAuthor;
-    export let postTitle;
+    export let search;
     export let updateComments;
+    export let reference;
 
     let commentBody;
 
     const addCommentToPost = async () => {
-        await fetch(`http://localhost:8080/api/posts/comments/forum/${postTitle}`, {
+        await fetch(`http://localhost:8080/api/posts/comments/${reference}/${search}`, {
             method: "PATCH",
             credentials: "include",
             headers: {
@@ -15,10 +15,10 @@
                 "Accept": "application/json",
                 "Authorization": `Bearer ${jwt}`
             },
-            body: JSON.stringify({commentAuthor, commentBody})
+            body: JSON.stringify({commentBody})
         }).then(async (res) => {
             const newComment = await res.json();
-            updateComments(newComment);
+            updateComments(newComment, search);
         });
     };
 </script>
