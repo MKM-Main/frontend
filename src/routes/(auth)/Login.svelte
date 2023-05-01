@@ -38,7 +38,7 @@
         <label for="password">Password</label>
         <input bind:value={password} id="password" type="password">
 
-        <button type="submit">Login</button>
+        <button id="submit" type="submit">Login</button>
 
     </form>
 </div>

@@ -1,7 +1,7 @@
 <script>
     export let data;
     const forums = data?.json?.forum
-    
+
     function replaceSpacesWithHyphens(title) {
         if (title.includes(" ")) {
             return title.replace(/ /g, "-");
@@ -13,7 +13,7 @@
 </script>
 
 
-<h1>{forums[0].referenceName}</h1>
+<h1>{forums[0]?.referenceName}</h1>
 
 <div class="forum-container">
     {#each forums as forum}
@@ -28,7 +28,7 @@
                 <p>Number of comments: {forum.comments.length}</p>
             </a>
         </div>
-            
+
     {/each}
 </div>
 

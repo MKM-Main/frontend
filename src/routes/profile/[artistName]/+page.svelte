@@ -5,7 +5,7 @@
     import CreateComment from "../../../lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
 
-    
+
     export let data;
     const jwt = data.jwt
     let wallposts = data.wallposts;
@@ -97,12 +97,6 @@
 
     let modal = false
 </script>
-<a href="http://localhost:5173/profile/Funch">Funch</a>
-<pre>
-
-        {JSON.stringify(data.json.user.artistName)}
-
-</pre>
 <div class="header-div">
     <div class="profile-picture">
         <img alt="" class="img-pic"
@@ -120,9 +114,7 @@
         </div>
         <div class="bio-div">Import bio here: Artist making music</div>
         <div class="btn-div">
-            {#if loggedInUser === pageArtistName}
-                <div></div>
-            {:else}
+            {#if loggedInUser && loggedInUser !== pageArtistName}
                 <div class="follow-div">
                     <button class="btn-follow" on:click={patchFollowing(followingState)}>{followingState}</button>
                 </div>
@@ -272,7 +264,7 @@
   .main-div {
     margin-left: 60px;
     margin-right: 60px;
-    
+
     .wallpost-div {
         border: 2px solid #000;
         border-radius: 15px;
@@ -281,7 +273,7 @@
 
     .wallpost-body {
         margin-bottom: 10px;
-    
+
     }
     .btn-comment{
         border: 2px solid black;
@@ -290,5 +282,5 @@
         margin-left: 5px;
     }
   }
-  
+
 </style>
