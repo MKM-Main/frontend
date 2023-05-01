@@ -3,9 +3,10 @@
   </script>
   
   <div class="comment">
-    <b><p>{comment.commentAuthor}</p></b>
-    <p>Comment: {comment.body}</p>
+    <a href="/profile/{comment.commentAuthor}">{comment.commentAuthor}</a>
+    <p>Comment: {comment.commentBody}</p>
     <p>{comment.timeCreated}</p>
+    <p>rating: {comment.rating}</p>
   </div>
 
 <style>
