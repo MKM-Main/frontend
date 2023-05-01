@@ -1,14 +1,14 @@
 <script>
     import {onMount} from "svelte";
     import Modal from './Modal.svelte';
+    import Comment from "./Comment.svelte";
     import {env} from "$env/dynamic/public";
 
     export let data;
-    const wallposts = data.wallposts;
+    let wallposts = data.wallposts;
     const pageArtistName = data.json.user.artistName;
     let followersInCount = data.json.user.followers.length;
     let followingInCount = data.json.user.following.length;
-
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     const profilePictureKey = data.json.user.profilePictureKey
     const imageSource = `${imageSourcePrefix}${profilePictureKey}`
@@ -16,12 +16,14 @@
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
     let loggedInUserFollow = [];
-    let currentPageArtist = [];
-    let fetchAction = "";
+    let userModalFollowArray = [];
+
+    //Fetches the followers and following depending on the fetch action
+    let fetchAction = "empty";
     const fetchPageUser = async () => {
         const res = await fetch(`http://localhost:8080/api/users/${fetchAction}/${pageArtistName}`);
         const result = await res.json();
-        currentPageArtist = result;
+        userModalFollowArray = result;
     };
 
     const fetchLoggedInUser = async () => {
@@ -35,10 +37,8 @@
         await fetchLoggedInUser();
         if (loggedInUserFollow.includes(pageArtistName)) {
             followingState = "unfollow";
-            return "unfollow";
         } else {
             followingState = "follow";
-            return "follow";
         }
     }
     onMount(async () => {
@@ -46,7 +46,7 @@
         await fetchPageUser()
     });
 
-    const patchAllFollowing = async (action) => {
+    const patchFollowing = async (action) => {
         await fetch(`http://localhost:8080/api/users/${action}`, {
             method: "PATCH",
             headers: {
@@ -80,10 +80,30 @@
                 userId: action,
             }),
         }).then(res => {
-            const arrayObject = currentPageArtist.findIndex(artist => artist._id === action)
-            currentPageArtist.splice(arrayObject, 1)
-            currentPageArtist = [...currentPageArtist]
+            const arrayObject = userModalFollowArray.findIndex(artist => artist._id === action)
+            userModalFollowArray.splice(arrayObject, 1)
+            userModalFollowArray = [...userModalFollowArray]
             followingInCount--
+        })
+    }
+
+    let commentBody;
+    const patchComments = async (action) => {
+        await fetch(`http://localhost:8080/api/posts/comments/${action}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${data.cookie}`,
+            },
+            body: JSON.stringify({
+                body: commentBody,
+            }),
+        }).then(res => res.json())
+            .then(res => {
+                const arrayObject = wallposts.findIndex(wallpost => wallpost._id === action)
+                wallposts[arrayObject].comments.push(res.message)
+                wallposts = [...wallposts]
         })
     }
 
@@ -116,7 +136,7 @@
                 <div></div>
             {:else}
                 <div class="follow-div">
-                    <button class="btn-follow" on:click={patchAllFollowing(followingState)}>{followingState}</button>
+                    <button class="btn-follow" on:click={patchFollowing(followingState)}>{followingState}</button>
                 </div>
             {/if}
             <div class="message-div">
@@ -142,11 +162,14 @@
 
                 <div>
                     <div>
-                        <input type="text" placeholder="comment"/>
+                        <form on:submit|preventDefault={() => patchComments(wallpost._id)}>
+                            <input type="text" placeholder="comment" bind:value={commentBody} key={wallpost._id}/>
+                            <button class="btn-comment" type="submit">Send comment</button>
+                        </form>
                     </div>
-                    <div class="wallpost-comment">
-                        <p>{wallpost.comments}</p>
-                    </div>
+                    {#each wallpost.comments as comment}
+                        <Comment comment={comment} />
+                    {/each}
                 </div>
             </div>
             <br/>
@@ -155,21 +178,22 @@
 </div>
 
 
+
 {#if modal}
     <Modal on:close={() => modal = false}>
         <div class="modal">
-            {#each currentPageArtist as artist}
+            {#each userModalFollowArray as user}
                 <div class="modal-each-div">
                     <div class="modal-profile-picture">
                         <img alt="" class="img-pic-modal"
-                             src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
+                             src="{imageSourcePrefix}{user.profilePictureKey}"/>
                     </div>
                     <div class="modal-artistname">
-                        {artist.artistName}
+                        {user.artistName}
                     </div>
                     {#if loggedInUser === pageArtistName && fetchAction === "following"}
                         <div class="div-btn-modal">
-                            <button class="btn-follow" on:click={patchFollowingModal(artist._id)}>unfollow</button>
+                            <button class="btn-follow" on:click={patchFollowingModal(user._id)}>unfollow</button>
                         </div>
                     {/if}
                 </div>
@@ -179,12 +203,7 @@
 {/if}
 
 <style lang="scss">
-  .main-div {
-    margin-left: 60px;
-    margin-right: 60px;
-  }
-
-  .header-div {
+.header-div {
     display: flex;
     align-items: center;
     margin-left: 60px;
@@ -224,7 +243,6 @@
   .btn-follow {
     border: 2px solid black;
     border-radius: 15px;
-    padding: 2px;
     width: 100%;
     padding: 10px;
   }
@@ -232,20 +250,8 @@
   .btn-message {
     border: 2px solid black;
     border-radius: 15px;
-    padding: 2px;
-    width: 100%;
     padding: 10px;
     margin-left: 5px;
-  }
-
-  .wallpost-div {
-    border: 2px solid #000;
-    border-radius: 15px;
-    padding: 50px;
-  }
-
-  .wallpost-body {
-    margin-bottom: 10px;
   }
 
   .artist-div {
@@ -277,4 +283,26 @@
     height: 100px;
     border-radius: 100px;
   }
+  .main-div {
+    margin-left: 60px;
+    margin-right: 60px;
+    
+    .wallpost-div {
+        border: 2px solid #000;
+        border-radius: 15px;
+        padding: 50px;
+    }
+
+    .wallpost-body {
+        margin-bottom: 10px;
+    
+    }
+    .btn-comment{
+        border: 2px solid black;
+        border-radius: 15px;
+        padding: 10px;
+        margin-left: 5px;
+    }
+  }
+  
 </style>
