@@ -1,3 +1,5 @@
+import {error} from '@sveltejs/kit';
+
 export const load = async ({fetch, params, cookies}) => {
 
 
@@ -13,7 +15,11 @@ export const load = async ({fetch, params, cookies}) => {
     // const response = await fetch(`http://localhost:8080/forum/${forumTitle}`);
     // const jsonData = await response.json();
 
-
+    if (!forumData.forum[0]) {
+        throw error(404, {
+            message: "not found"
+        })
+    }
     return {
         json: forumData
     }

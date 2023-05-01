@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "vite dev",
+    "cy:run": "npx cypress run",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.0.0",
     "@sveltejs/kit": "^1.5.0",
+    "cypress": "^12.11.0",
     "sass": "^1.62.0",
     "svelte": "^3.54.0",
     "svelte-preprocess": "^5.0.3",

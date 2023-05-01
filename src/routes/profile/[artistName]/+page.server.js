@@ -1,3 +1,4 @@
+import {error} from "@sveltejs/kit";
 export const load = async ({fetch, params, cookies}) => {
     const artistName = params.artistName
     const jwt = cookies.get("jwt")
@@ -13,6 +14,12 @@ export const load = async ({fetch, params, cookies}) => {
         }
     })
     const wallPostJson = await wallpostResponse.json()
+
+    if (!jsonData.user) {
+        throw error(404, {
+            message: "not found"
+        })
+    }
 
     return {
         cookie: jwt,
