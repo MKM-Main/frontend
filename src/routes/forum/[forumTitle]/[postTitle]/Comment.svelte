@@ -7,7 +7,7 @@
     let commentBody;
 
     const addCommentToPost = async () => {
-        await fetch(`http://localhost:8080/forum/forumtitle/${postTitle}`, {
+        await fetch(`http://localhost:8080/api/posts/comments/forum/${postTitle}`, {
             method: "PATCH",
             credentials: "include",
             headers: {

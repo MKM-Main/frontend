@@ -89,7 +89,7 @@
 
     let commentBody;
     const patchComments = async (action) => {
-        await fetch(`http://localhost:8080/api/posts/comments/${action}`, {
+        await fetch(`http://localhost:8080/api/posts/comments/wallposts/${action}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -163,7 +163,7 @@
                 <div>
                     <div>
                         <form on:submit|preventDefault={() => patchComments(wallpost._id)}>
-                            <input type="text" placeholder="comment" bind:value={commentBody} key={wallpost._id}/>
+                            <input type="text" placeholder="comment" bind:value={commentBody}/>
                             <button class="btn-comment" type="submit">Send comment</button>
                         </form>
                     </div>
