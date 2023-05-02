@@ -18,6 +18,9 @@
     </div>
 
     <div>
+        {#if jwt}
+            <a href="/news">News</a>
+        {/if}
         {#each pages as page}
             <a href="{page}">{page.substring(1)}</a>
         {/each}

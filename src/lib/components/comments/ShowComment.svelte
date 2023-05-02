@@ -1,16 +1,16 @@
 <script>
     export let comment;
-  </script>
-  
-  <div class="comment">
+</script>
+
+<div class="comment">
     <a href="/profile/{comment.commentAuthor}">{comment.commentAuthor}</a>
     <p>Comment: {comment.commentBody}</p>
-    <p>{comment.timeCreated}</p>
+    <p>{comment.timeStamp}</p>
     <p>rating: {comment.rating}</p>
-  </div>
+</div>
 
 <style>
-    .comment{
+    .comment {
         border: 2px solid black;
         border-radius: 15px;
         padding: 10px;
