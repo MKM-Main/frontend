@@ -9,6 +9,7 @@
         return title;
     }
 
+    console.log(forums)
 
 </script>
 
@@ -19,7 +20,7 @@
     {#each forums as forum}
         <!-- <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}"> -->
         <div class="posts">
-            <a href="/forum/{forum.referenceName}/{forum.postTitle}">
+            <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}">
                 <p>Post Title: {forum.postTitle}</p>
                 <p>Body: {forum.body} </p>
                 <p>User who created post: {forum.artistName} </p>
