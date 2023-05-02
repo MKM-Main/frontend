@@ -4,6 +4,7 @@
     import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
     import CreateComment from "../../../lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
+    import UserUploadedFile from "../../../lib/components/files/UserUploadedFile.svelte";
 
 
     export let data;
@@ -95,8 +96,35 @@
         wallposts[arrayObject].comments = [...wallposts[arrayObject].comments, newComment.message]
     }
 
+    let formData = new FormData();
+    let postBody
+    const createNewPost = async () => {
+        formData.append("body", postBody)
+        await fetch("http://localhost:8080/api/posts/wallpost", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Authorization": `Bearer ${jwt}`
+            },
+            body: formData
+        })
+            .then(res => res.json())
+            .then(data => {
+                modalNewPost = !modalNewPost
+                wallposts = [...wallposts, data.newPost]
+            })
+    }
+
+    const handleFileInput = (event) => {
+        const file = event.target.files[0];
+        formData.append('fileType', file);
+    }
+    let modalNewPost = false
     let modal = false
+
 </script>
+
+
 <div class="header-div">
     <div class="profile-picture">
         <img alt="" class="img-pic"
@@ -122,6 +150,11 @@
             <div class="message-div">
                 <button class="btn-message">Message</button>
             </div>
+            {#if loggedInUser === pageArtistName}
+                <div class="new-post">
+                    <button class="btn-new-post" on:click={() => modalNewPost = !modalNewPost}>Post</button>
+                </div>
+            {/if}
         </div>
     </div>
 </div>
@@ -137,13 +170,16 @@
                 <div class="wallpost-body">
                     <p>{wallpost.body}</p>
                 </div>
+                <div class="wallpost-file">
+                    <UserUploadedFile keyReference="{wallpost.keyReference}"/>
+                </div>
 
                 <div class="splitter"/>
 
                 <div>
                     {#if jwt}
                         <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost._id}
-                            updateComments={updateComments}/>
+                                       updateComments={updateComments}/>
                     {/if}
                     {#each wallpost.comments as comment}
                         <ShowComment comment={comment}/>
@@ -155,7 +191,20 @@
     </div>
 </div>
 
+{#if modalNewPost}
+    <Modal on:close={() => modalNewPost = false}>
+        <div class="new-post">
+            <form on:submit|preventDefault={createNewPost}>
+                <textarea bind:value={postBody} placeholder="Share your news!" name="body" id="body"
+                          cols="5"></textarea>
+                <input type="file" on:change={handleFileInput} id="fileType">
+                <button class="btn-new-post" type="submit">Share!</button>
+            </form>
+        </div>
 
+    </Modal>
+
+{/if}
 
 {#if modal}
     <Modal on:close={() => modal = false}>
@@ -181,7 +230,17 @@
 {/if}
 
 <style lang="scss">
-.header-div {
+
+  .new-post {
+    form {
+      textarea {
+        resize: none;
+        width: 100%;
+      }
+    }
+  }
+
+  .header-div {
     display: flex;
     align-items: center;
     margin-left: 60px;
@@ -225,7 +284,8 @@
     padding: 10px;
   }
 
-  .btn-message {
+  .btn-message,
+  .btn-new-post {
     border: 2px solid black;
     border-radius: 15px;
     padding: 10px;
@@ -261,25 +321,27 @@
     height: 100px;
     border-radius: 100px;
   }
+
   .main-div {
     margin-left: 60px;
     margin-right: 60px;
 
     .wallpost-div {
-        border: 2px solid #000;
-        border-radius: 15px;
-        padding: 50px;
+      border: 2px solid #000;
+      border-radius: 15px;
+      padding: 50px;
     }
 
     .wallpost-body {
-        margin-bottom: 10px;
+      margin-bottom: 10px;
 
     }
-    .btn-comment{
-        border: 2px solid black;
-        border-radius: 15px;
-        padding: 10px;
-        margin-left: 5px;
+
+    .btn-comment {
+      border: 2px solid black;
+      border-radius: 15px;
+      padding: 10px;
+      margin-left: 5px;
     }
   }
 

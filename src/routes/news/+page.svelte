@@ -1,4 +1,6 @@
 <script>
+    import ShowComment from "../../lib/components/comments/ShowComment.svelte";
+    import File from "../../lib/components/files/UserUploadedFile.svelte";
     export let data
 
     const posts = data.allPosts
@@ -13,12 +15,11 @@
             <p>Body: {post.body}</p>
             <p>Timestamp: {post.timeStamp}</p>
             <br>
+            <File keyReference={post.keyReference}/>
             <h4>Comments</h4>
             <div class="comment">
-                {#each post.comments as comment}
-                    <p>{comment.body}</p>
-                    <p>{comment.timeStamp}</p>
-                    <br>
+                {#each post?.comments as comment}
+                    <ShowComment comment={comment}/>
                 {/each}
             </div>
         </div>
