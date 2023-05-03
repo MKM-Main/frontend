@@ -20,7 +20,6 @@
 
     let modalNewPost = false
     let modal = false
-    let showErrorSection = false
     let errorMessage
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
@@ -223,18 +222,11 @@
                        on:change={handleFileInput} id="fileType">
                 <button class="btn-new-post" type="submit">Share!</button>
             </form>
-            {#if showErrorSection}
-                <div class="error">
-                    <p style="color: red">{errorMessage} </p>
-                </div>
-            {/if}
             <div id="loading-spinner" style="display: none;">
                 <div class="spinner"></div>
                 <div>Uploading post!</div>
             </div>
-
         </div>
-
     </Modal>
 
 {/if}
