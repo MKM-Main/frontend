@@ -1,6 +1,6 @@
 <script>
     import {env} from "$env/dynamic/public";
-    let pages = ["/forum", "/artists", "/login"]
+    let pages = ["forum", "artists", "login"]
 
     export let artistName
     export let jwt
@@ -22,7 +22,7 @@
             <a href="/news">News</a>
         {/if}
         {#each pages as page}
-            <a href="{page}">{page.substring(1)}</a>
+            <a href="/{page}">{page}</a>
         {/each}
     </div>
 

@@ -3,10 +3,10 @@
 </script>
 
 <div class="comment">
-    <a href="/profile/{comment.commentAuthor}">{comment.commentAuthor}</a>
-    <p>Comment: {comment.commentBody}</p>
-    <p>{comment.timeStamp}</p>
-    <p>rating: {comment.rating}</p>
+    <a href="/profile/{comment?.commentAuthor}">{comment?.commentAuthor}</a>
+    <p>Comment: {comment?.commentBody}</p>
+    <p>{comment?.timeStamp}</p>
+    <p>rating: {comment?.rating}</p>
 </div>
 
 <style>
