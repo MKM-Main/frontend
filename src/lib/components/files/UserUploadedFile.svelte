@@ -7,8 +7,7 @@
 
 {#if
     keyReference?.endsWith(".mp3") ||
-    keyReference?.endsWith(".m4a") ||
-    keyReference?.endsWith(".wav")}
+    keyReference?.endsWith(".m4a")}
     <audio controls="controls">
         <source src="{env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX}{keyReference}" type="audio/mp3">
     </audio>

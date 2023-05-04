@@ -44,7 +44,7 @@
         {/if}
         <textarea bind:value={postBody} cols="5" id="body" name="body"
                   placeholder="Share your news!"></textarea>
-        <input id="fileType" on:change={handleFileInput} type="file">
+        <input accept=".pdf, .jpeg, .jpg, .png, .mp4, .m4a, .mp3" id="fileType" on:change={handleFileInput} type="file">
         <button class="btn-new-post" type="submit">Share!</button>
     </form>
 </div>
