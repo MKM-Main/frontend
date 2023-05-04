@@ -1,7 +1,10 @@
 <script>
     import Modal from "../../profile/[artistName]/Modal.svelte";
     import DeletePost from "../../../lib/components/posts/DeletePost.svelte";
+    import Spinner from "../../../lib/components/helpers/Spinner.svelte";
+    import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
     export let data;
+    const loggedInUser = data.userData?.customMessage?.artistName
     const forumTitle = data.forumTitle
     const jwt = data.jwt
     let forums = data?.json?.forum
@@ -17,41 +20,11 @@
         return title;
     }
 
-
-    const createNewPost = async () => {
-        document.getElementById("loading-spinner").style.display = "flex"
-        formData.append("body", postBody)
-        formData.append("postTitle", postTitle)
-        await fetch(`http://localhost:8080/api/posts/${forumTitle}`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Authorization": `Bearer ${jwt}`
-            },
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
-                postBody = ""
-                modal = !modal
-                forums = [...forums, data.newPost]
-            })
+    const updatePostSection = (data) => {
+        forums = [...forums, data.newPost]
     }
-    const handleFileInput = (event) => {
-        const file = event.target.files[0];
-        formData.append('fileType', file);
-    }
-    const deletePost = async (postId) => {
-        await fetch(`http://localhost:8080/api/posts/${postId}`, {
-            method: "DELETE",
-            credentials: "include",
-            headers: {
-                "Authorization": `Bearer ${jwt}`
-            }
-        })
-            .then(() => {
-                forums = forums.filter(post => post._id !== postId)
-            })
+    const handlePostDeleted = (event) => {
+        forums = event.detail
     }
 
 </script>
@@ -63,11 +36,14 @@
     {#each forums as forum}
         <!-- <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}"> -->
         <div class="posts">
-            <DeletePost
-                    jwt="{jwt}"
-                    posts="{forums}"
-                    postId="{forum._id}"
-            />
+            {#if loggedInUser === forum.artistName}
+                <DeletePost
+                        jwt="{jwt}"
+                        posts="{forums}"
+                        postId="{forum._id}"
+                        on:postDeleted="{handlePostDeleted}"
+                />
+            {/if}
             <a href="/forum/{forum.referenceName}/{forum.postTitle}">
                 <p>Post Title: {forum.postTitle}</p>
                 <p>Body: {forum.body} </p>
@@ -86,22 +62,15 @@
 {#if modal}
     <Modal on:close={() => modal = false}>
         <div class="new-post">
-            <form on:submit|preventDefault={createNewPost}>
-                <label for="postTitle">Title:</label>
-                <input bind:value={postTitle} name="postTitle" id="postTitle" type="text">
-                <hr>
-                <textarea bind:value={postBody} placeholder="Share your news!" name="body" id="body"
-                          cols="5"></textarea>
-                <input type="file" accept=".mp3,.m4a,.mp4,image/jpeg,image/jpg,image/png,application/pdf"
-                       on:change={handleFileInput} id="fileType">
-                <button class="btn-new-post" type="submit">Share!</button>
-            </form>
-            <div id="loading-spinner" style="display: none;">
-                <div class="spinner"></div>
-                <div>Uploading post!</div>
-            </div>
+            <CreatePost
+                    jwt="{jwt}"
+                    formIsForForum="{true}"
+                    reference="{forumTitle}"
+                    updatePostSection="{updatePostSection}"
+                    on:postCreated={() => modal = false}>
+            </CreatePost>
+            <Spinner/>
         </div>
-
     </Modal>
 {/if}
 
@@ -109,17 +78,6 @@
 <style lang="scss">
   .forum-container {
     border-bottom: 1px solid black;
-
-    i {
-      position: relative;
-      left: 97%;
-
-      &:hover {
-        color: red;
-        cursor: pointer;
-        scale: 1.25;
-      }
-    }
   }
 
   a {

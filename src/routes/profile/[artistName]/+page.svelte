@@ -5,6 +5,9 @@
     import CreateComment from "../../../lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
     import UserUploadedFile from "../../../lib/components/files/UserUploadedFile.svelte";
+    import Spinner from "../../../lib/components/helpers/Spinner.svelte";
+    import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
+    import DeletePost from "../../../lib/components/posts/DeletePost.svelte";
 
 
     export let data;
@@ -18,9 +21,8 @@
     const imageSource = `${imageSourcePrefix}${profilePictureKey}`
 
 
-    let modalNewPost = false
+    let modalNewPost
     let modal = false
-    let errorMessage
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
     let loggedInUserFollow = [];
@@ -99,47 +101,13 @@
         const arrayObject = wallposts.findIndex(wallpost => wallpost._id === search)
         wallposts[arrayObject].comments = [...wallposts[arrayObject].comments, newComment.message]
     }
-
-    let formData = new FormData();
-    let postBody
-
-    const createNewPost = async () => {
-        document.getElementById("loading-spinner").style.display = "flex"
-        formData.append("body", postBody)
-        await fetch("http://localhost:8080/api/posts/wallpost", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Authorization": `Bearer ${jwt}`
-            },
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
-                postBody = ""
-                modalNewPost = !modalNewPost
-                wallposts = [...wallposts, data.newPost]
-            })
+    const updatePostSection = (data) => {
+        wallposts = [...wallposts, data.newPost]
     }
 
-    const handleFileInput = (event) => {
-        const file = event.target.files[0];
-        formData.append('fileType', file);
+    const handlePostDeleted = (event) => {
+        wallposts = event.detail
     }
-    const deletePost = async (postId) => {
-
-        await fetch(`http://localhost:8080/api/posts/${postId}`, {
-            method: "DELETE",
-            credentials: "include",
-            headers: {
-                "Authorization": `Bearer ${jwt}`
-            }
-        })
-            .then(() => {
-                wallposts = wallposts.filter(post => post._id !== postId)
-            })
-    }
-
 
 </script>
 
@@ -171,7 +139,7 @@
             </div>
             {#if loggedInUser === pageArtistName}
                 <div class="new-post">
-                    <button class="btn-new-post" on:click={() => modalNewPost = !modalNewPost}>Post</button>
+                    <button class="btn-new-post" on:click={() => modalNewPost = true}>Post</button>
                 </div>
             {/if}
         </div>
@@ -182,7 +150,14 @@
     <div>
         {#each wallposts as wallpost}
             <div class="wallpost-div">
-                <i on:click={deletePost(wallpost?._id)} class="fa-solid fa-trash fa-xl"></i>
+                {#if loggedInUser === pageArtistName }
+                    <DeletePost
+                            jwt="{jwt}"
+                            postId="{wallpost._id}"
+                            posts="{wallposts}"
+                            on:postDeleted="{handlePostDeleted}"
+                    />
+                {/if}
                 <div class="artist-div">
                     <b>{wallpost?.artistName}</b>
                 </div>
@@ -215,17 +190,13 @@
 {#if modalNewPost}
     <Modal on:close={() => modalNewPost = false}>
         <div class="new-post">
-            <form on:submit|preventDefault={createNewPost}>
-                <textarea bind:value={postBody} placeholder="Share your news!" name="body" id="body"
-                          cols="5"></textarea>
-                <input type="file" accept=".mp3,.m4a,.mp4,image/jpeg,image/jpg,image/png,application/pdf"
-                       on:change={handleFileInput} id="fileType">
-                <button class="btn-new-post" type="submit">Share!</button>
-            </form>
-            <div id="loading-spinner" style="display: none;">
-                <div class="spinner"></div>
-                <div>Uploading post!</div>
-            </div>
+            <CreatePost
+                    jwt="{jwt}"
+                    reference="wallpost"
+                    updatePostSection="{updatePostSection}"
+                    on:postCreated={() => modalNewPost = false}
+            />
+            <Spinner/>
         </div>
     </Modal>
 
@@ -263,35 +234,6 @@
         width: 100%;
       }
     }
-
-    #loading-spinner {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: fixed;
-      top: 40%;
-      left: 45%;
-      z-index: 9999;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #ccc;
-      border-top-color: #333;
-      border-radius: 50%;
-      animation: spin 1s infinite linear;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
 
   }
 
