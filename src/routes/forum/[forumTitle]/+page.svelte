@@ -1,6 +1,5 @@
 <script>
     import Modal from "../../profile/[artistName]/Modal.svelte";
-    import DeletePost from "../../../lib/components/posts/DeletePost.svelte";
     import Spinner from "../../../lib/components/helpers/Spinner.svelte";
     import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
     export let data;
@@ -24,10 +23,6 @@
     const updatePostSection = (data) => {
         forums = [...forums, data.newPost]
     }
-    const handlePostDeleted = (event) => {
-        forums = event.detail
-    }
-
 </script>
 
 
@@ -36,14 +31,6 @@
 <div class="forum-container">
     {#each forums as forum}
         <div class="posts">
-            {#if loggedInUser === forum.artistName}
-                <DeletePost
-                        jwt="{jwt}"
-                        posts="{forums}"
-                        postId="{forum._id}"
-                        on:postDeleted="{handlePostDeleted}"
-                />
-            {/if}
             <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}">
                 <p>Post Title: {forum.postTitle}</p>
                 <p>Body: {forum.body} </p>

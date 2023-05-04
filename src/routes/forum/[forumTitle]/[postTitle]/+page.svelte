@@ -3,13 +3,15 @@
     import ShowComment from '../../../../lib/components/comments/ShowComment.svelte';
     import DeleteComment from '../../../../lib/components/comments/DeleteComment.svelte';
     import UserUploadedFile from "../../../../lib/components/files/UserUploadedFile.svelte";
+    import DeletePost from "../../../../lib/components/posts/DeletePost.svelte";
+    import {goto} from "$app/navigation";
+    import {page} from "$app/stores";
 
 
     export let data;
     const post = data.json.post
     const jwt = data.jwt
     const loggedInUser = data?.userData?.customMessage?.artistName;
-    console.log(post)
 
     const updateComments = (newComment) => {
         post.comments = [...post.comments, newComment];
@@ -19,9 +21,20 @@
         post.comments = post.comments.filter((comment) => comment._id !== commentId);
     }
 
+    const handleDeletedPostRedirect = () => {
+        goto($page.url.pathname.substring(0, $page.url.pathname.lastIndexOf('/')));
+    }
+
 </script>
 
 <h1>TITEL: {post.postTitle}</h1>
+{#if loggedInUser === post.artistName}
+    <DeletePost
+            jwt="{jwt}"
+            on:postDeleted={handleDeletedPostRedirect}
+            postId="{post._id}"
+    />
+{/if}
 <p>POST: {post.body}</p>
 <UserUploadedFile keyReference="{post.keyReference}"/>
 <br>

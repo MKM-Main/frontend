@@ -17,7 +17,7 @@
         })
             .then(() => {
                 // dispatch event with filtered posts array
-                const filteredPosts = posts.filter(post => post._id !== postId);
+                const filteredPosts = posts?.filter(post => post._id !== postId);
                 dispatch('postDeleted', filteredPosts);
             })
     }
