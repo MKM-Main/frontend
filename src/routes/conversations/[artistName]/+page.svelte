@@ -163,7 +163,7 @@
                         {user.artistName}
                     </div>
                         <div class="div-btn-modal">
-                            <a class="btn" href="/inbox" on:click={() => { postNewConversation(user.artistName); }}>Send message</a>
+                            <a class="btn" href="/conversations/inbox" on:click={() => { postNewConversation(user.artistName); }}>Send message</a>
                         </div>
                 </div>
             {/each}
