@@ -21,6 +21,7 @@ export const load = async ({fetch, params, cookies}) => {
         })
     }
     return {
-        json: forumData
+        json: forumData,
+        forumTitle
     }
 }

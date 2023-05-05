@@ -3,7 +3,7 @@
     const dispatch = createEventDispatcher()
     const close = () => dispatch("close")
     const handleKeyClose = (e) => {
-        if (e.key === "q") {
+        if (e.key === "Escape") {
             close()
         }
     }
