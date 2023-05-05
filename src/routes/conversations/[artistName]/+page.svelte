@@ -1,23 +1,39 @@
 <script>
     import { onMount } from "svelte";
     import { io } from "socket.io-client";
+    import Modal from '../../../lib/components/modal/Modal.svelte';
+    import {env} from "$env/dynamic/public";
 
     export let data;
     const loggedInUser = data?.userData?.customMessage?._id;
     const loggedInUserArtistName = data?.userData?.customMessage?.artistName;
     const jwt = data.jwt;
-    let conversations = data.conversations;
+    let conversations = data?.conversations;
     let conversationsMessages = data?.conversationMessages;
-    // let conversationMessagesReceiver = data?.conversationMessages
+    
     let params = data.params;
+
+    let userData;
+    const fetchUserData = async () => {
+      const res = await fetch(`http://localhost:8080/api/users/${loggedInUserArtistName}`)
+        const result = await res.json();
+        userData = result;
+    }
+    
+    onMount(async () => {
+        await fetchUserData()
+    });
+    
+    const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     
     $: conversationsMessages = data?.conversationMessages
     $: params = data.params;
-    
-    let socket = io(`http://localhost:8080/`);
 
+    let modal = false
+    let socket = io(`http://localhost:8080/`);
     let bodyArea;
     let messages = []
+    
 
     const emptySocketArray = () => {
         messages = []
@@ -29,15 +45,16 @@
     socket.on("new message", data => {
         messages = [...messages, data.data]
     })
-
-    // const disconnect = () => {
-    //     socket.on("disconnect", reason => {
-    //         console.log(`Client disconnected`);
-    //     });
-    // }
     
+    let userModalFollowArray = [];
 
-    
+    //Fetches the followers and following depending on the fetch action
+    const fetchPageUser = async () => {
+        const res = await fetch(`http://localhost:8080/api/users/following/${loggedInUserArtistName}`);
+        const result = await res.json();
+        userModalFollowArray = result;
+    };
+
     const patchMessages = async (params) => {
         await fetch(`http://localhost:8080/api/conversations/messages/${params}`, {
             method: "PATCH",
@@ -51,11 +68,29 @@
             }),
         })
     };
+
+    let newConversationId;
+    const postNewConversation = async (action) => {
+        await fetch(`http://localhost:8080/api/conversations/${action}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${data.cookie}`,
+            }
+        }).then(res => res.json())
+        .then(result => {
+          newConversationId = result.insertedId
+        })
+    }
    
 </script>
 <div class="conversation-main">
     <div class="left-column">
-        <div><button>Create</button></div>
+        <div class="send-div"><button on:click={() => { modal = true; fetchPageUser(); }}>
+          <i class="material-icons" style="font-size:36px">chat</i>
+        </button>
+      </div>
         {#each conversations as conversation}
         <a on:click={emptySocketArray} href="/conversations/{conversation._id}">
             <div class="horizontal-div">
@@ -64,15 +99,22 @@
         </a>
         {/each}
     </div>
-
+    {#if conversationsMessages.length !== 0}
     <div class="right-column">
         <div class="message-list">
           {#each conversationsMessages.messages as message}
             <div class="message-container">
               {#if message.sender !== loggedInUserArtistName}
-                <p class="left-message">{message.body}</p>
+                <div class="left-message">
+                  <p>{message.body}</p>
+                  <p>{message.timeStamp}</p>
+                </div>
               {:else}
-                <p class="right-message">{message.body}</p>
+              <div class="right-message">
+                <p>{message.body}</p>
+                <p>{message.timeStamp}</p>
+              </div>
+                
               {/if}
             </div>
           {/each}
@@ -88,21 +130,58 @@
             </div>
           {/each}
         </div>
-      
         <div class="input-message">
           <form on:submit|preventDefault={patchMessages(params)}>
-            {params}
-            <textarea bind:value={bodyArea} class="area" name="" id="{params}" cols="40" rows="1" key={params}></textarea>
-            <button on:click={sendMessage(params)} type="submit">Send</button>
+            <div class="input-div">
+              <textarea bind:value={bodyArea} class="area" name="" id="{params}" cols="40" rows="1" key={params}></textarea>
+              <button class="btn" on:click={sendMessage(params)} type="submit">Send</button>
+            </div>
           </form>
         </div>
+        
     </div>
+    {:else}
+    <div class="right-column">
+      <div class="message-list">
+          <div class="message-container">
+          </div>
+      </div>
+    </div>
+    {/if}
 </div>
+
+{#if modal}
+    <Modal on:close={() => modal = false}>
+        <div class="modal">
+            {#each userModalFollowArray as user}
+                <div class="modal-each-div">
+                    <div class="modal-profile-picture">
+                        <img alt="" class="img-pic-modal"
+                             src="{imageSourcePrefix}{user.profilePictureKey}"/>
+                    </div>
+                    <div class="modal-artistname">
+                        {user.artistName}
+                    </div>
+                        <div class="div-btn-modal">
+                            <a class="btn" href="/inbox" on:click={() => { postNewConversation(user.artistName); }}>Send message</a>
+                        </div>
+                </div>
+            {/each}
+        </div>
+    </Modal>
+{/if}
 
 <style lang="scss">
     .message-list {
-    height: 400px;
+    height: 440px;
     overflow-y: auto;
+  }
+
+  .btn {
+    border: 2px solid black;
+    border-radius: 15px;
+    width: 20%;
+    padding: 10px;
   }
 
   .message-container {
@@ -127,7 +206,7 @@
         padding: 10px;
         width: 50%;
         margin-bottom: 10px;
-        height: 400px;
+        height: 500px;
         overflow-y: auto;
     }
     .right-column {
@@ -184,5 +263,29 @@
     align-self: flex-end;
     background-color: #4CAF50;
     color: white;
+  }
+
+  .modal-each-div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .img-pic-modal {
+    height: 100px;
+    border-radius: 100px;
+  }
+
+  .input-div{
+    display: flex;
+  }
+
+  .send-div{
+    display: flex;
+    justify-content: flex-end;
+    border-bottom: 1px solid black;
+    margin-bottom: 5px;
   }
 </style>

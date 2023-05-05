@@ -1,7 +1,7 @@
 import {error, json} from "@sveltejs/kit";
 export const load = async ({fetch, params, cookies}) => {
     const conversationId = params.artistName
-    const jwt = cookies.get("jwt")
+    const jwt = cookies.get("jwt");
 
     const conversations = await fetch(`http://localhost:8080/api/conversations`,{
         headers: {
