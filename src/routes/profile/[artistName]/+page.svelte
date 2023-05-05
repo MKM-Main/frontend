@@ -1,6 +1,6 @@
 <script>
     import {onMount} from "svelte";
-    import Modal from './Modal.svelte';
+    import Modal from '../../../lib/components/modal/Modal.svelte';
     import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
     import CreateComment from "../../../lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
@@ -20,7 +20,6 @@
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     const profilePictureKey = data.json.user.profilePictureKey
     const imageSource = `${imageSourcePrefix}${profilePictureKey}`
-    console.log(wallposts)
 
     let modalNewPost
     let modal = false
