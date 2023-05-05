@@ -13,7 +13,6 @@
 
 </script>
 
-
 <Header artistName={artistName}
         imageSource={imageSource}
         jwt={jwt}

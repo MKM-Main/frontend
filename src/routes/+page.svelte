@@ -2,7 +2,6 @@
     import HypeWidget from "../lib/components/posts/HypeWidget.svelte";
     export let data
     const hypedPost = data.hypedPostData[0]
-    console.log(data)
     const jwt = data.jwt
 
 
