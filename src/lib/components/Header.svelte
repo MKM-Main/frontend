@@ -1,5 +1,6 @@
 <script>
     import {env} from "$env/dynamic/public";
+    import Logout from "../../routes/(auth)/Logout.svelte";
     let pages = ["forum", "artists", "login"]
 
     export let artistName
@@ -26,7 +27,9 @@
         {/each}
     </div>
 
+
     {#if jwt}
+        <Logout/>
         <div>
             <a href="/profile/{artistName}">
                 <img alt="{artistName}" src="{imageSource}">
