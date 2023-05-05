@@ -36,7 +36,7 @@
                 <p>Body: {forum.body} </p>
                 <p>User who created post: {forum.artistName} </p>
                 <p>Created at: {forum.timeStamp}</p>
-                <p>Rating: {forum.rating}</p>
+                <p>Rating: {forum.rating.length}</p>
                 <p>Number of comments: {forum.comments.length}</p>
             </a>
         </div>
