@@ -16,7 +16,7 @@
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     const profilePictureKey = data.json.user.profilePictureKey
     const imageSource = `${imageSourcePrefix}${profilePictureKey}`
-
+    console.log(wallposts)
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
     let loggedInUserFollow = [];
