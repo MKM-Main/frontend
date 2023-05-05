@@ -22,6 +22,7 @@
     <div>
         {#if jwt}
             <a href="/news">News</a>
+            <a href="/conversations/inbox">Messages</a>
         {/if}
         {#each pages as page}
             <a href="/{page}">{page}</a>

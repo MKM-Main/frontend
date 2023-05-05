@@ -20,7 +20,7 @@
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     const profilePictureKey = data.json.user.profilePictureKey
     const imageSource = `${imageSourcePrefix}${profilePictureKey}`
-
+    console.log(wallposts)
 
     let modalNewPost
     let modal = false
