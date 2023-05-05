@@ -1,5 +1,7 @@
 <script>
+    import HypeWidget from "../lib/components/posts/HypeWidget.svelte";
     export let data
+    const hypedPost = data.hypedPostData[0]
     const jwt = data.jwt
 
 
@@ -29,7 +31,7 @@
 </div>
 
 <div>
-    Intro
+    <HypeWidget post="{hypedPost}"/>
 </div>
 
 <div>

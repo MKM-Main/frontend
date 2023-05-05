@@ -7,8 +7,8 @@ export const load = async ({fetch, cookies}) => {
             "Authorization": `Bearer ${jwt}`
         }
     })
-    
     if (!jwt) return
+
 
     const userData = await userDataResponse.json()
 

@@ -1,8 +1,10 @@
 <script>
     import {env} from "$env/dynamic/public";
-    let pages = ["/forum", "/artists", "/login"]
+    import Logout from "../../routes/(auth)/Logout.svelte";
+    let pages = ["forum", "artists", "login"]
 
     export let artistName
+    export let userRole
     export let jwt
     export let imageSource
 
@@ -23,17 +25,29 @@
             <a href="/conversations/inbox">Messages</a>
         {/if}
         {#each pages as page}
-            <a href="{page}">{page.substring(1)}</a>
+            <a href="/{page}">{page}</a>
         {/each}
     </div>
 
+
+    {#if userRole === "admin"}
+    <div>
+      <a href="/dashboard">Dashboard
+      </a>
+    </div>
+    {/if}
+
+
     {#if jwt}
+        <Logout/>
         <div>
             <a href="/profile/{artistName}">
                 <img alt="{artistName}" src="{imageSource}">
             </a>
         </div>
     {/if}
+
+
 
 </div>
 

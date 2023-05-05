@@ -27,7 +27,7 @@
         <input bind:value={firstName} id="firstName" type="text">
 
         <label for="lastName">Last Name</label>
-        <input bind:value={lastName} id="lastName" type="text">
+        <input bind:value={firstName} id="lastName" type="text">
 
         <button type="submit">Save details</button>
     </div>

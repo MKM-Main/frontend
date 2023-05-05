@@ -4,7 +4,11 @@
     import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
     import CreateComment from "../../../lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
-    import UserUploadedFile from "../../../lib/components/files/UserUploadedFile.svelte";
+    import Spinner from "../../../lib/components/helpers/Spinner.svelte";
+    import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
+    import Hype from "../../../lib/components/posts/Hype.svelte";
+    import ShowPost from "../../../lib/components/posts/ShowPost.svelte";
+    import DeletePost from "../../../lib/components/posts/DeletePost.svelte";
 
 
     export let data;
@@ -17,6 +21,10 @@
     const profilePictureKey = data.json.user.profilePictureKey
     const imageSource = `${imageSourcePrefix}${profilePictureKey}`
     console.log(wallposts)
+
+    let modalNewPost
+    let modal = false
+    let modalHype = false
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
     let loggedInUserFollow = [];
@@ -95,32 +103,14 @@
         const arrayObject = wallposts.findIndex(wallpost => wallpost._id === search)
         wallposts[arrayObject].comments = [...wallposts[arrayObject].comments, newComment.message]
     }
-
-    let formData = new FormData();
-    let postBody
-    const createNewPost = async () => {
-        formData.append("body", postBody)
-        await fetch("http://localhost:8080/api/posts/wallpost", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Authorization": `Bearer ${jwt}`
-            },
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
-                modalNewPost = !modalNewPost
-                wallposts = [...wallposts, data.newPost]
-            })
+    const updatePostSection = (data) => {
+        wallposts = [...wallposts, data.newPost]
     }
 
-    const handleFileInput = (event) => {
-        const file = event.target.files[0];
-        formData.append('fileType', file);
+    const handlePostDeleted = (event) => {
+        wallposts = event.detail
     }
-    let modalNewPost = false
-    let modal = false
+
 
 </script>
 
@@ -152,7 +142,7 @@
             </div>
             {#if loggedInUser === pageArtistName}
                 <div class="new-post">
-                    <button class="btn-new-post" on:click={() => modalNewPost = !modalNewPost}>Post</button>
+                    <button class="btn-new-post" on:click={() => modalNewPost = true}>Post</button>
                 </div>
             {/if}
         </div>
@@ -163,22 +153,39 @@
     <div>
         {#each wallposts as wallpost}
             <div class="wallpost-div">
-                <div class="artist-div">
-                    <b>{wallpost.artistName}</b>
-                </div>
-
-                <div class="wallpost-body">
-                    <p>{wallpost.body}</p>
-                </div>
-                <div class="wallpost-file">
-                    <UserUploadedFile keyReference="{wallpost.keyReference}"/>
-                </div>
+                {#if loggedInUser === pageArtistName }
+                    <DeletePost
+                            jwt="{jwt}"
+                            postId="{wallpost._id}"
+                            posts="{wallposts}"
+                            on:postDeleted="{handlePostDeleted}"
+                    />
+                {/if}
+                <ShowPost post="{wallpost}"/>
 
                 <div class="splitter"/>
+                <Hype
+                        jwt="{jwt}"
+                        postId="{wallpost._id}"
+                        loggedInUser="{loggedInUser}"
+                        rating="{wallpost.rating.length}"
+                />
+                <div class="rated-users" style="display: none">
+                    {#each wallpost.rating as user }
+                        <p>{user}</p>
+                    {/each}
 
+                </div>
+                {#if modalHype}
+                    <Modal on:close={() => modalHype = false}>
+                        {#each wallpost.rating as user }
+                            <p>{user}</p>
+                        {/each}
+                    </Modal>
+                {/if}
                 <div>
                     {#if jwt}
-                        <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost._id}
+                        <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
                                        updateComments={updateComments}/>
                     {/if}
                     {#each wallpost.comments as comment}
@@ -194,14 +201,14 @@
 {#if modalNewPost}
     <Modal on:close={() => modalNewPost = false}>
         <div class="new-post">
-            <form on:submit|preventDefault={createNewPost}>
-                <textarea bind:value={postBody} placeholder="Share your news!" name="body" id="body"
-                          cols="5"></textarea>
-                <input type="file" on:change={handleFileInput} id="fileType">
-                <button class="btn-new-post" type="submit">Share!</button>
-            </form>
+            <CreatePost
+                    jwt="{jwt}"
+                    reference="wallpost"
+                    updatePostSection="{updatePostSection}"
+                    on:postCreated={() => modalNewPost = false}
+            />
+            <Spinner/>
         </div>
-
     </Modal>
 
 {/if}
@@ -238,6 +245,7 @@
         width: 100%;
       }
     }
+
   }
 
   .header-div {
@@ -330,11 +338,11 @@
       border: 2px solid #000;
       border-radius: 15px;
       padding: 50px;
+
     }
 
     .wallpost-body {
       margin-bottom: 10px;
-
     }
 
     .btn-comment {
