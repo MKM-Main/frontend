@@ -8,6 +8,7 @@
     import Spinner from "../../../lib/components/helpers/Spinner.svelte";
     import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
     import DeletePost from "../../../lib/components/posts/DeletePost.svelte";
+    import Hype from "../../../lib/components/posts/Hype.svelte";
 
 
     export let data;
@@ -23,6 +24,7 @@
 
     let modalNewPost
     let modal = false
+    let modalHype = false
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
     let loggedInUserFollow = [];
@@ -109,6 +111,7 @@
         wallposts = event.detail
     }
 
+
 </script>
 
 
@@ -171,7 +174,25 @@
                 </div>
 
                 <div class="splitter"/>
+                <Hype
+                        jwt="{jwt}"
+                        postId="{wallpost._id}"
+                        loggedInUser="{loggedInUser}"
+                        rating="{wallpost.rating.length}"
+                />
+                <div class="rated-users" style="display: none">
+                    {#each wallpost.rating as user }
+                        <p>{user}</p>
+                    {/each}
 
+                </div>
+                {#if modalHype}
+                    <Modal on:close={() => modalHype = false}>
+                        {#each wallpost.rating as user }
+                            <p>{user}</p>
+                        {/each}
+                    </Modal>
+                {/if}
                 <div>
                     {#if jwt}
                         <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
@@ -328,21 +349,10 @@
       border-radius: 15px;
       padding: 50px;
 
-      i {
-        position: relative;
-        left: 97%;
-
-        &:hover {
-          color: red;
-          cursor: pointer;
-          scale: 1.25;
-        }
-      }
     }
 
     .wallpost-body {
       margin-bottom: 10px;
-
     }
 
     .btn-comment {

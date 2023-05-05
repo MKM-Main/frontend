@@ -6,7 +6,7 @@
     <a href="/profile/{comment?.commentAuthor}">{comment?.commentAuthor}</a>
     <p>Comment: {comment?.commentBody}</p>
     <p>{comment?.timeStamp}</p>
-    <p>rating: {comment?.rating}</p>
+    <p>rating: {comment?.rating?.length}</p>
 </div>
 
 <style>

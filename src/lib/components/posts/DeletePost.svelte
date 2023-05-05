@@ -26,7 +26,7 @@
 <i class="fa-solid fa-trash fa-xl" on:click={deletePost(postId)}></i>
 
 <style lang="scss">
-  i {
+  .fa-trash {
     position: relative;
     left: 97%;
 
