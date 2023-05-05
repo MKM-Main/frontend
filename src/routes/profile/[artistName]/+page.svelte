@@ -4,11 +4,11 @@
     import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
     import CreateComment from "../../../lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
-    import UserUploadedFile from "../../../lib/components/files/UserUploadedFile.svelte";
     import Spinner from "../../../lib/components/helpers/Spinner.svelte";
     import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
-    import DeletePost from "../../../lib/components/posts/DeletePost.svelte";
     import Hype from "../../../lib/components/posts/Hype.svelte";
+    import ShowPost from "../../../lib/components/posts/ShowPost.svelte";
+    import DeletePost from "../../../lib/components/posts/DeletePost.svelte";
 
 
     export let data;
@@ -161,17 +161,7 @@
                             on:postDeleted="{handlePostDeleted}"
                     />
                 {/if}
-                <div class="artist-div">
-                    <b>{wallpost?.artistName}</b>
-                </div>
-                {#if wallpost?.body}
-                    <div class="wallpost-body">
-                        <p>{wallpost?.body}</p>
-                    </div>
-                {/if}
-                <div class="wallpost-file">
-                    <UserUploadedFile keyReference="{wallpost?.keyReference}"/>
-                </div>
+                <ShowPost post="{wallpost}"/>
 
                 <div class="splitter"/>
                 <Hype

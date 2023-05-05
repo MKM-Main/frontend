@@ -2,10 +2,10 @@
     import CreateComment from '../../../../lib/components/comments/CreateComment.svelte';
     import ShowComment from '../../../../lib/components/comments/ShowComment.svelte';
     import DeleteComment from '../../../../lib/components/comments/DeleteComment.svelte';
-    import UserUploadedFile from "../../../../lib/components/files/UserUploadedFile.svelte";
     import DeletePost from "../../../../lib/components/posts/DeletePost.svelte";
     import {goto} from "$app/navigation";
     import {page} from "$app/stores";
+    import ShowPost from "../../../../lib/components/posts/ShowPost.svelte";
 
 
     export let data;
@@ -35,8 +35,7 @@
             postId="{post._id}"
     />
 {/if}
-<p>POST: {post.body}</p>
-<UserUploadedFile keyReference="{post.keyReference}"/>
+<ShowPost post="{post}"/>
 <br>
 <h3>Comments</h3>
 {#each post.comments as comment}
