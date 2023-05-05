@@ -1,6 +1,6 @@
 <script>
     export let data
-
+    import CreateForum from './CreateForum.svelte';
     const forums = data.forumData
 
     function replaceSpacesWithHyphens(title) {
@@ -17,6 +17,9 @@
     <h2>Forums</h2>
 
     {#each forums.forum as forum}
+    {#if forum.verified === true}
+        
+    
         <div class="forum">
 
             <a href="/forum/{replaceSpacesWithHyphens(forum.forumTitle)}">Forum name: {forum.forumTitle}</a>
@@ -29,7 +32,9 @@
                 {/each}
             </div>
         </div>
+        {/if}
     {/each}
+    <CreateForum/>
 </div>
 
 

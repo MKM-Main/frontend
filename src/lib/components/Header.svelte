@@ -4,6 +4,7 @@
     let pages = ["forum", "artists", "login"]
 
     export let artistName
+    export let userRole
     export let jwt
     export let imageSource
 
@@ -28,6 +29,14 @@
     </div>
 
 
+    {#if userRole === "admin"}
+    <div>
+      <a href="/dashboard">Dashboard
+      </a>
+    </div>
+    {/if}
+
+
     {#if jwt}
         <Logout/>
         <div>
@@ -36,6 +45,8 @@
             </a>
         </div>
     {/if}
+
+
 
 </div>
 
