@@ -3,7 +3,9 @@
     import Spinner from "../../../lib/components/helpers/Spinner.svelte";
     import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
     export let data;
+
     const loggedInUser = data.userData?.customMessage?.artistName
+    const tags = data.tagsJson.tags
     const forumTitle = data.forumTitle
     const jwt = data.jwt
     let forums = data?.json?.forum
@@ -11,6 +13,9 @@
     let formData = new FormData();
     let postBody
     let postTitle
+    let selectedTag = null
+    let filteredForums = null
+    let searchPost
 
     function replaceSpacesWithHyphens(title) {
         if (title.includes(" ")) {
@@ -19,29 +24,61 @@
         return title;
     }
 
-
     const updatePostSection = (data) => {
         forums = [...forums, data.newPost]
     }
+
+
+    // Can search posts by: artistName, tag or postTitle
+    $: filteredForums = forums.filter(forum => {
+        const hasSelectedTag = !selectedTag || forum.tags?.includes(selectedTag);
+        const hasSearchedPost = !searchPost ||
+            forum.postTitle?.toLowerCase().includes(searchPost.toLowerCase()) ||
+            forum.tags && forum.tags.some(tag => tag.toLowerCase().includes(searchPost.toLowerCase())) ||
+            forum.artistName?.toLowerCase().includes(searchPost.toLowerCase());
+        return hasSelectedTag && hasSearchedPost;
+    });
+
+
 </script>
 
 
 <h1>{forums[0]?.referenceName}</h1>
-
 <div class="forum-container">
-    {#each forums as forum}
-        <div class="posts">
-            <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}">
-                <p>Post Title: {forum.postTitle}</p>
-                <p>Body: {forum.body} </p>
-                <p>User who created post: {forum.artistName} </p>
-                <p>Created at: {forum.timeStamp}</p>
-                <p>Rating: {forum.rating.length}</p>
-                <p>Number of comments: {forum.comments.length}</p>
-            </a>
+    <div class="posts-container">
+        {#each filteredForums as forum}
+            <div class="posts">
+                <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}">
+                    <p>Post Title: {forum.postTitle}</p>
+                    <p>Body: {forum.body} </p>
+                    <p>User who created post: {forum.artistName} </p>
+                    <p>Created at: {forum.timeStamp}</p>
+                    <p>Rating: {forum.rating.length}</p>
+                    {#if forum?.tags}
+                        <p>Tags: {forum?.tags}</p>
+                    {/if}
+                    <p>Number of comments: {forum.comments.length}</p>
+                </a>
+            </div>
+        {/each}
+    </div>
+    <div class="filter">
+        <div class="filter-search">
+            <h1>Search</h1>
+            <label for="post-search">Search for post!</label>
+            <input bind:value={searchPost} id="post-search" placeholder="My awesome post!" type="text">
         </div>
-        <div class="splitter"/>
-    {/each}
+        <div class="filter-tags">
+            <h1>Filter</h1>
+            <label for="default">Default</label>
+            <input id="default" name="tag" on:change={() => selectedTag = ""} type="radio">
+            {#each tags as tag, idx}
+                <label for="tag-{idx}">{tag.name}</label>
+                <input id="tag-{idx}" type="radio" name="tag" value="{tag.name}"
+                       on:change={() => selectedTag = tag.name}>
+            {/each}
+        </div>
+    </div>
 </div>
 <div class="btn-container">
     <button class="btn-create-post" on:click={() => modal = !modal}>Create new post!</button>
@@ -54,8 +91,8 @@
                     formIsForForum="{true}"
                     reference="{forumTitle}"
                     updatePostSection="{updatePostSection}"
-                    on:postCreated={() => modal = false}>
-            </CreatePost>
+                    on:postCreated={() => modal = false}
+                    tags="{tags}"/>
             <Spinner/>
         </div>
     </Modal>
@@ -64,27 +101,85 @@
 
 <style lang="scss">
   .forum-container {
-    border-bottom: 1px solid black;
+    display: grid;
+    grid-template-columns: 70% 30%;
+
+    .posts-container {
+      .posts {
+        border: 2px solid lightgrey;
+        padding: 20px;
+
+        p {
+          margin: 10px 0;
+        }
+
+        a {
+          text-decoration: none;
+          color: black;
+        }
+      }
+    }
+
+    .filter {
+      border: 2px solid lightgrey;
+      padding: 20px;
+
+      .filter-search {
+        margin-bottom: 2rem;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      label {
+        display: block;
+        margin: 10px 0;
+        font-size: 16px;
+      }
+
+      input[type="radio"] {
+        margin-right: 5px;
+      }
+    }
   }
 
-  a {
-    color: black;
-    text-decoration: none;
+  .btn-container {
+    text-align: center;
+    margin-top: 20px;
   }
 
-  .posts:hover {
-    background-color: grey;
+  .btn-create-post {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
   }
+
+  .new-post {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
 
   .btn-container {
     display: flex;
     justify-content: center;
-    margin-top: 1.25em;
+    margin-top: 2rem;
 
     .btn-create-post {
       background-color: orange;
-      padding: 1.75em;
+      padding: 1.5rem 3rem;
       border-radius: 100px;
+      color: #fff;
+      font-size: 1.2rem;
 
       &:hover {
         background-color: darkorange;
@@ -92,49 +187,4 @@
     }
   }
 
-  .new-post {
-    form {
-      textarea {
-        resize: none;
-        width: 100%;
-      }
-    }
-
-    #loading-spinner {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: fixed;
-      top: 40%;
-      left: 45%;
-      z-index: 9999;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #ccc;
-      border-top-color: #333;
-      border-radius: 50%;
-      animation: spin 1s infinite linear;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  }
-
-  .splitter {
-    border: 1px solid #000;
-    margin: 10px;
-  }
-
-
 </style>
-
-
