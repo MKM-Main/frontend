@@ -13,6 +13,14 @@ export const load = async ({fetch, params, cookies}) => {
             "Authorization": `Bearer ${jwt}`
         }
     })
+    const tagsResponse = await fetch("http://localhost:8080/api/posts/tags", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    const tagsJson = await tagsResponse.json()
+
     const wallPostJson = await wallpostResponse.json()
 
     if (!jsonData.user) {
@@ -24,6 +32,7 @@ export const load = async ({fetch, params, cookies}) => {
     return {
         cookie: jwt,
         json: jsonData,
-        wallposts: wallPostJson
+        wallposts: wallPostJson,
+        tagsJson,
     }
 }

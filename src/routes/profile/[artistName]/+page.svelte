@@ -206,6 +206,7 @@
                     reference="wallpost"
                     updatePostSection="{updatePostSection}"
                     on:postCreated={() => modalNewPost = false}
+                    tags="{data.tagsJson.tags}"
             />
             <Spinner/>
         </div>
