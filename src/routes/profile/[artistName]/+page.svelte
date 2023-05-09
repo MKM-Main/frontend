@@ -1,14 +1,14 @@
 <script>
     import {onMount} from "svelte";
-    import Modal from '../../../lib/components/modal/Modal.svelte';
-    import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
-    import CreateComment from "../../../lib/components/comments/CreateComment.svelte"
+    import Modal from '$lib/components/modal/Modal.svelte';
+    import ShowComment from "$lib/components/comments/ShowComment.svelte";
+    import CreateComment from "$lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
-    import Spinner from "../../../lib/components/helpers/Spinner.svelte";
-    import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
-    import Hype from "../../../lib/components/posts/Hype.svelte";
-    import ShowPost from "../../../lib/components/posts/ShowPost.svelte";
-    import DeletePost from "../../../lib/components/posts/DeletePost.svelte";
+    import Spinner from "$lib/components/helpers/Spinner.svelte";
+    import CreatePost from "$lib/components/posts/CreatePost.svelte";
+    import Hype from "$lib/components/posts/Hype.svelte";
+    import ShowPost from "$lib/components/posts/ShowPost.svelte";
+    import DeletePost from "$lib/components/posts/DeletePost.svelte";
 
 
     export let data;

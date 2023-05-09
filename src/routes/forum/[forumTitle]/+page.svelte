@@ -1,7 +1,7 @@
 <script>
-    import Modal from "../../profile/[artistName]/Modal.svelte";
-    import Spinner from "../../../lib/components/helpers/Spinner.svelte";
-    import CreatePost from "../../../lib/components/posts/CreatePost.svelte";
+    import Modal from "$lib/components/Modal/Modal.svelte"
+    import Spinner from "$lib/components/helpers/Spinner.svelte";
+    import CreatePost from "$lib/components/posts/CreatePost.svelte";
     export let data;
 
     const loggedInUser = data.userData?.customMessage?.artistName
