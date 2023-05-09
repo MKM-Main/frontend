@@ -31,6 +31,7 @@
 </script>
 
 <h1>TITEL: {post.postTitle}</h1>
+<p>{post.tags}</p>
 {#if loggedInUser === post.artistName}
     <DeletePost
             jwt="{jwt}"

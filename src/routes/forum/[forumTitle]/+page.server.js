@@ -7,6 +7,14 @@ export const load = async ({fetch, params, cookies}) => {
         return str.replace(/-/g, " ");
     }
 
+    const tagsResponse = await fetch("http://localhost:8080/api/posts/tags", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    const tagsJson = await tagsResponse.json()
+
     const forumTitle = replaceHyphensWithSpaces(params.forumTitle)
     const forumResponse = await fetch(`http://localhost:8080/forum/${params.forumTitle}`);
     const forumData = await forumResponse.json();
@@ -22,6 +30,7 @@ export const load = async ({fetch, params, cookies}) => {
     }
     return {
         json: forumData,
-        forumTitle
+        forumTitle,
+        tagsJson,
     }
 }
