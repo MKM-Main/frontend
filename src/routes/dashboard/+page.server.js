@@ -22,9 +22,14 @@ export const load = async ({fetch, params, cookies}) => {
     const forumResponse = await fetch("http://localhost:8080/forum")
     const forums = await forumResponse.json()
 
+    const postsResponse = await fetch("http://localhost:8080/api/posts")
+    const posts = await postsResponse.json()
+
     return {
         users,
-        forums
+        forums,
+        posts
+        
     }
 
 }

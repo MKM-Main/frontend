@@ -2,15 +2,23 @@
     import ForumVerification from './ForumVerification.svelte';
     import UpdateUser from './UpdateUser.svelte';
     import DeleteAdmin from './DeleteAdmin.svelte';
+    import Modal from '../../lib/components/modal/Modal.svelte';
+
+    let modal = false;
     
     export let data;
-    const userRole = data?.userData?.customMessage?.role
 
-    
+
+    const userRole = data?.userData?.customMessage?.role
+    const posts = data?.posts
+   
+    const comments = posts.map(post =>post.comments)
+  
     const users = data?.users?.data;
     const jwt = data?.jwt
   
     const forums = data?.forums.forum
+    
     let selectedUser
     let firstName, lastName, artistName, email, role;
     let userBody = {firstName, lastName, artistName, email, role};
@@ -26,6 +34,9 @@
 
 
   </script>
+
+
+
   {#if userRole === "admin"}
     
   
@@ -69,9 +80,10 @@
     </form>
 
   </div>
-  <div class="user-container">
+  <div class="forum-container">
+    <h1>Forum management</h1>
     {#each forums as forum}
-    <br>
+    <div class="single-forum">
     <p>{forum.forumTitle}</p>
     <p>{forum.creationDate}</p>
     {#if forum.verified === true}
@@ -81,45 +93,237 @@
     <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Verify Forum"}/>
     {/if}
     <DeleteAdmin id={forum._id} apiUrl={"forum"} jwt={jwt}/>
+    </div>
     {/each}
   </div>
 
+
   {/if}
+    <div class="report-post">
+      <h1>Report Section</h1>
+      <h2>Post Reports</h2>
+        {#each posts as post }
+        {#if post.reported.length >= 3}
+    <div class="high-report">
+    
+    <p>Post Titel: {post.postTitle}</p>
+    <p>User who created post: {post.artistName}</p>
+    <p>Reference: {post.referenceName}</p>
+    <p>Number of reports: {post.reported.length}</p>
+    <p>Number of comments: {post.comments.length}</p>
+    <button on:click={() =>(post.open = true)}></button>
+    <a href={post.reported[0].link} target="_blank" >Link</a>
+    </div>
+    {#if post.open}
+    <Modal on:close={() => (post.open = false)}>
+      {#each post.reported as report}
+      <p>User who reported: {report.userWhoReported}</p>
+      <p>{report.timeStamp}</p>
+      <p>{report.reason}</p>
+      <p>{report.description}</p>
+    {/each}
+    </Modal>
+    {/if}
+
+      {/if}
+    {/each}
+  </div>
 <style>
-    .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    }
 
-    .user-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin-top: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
+.report-post {
+  margin: 50px 0;
+}
 
-    label {
-        margin-right: 10px;
-    }
+.high-report {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
 
-    input {
-        margin-bottom: 10px;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
+.high-report p {
+  margin: 10px 0;
+}
 
-    button {
-        margin-top: 10px;
-        padding: 5px 10px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+.high-report a {
+  display: inline-block;
+  margin-left: 10px;
+  color: #fff;
+  background-color: #007bff;
+  border-radius: 5px;
+  padding: 5px 10px;
+  text-decoration: none;
+}
+
+.high-report button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.high-report button::before,
+.high-report button::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background-color: #333;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.high-report button::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.high-report button::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.high-report:hover button::before,
+.high-report:hover button::after {
+  background-color: #007bff;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+select {
+  margin-bottom: 15px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button[type="submit"] {
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.user-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+p {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+input {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+select {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 30px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.forum-container {
+  margin-top: 50px;
+}
+
+.single-forum {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+}
+
+.high-report {
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+a {
+  margin-left: 10px;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
 </style>

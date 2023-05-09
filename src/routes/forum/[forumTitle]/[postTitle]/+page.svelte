@@ -6,10 +6,13 @@
     import {goto} from "$app/navigation";
     import {page} from "$app/stores";
     import ShowPost from "../../../../lib/components/posts/ShowPost.svelte";
+    import Report from '../../../../lib/components/util/Report.svelte';
+
 
 
     export let data;
     const post = data.json.post
+    
     const jwt = data.jwt
     const loggedInUser = data?.userData?.customMessage?.artistName;
 
@@ -43,6 +46,7 @@
     {#if comment.commentAuthor === loggedInUser}
         <DeleteComment postid={post._id} commentid={comment._id} deleteComments={deleteComments}/>
     {/if}
+    <Report jwt={jwt} collection={"posts"} postId={post._id} id={comment._id} title={post.postTitle} />
 {/each}
 {#if jwt}
     <CreateComment jwt={jwt} reference={"forum"} search={post.postTitle}
