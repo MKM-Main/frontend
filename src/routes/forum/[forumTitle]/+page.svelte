@@ -1,7 +1,12 @@
 <script>
+
+
+    import Report from "../../../lib/components/util/Report.svelte";
+
     import Modal from "$lib/components/Modal/Modal.svelte"
     import Spinner from "$lib/components/helpers/Spinner.svelte";
     import CreatePost from "$lib/components/posts/CreatePost.svelte";
+
     export let data;
 
     const loggedInUser = data.userData?.customMessage?.artistName
@@ -68,6 +73,11 @@
             <label for="post-search">Search for post!</label>
             <input bind:value={searchPost} id="post-search" placeholder="My awesome post!" type="text">
         </div>
+
+        <Report jwt={jwt} collection={"posts"} id={forum._id} title={replaceSpacesWithHyphens(forum.postTitle)}/>
+        <div class="splitter"/>
+    {/each}
+
         <div class="filter-tags">
             <h1>Filter</h1>
             <label for="default">Default</label>
@@ -79,6 +89,7 @@
             {/each}
         </div>
     </div>
+
 </div>
 <div class="btn-container">
     <button class="btn-create-post" on:click={() => modal = !modal}>Create new post!</button>
