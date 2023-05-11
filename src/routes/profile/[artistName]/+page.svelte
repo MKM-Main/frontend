@@ -6,7 +6,6 @@
     import {env} from "$env/dynamic/public";
     import Spinner from "$lib/components/helpers/Spinner.svelte";
     import CreatePost from "$lib/components/posts/CreatePost.svelte";
-    import Hype from "$lib/components/posts/Hype.svelte";
     import ShowPost from "$lib/components/posts/ShowPost.svelte";
     import DeletePost from "$lib/components/posts/DeletePost.svelte";
 
@@ -23,7 +22,6 @@
 
     let modalNewPost
     let modal = false
-    let modalHype = false
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
     let loggedInUserFollow = [];
@@ -160,37 +158,26 @@
                             on:postDeleted="{handlePostDeleted}"
                     />
                 {/if}
-                <ShowPost post="{wallpost}"/>
+                <ShowPost
+                        post="{wallpost}"
+                        jwt="{jwt}"
+                        loggedInUser="{loggedInUser}"
+                />
 
                 <div class="splitter"/>
-                <Hype
-                        jwt="{jwt}"
-                        postId="{wallpost._id}"
-                        loggedInUser="{loggedInUser}"
-                        rating="{wallpost.rating.length}"
-                />
-                <div class="rated-users" style="display: none">
-                    {#each wallpost.rating as user }
-                        <p>{user}</p>
-                    {/each}
-
-                </div>
-                {#if modalHype}
-                    <Modal on:close={() => modalHype = false}>
-                        {#each wallpost.rating as user }
-                            <p>{user}</p>
-                        {/each}
-                    </Modal>
+            </div>
+            <div>
+                {#if jwt}
+                    <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
+                                   updateComments={updateComments}/>
                 {/if}
-                <div>
-                    {#if jwt}
-                        <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
-                                       updateComments={updateComments}/>
-                    {/if}
-                    {#each wallpost.comments as comment}
-                        <ShowComment comment={comment}/>
-                    {/each}
-                </div>
+                {#each wallpost.comments as comment}
+                    <ShowComment
+                            comment={comment}
+                            jwt="{jwt}"
+                            loggedInUser="{loggedInUser}"
+                    />
+                {/each}
             </div>
             <br/>
         {/each}

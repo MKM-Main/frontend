@@ -31,7 +31,7 @@
 </script>
 
 <h1>TITEL: {post.postTitle}</h1>
-<p>{post.tags}</p>
+<p>Tags: {post?.tags}</p>
 {#if loggedInUser === post.artistName}
     <DeletePost
             jwt="{jwt}"
@@ -39,11 +39,20 @@
             postId="{post._id}"
     />
 {/if}
-<ShowPost post="{post}"/>
+<ShowPost
+        jwt="{jwt}"
+        loggedInUser="{loggedInUser}"
+        post="{post}"
+/>
 <br>
 <h3>Comments</h3>
 {#each post.comments as comment}
-    <ShowComment comment={comment}/>
+    <ShowComment
+            comment={comment}
+            jwt="{jwt}"
+            loggedInUser="{loggedInUser}"
+
+    />
     {#if comment.commentAuthor === loggedInUser}
         <DeleteComment postid={post._id} commentid={comment._id} deleteComments={deleteComments}/>
     {/if}

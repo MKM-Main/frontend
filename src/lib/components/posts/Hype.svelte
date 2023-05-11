@@ -3,9 +3,11 @@
     export let jwt
     export let loggedInUser
     export let rating
+    export let postType = "posts"
 
     const hypePost = async () => {
-        await fetch(`http://localhost:8080/api/posts/${postId}`, {
+        const endpoint = postType === "comments" ? `comments/${postId}` : postId
+        await fetch(`http://localhost:8080/api/posts/${endpoint}`, {
                 method: "PATCH",
                 credentials: "include",
                 headers: {
@@ -35,12 +37,15 @@
 
 
   .hype-container {
-    position: relative;
-    left: 97%;
+    display: flex;
+    justify-content: right;
+    margin: 1.25rem 2rem 0 0;
+
 
     .fa-fire, p {
       color: firebrick;
       height: 22px;
+      margin: 5px;
 
       &:hover:not(p) {
         scale: 1.25;
