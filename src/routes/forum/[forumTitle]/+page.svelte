@@ -13,17 +13,14 @@
     const tags = data?.tagsJson?.tags
     const forumTitle = data?.forumTitle
     const jwt = data.jwt
-    let forums = data?.json?.forum
+    let forums = data?.json?.forumData
     let modal = false
-    let formData = new FormData();
-    let postBody
-    let postTitle
     let selectedTag = null
     let filteredForums = null
     let searchPost
 
     function replaceSpacesWithHyphens(title) {
-        if (title.includes(" ")) {
+        if (title?.includes(" ")) {
             return title.replace(/ /g, "-");
         }
         return title;
@@ -55,7 +52,6 @@
             <div class="posts">
                 <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}">
                     <p>Post Title: {forum?.postTitle}</p>
-                    <p>Body: {forum?.body} </p>
                     <p>User who created post: {forum?.artistName} </p>
                     <p>Created at: {forum?.timeStamp}</p>
                     <p>Rating: {forum?.rating?.length}</p>
@@ -64,10 +60,9 @@
                     {/if}
                     <p>Number of comments: {forum?.comments?.length}</p>
                 </a>
-                <Report jwt={jwt} collection={"posts"} id={forum._id} title={replaceSpacesWithHyphens(forum.postTitle)}/>
+                <Report jwt={jwt} collection={"posts"} id={forum?._id}
+                        title={replaceSpacesWithHyphens(forum?.postTitle)}/>
             </div>
-            
-            
         {/each}
     </div>
     <div class="filter">

@@ -13,11 +13,11 @@
     export let data;
     const jwt = data.jwt
     let wallposts = data.wallposts;
-    const pageArtistName = data.json.user.artistName;
-    let followersInCount = data.json.user.followers.length;
-    let followingInCount = data.json.user.following.length;
+    const pageArtistName = data.json?.user?.artistName;
+    let followersInCount = data.json?.user?.followers?.length;
+    let followingInCount = data.json?.user?.following?.length;
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
-    const profilePictureKey = data.json.user.profilePictureKey
+    const profilePictureKey = data.json?.user?.profilePictureKey
     const imageSource = `${imageSourcePrefix}${profilePictureKey}`
 
     let modalNewPost
@@ -38,13 +38,13 @@
     const fetchLoggedInUser = async () => {
         const res = await fetch(`http://localhost:8080/api/users/${loggedInUser}`);
         const result = await res.json();
-        loggedInUserFollow = result.user.following;
+        loggedInUserFollow = result.user?.following;
     };
 
     let followingState = "";
     let checkForFollowing = async () => {
         await fetchLoggedInUser();
-        if (loggedInUserFollow.includes(pageArtistName)) {
+        if (loggedInUserFollow?.includes(pageArtistName)) {
             followingState = "unfollow";
         } else {
             followingState = "follow";
@@ -119,7 +119,10 @@
     </div>
 
     <div class="allign-items">
-        <div class="artist-name"><h3>{pageArtistName}</h3></div>
+        <div class="artist-name"><h3>{pageArtistName}</h3>
+            <h3>Merch shop link</h3>
+            <h3>Diskografi</h3>
+        </div>
         <div class="follow-div">
             <button on:click={() => { modal = true; fetchAction = "followers"; fetchPageUser(); }}>
                 Followers {followersInCount} |

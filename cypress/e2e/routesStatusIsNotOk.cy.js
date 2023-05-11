@@ -2,7 +2,7 @@ describe('GET requests to forum and profile routes', () => {
     it('Returns a 404 status for non-existent forum', () => {
         cy.request({
             method: 'GET',
-            url: 'http://localhost:5173/forum/Vi-elsker-Drake',
+            url: 'http://localhost:5173/forum/Detherforumfindesikke',
             failOnStatusCode: false
         })
             .then((response) => {

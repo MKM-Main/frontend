@@ -22,28 +22,14 @@ export const load = async ({fetch, params, cookies}) => {
     const allForumResponse = await fetch(`http://localhost:8080/forum/`);
     const allForumData = await allForumResponse.json();
 
-
-    const filtertedForum = allForumData.forum.filter(forum => forum.forumTitle === forumTitle)
-    
-
-
-    
-    
-
-    //See lists of posts
-    //const jwt = cookies.get("jwt")
-    // const response = await fetch(`http://localhost:8080/forum/${forumTitle}`);
-    // const jsonData = await response.json();
     if (forumResponse.status === 404) {
         throw error(404, {
             message: "not found"
         })
     }
-    if(filtertedForum[0].forumTitle === forumTitle){
-        return {
-            json: forumData,
-            forumTitle,
-            tagsJson,
-        }
+    return {
+        json: forumData,
+        forumTitle,
+        tagsJson,
     }
 }
