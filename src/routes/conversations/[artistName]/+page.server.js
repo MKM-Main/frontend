@@ -15,11 +15,11 @@ export const load = async ({fetch, params, cookies}) => {
         let jsonData = []
     if(conversationId !== "inbox"){
         const conversationMessages = await fetch(`http://localhost:8080/api/conversations/${conversationId}`,{
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": `Bearer ${jwt}`
-        }})
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${jwt}`
+            }})
             jsonData = await conversationMessages.json();
     }
     
