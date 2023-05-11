@@ -4,12 +4,20 @@
     export let data
 
     const jwt = data.jwt
-    const loggedInUser = data.userData?.customMessage?.artistName
-    const posts = data.allPosts
+    const loggedInUser = data?.userData?.customMessage?.artistName
+    const posts = data?.allPosts
+    console.log(data.allPosts.message)
+    
 </script>
 
 
 <div>
+    {#if data.allPosts.message === "no posts" || posts.length === 0}
+    <h1>My Dear Friend</h1>
+    <h3>Either you are not following anyone, or it looks like the people you are following haven't posted anything yet.</h3>
+    <h3>Go to the artist page and find more interesting artists.</h3>
+    <h2><a href="http://localhost:5173/artists">ARTISTS</a></h2>
+    {:else}
     {#each posts as post}
         <div class="post">
             <ShowPost
@@ -29,6 +37,7 @@
             </div>
         </div>
     {/each}
+    {/if}
 </div>
 
 <style lang="scss">
