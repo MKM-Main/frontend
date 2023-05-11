@@ -58,7 +58,7 @@
     <form on:submit|preventDefault={createNewPost}>
         {#if formIsForForum}
             <label for="postTitle">Title:</label>
-            <input bind:value={postTitle} name="postTitle" id="postTitle" type="text">
+            <input bind:value={postTitle} name="postTitle" id="postTitle" type="text" required>
         {/if}
         <textarea bind:value={postBody} cols="5" id="body" name="body"
                   placeholder="Share your news!"></textarea>

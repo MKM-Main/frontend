@@ -1,4 +1,6 @@
 export const load = async ({fetch, cookies}) => {
+    
+
     const response = await fetch("http://localhost:8080/forum", {
         headers: {
             "Content-Type": "application/json",
