@@ -11,10 +11,11 @@
 
     const userRole = data?.userData?.customMessage?.role
     const posts = data?.posts
-   
-    const comments = posts.map(post =>post.comments)
+    const comments = posts.map(post => post.comments)
+
   
     const users = data?.users?.data;
+    
     const jwt = data?.jwt
   
     const forums = data?.forums.forum
@@ -32,7 +33,7 @@
       selectedUser = users.find(user => user._id === userId);
     }
 
-
+    const totalComments = posts.reduce((count, post) => count + post.comments.length, 0);
   </script>
 
 
@@ -80,6 +81,43 @@
     </form>
 
   </div>
+<div class="total-signup">
+  <div class="recent-signups" >
+    <h1>Recent signups</h1>
+    <h3>Last 7 days: </h3>
+    {#each users as user }
+    {#if new Date(user.creationDate) >= new Date() - 7 * 24 * 60 * 60 * 1000}
+    <a href="http://localhost:5173/profile/{user.artistName}">{user.artistName}</a>
+    <p>Joined on: {user.creationDate}</p>
+    {/if}
+    {/each}
+
+  </div>
+
+  
+</div>
+<div class="totals">
+  <h1>Total:</h1>
+  <h3>Users : {users.length}</h3>
+  <h3>Total Posts : {posts.length}</h3>
+  <h3>Total comments : {totalComments}</h3>
+  <h3>Total forums: {forums.length}</h3>
+  <h2>Active: </h2>
+  {#each forums as forum}
+    {#if forum.verified === true}
+      <p>{forum.forumTitle}</p>
+    {/if}
+  {/each}
+  <h2>Not activated</h2>
+  {#each forums as forum}
+    {#if forum.verified === false}
+      <p>{forum.forumTitle}</p>
+    {/if}
+  {/each}  
+    
+</div>
+
+
   <div class="forum-container">
     <h1>Forum management</h1>
     {#each forums as forum}
@@ -99,11 +137,12 @@
 
 
   {/if}
-    <div class="report-post">
+      <div class="report" >
       <h1>Report Section</h1>
+      <div class="report-post">
       <h2>Post Reports</h2>
         {#each posts as post }
-        {#if post.reported.length >= 3}
+        {#if post?.reported?.length >= 3}
     <div class="high-report">
     
     <p>Post Titel: {post.postTitle}</p>
@@ -124,11 +163,114 @@
     {/each}
     </Modal>
     {/if}
-
       {/if}
+
     {/each}
+
   </div>
+    <h2>Comment reports</h2>
+    {#each comments as comment}
+    {#each comment as a }
+    {#if a?.reported?.length >= 3}
+    <div class="high-report">
+      <p> User who created comment: {a.commentAuthor}</p>
+      <p> Reference: {comment.referenceName}</p>
+      <p>{a.commentBody}</p>
+      <p>Comment's rating: {a.rating.length}</p>
+      <p>Number of Reports:  {a.reported.length}</p>
+      <button on:click={() =>(a.open = true)}></button>
+    </div>
+    {#if a.open}
+    <Modal on:close={() => (a.open = false)}>
+      {#each a.reported as report}
+      <p>User who reported: {report.userWhoReported}</p>
+      <p>{report.timeStamp}</p>
+      <p>{report.reason}</p>
+      <p>{report.description}</p>
+    {/each}
+    </Modal>
+    {/if}
+
+    {/if}
+    {/each}
+    
+      
+    {/each}
+
+</div>
 <style>
+
+
+.total-signup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .recent-signups {
+    flex: 1;
+    margin-right: 20px;
+  }
+
+  .recent-signups h1,
+  .recent-signups h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .recent-signups h3 {
+    margin-top: 10px;
+  }
+
+  .recent-signups a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+  }
+
+  .totals {
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .totals h1,
+  .totals h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .totals h3 {
+    margin-top: 10px;
+  }
+
+.recent-signups {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .recent-signups h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .recent-signups h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  .recent-signups p {
+    margin: 5px 0;
+  }
 
 .report-post {
   margin: 50px 0;

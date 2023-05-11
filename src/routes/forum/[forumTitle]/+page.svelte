@@ -10,8 +10,8 @@
     export let data;
 
     const loggedInUser = data.userData?.customMessage?.artistName
-    const tags = data.tagsJson.tags
-    const forumTitle = data.forumTitle
+    const tags = data?.tagsJson?.tags
+    const forumTitle = data?.forumTitle
     const jwt = data.jwt
     let forums = data?.json?.forum
     let modal = false
@@ -35,12 +35,12 @@
 
 
     // Can search posts by: artistName, tag or postTitle
-    $: filteredForums = forums.filter(forum => {
-        const hasSelectedTag = !selectedTag || forum.tags?.includes(selectedTag);
+    $: filteredForums = forums?.filter(forum => {
+        const hasSelectedTag = !selectedTag || forum?.tags?.includes(selectedTag);
         const hasSearchedPost = !searchPost ||
-            forum.postTitle?.toLowerCase().includes(searchPost.toLowerCase()) ||
-            forum.tags && forum.tags.some(tag => tag.toLowerCase().includes(searchPost.toLowerCase())) ||
-            forum.artistName?.toLowerCase().includes(searchPost.toLowerCase());
+            forum?.postTitle?.toLowerCase().includes(searchPost.toLowerCase()) ||
+            forum?.tags && forum?.tags.some(tag => tag.toLowerCase().includes(searchPost.toLowerCase())) ||
+            forum?.artistName?.toLowerCase().includes(searchPost.toLowerCase());
         return hasSelectedTag && hasSearchedPost;
     });
 
@@ -48,23 +48,26 @@
 </script>
 
 
-<h1>{forums[0]?.referenceName}</h1>
+<h1>{forumTitle}</h1>
 <div class="forum-container">
     <div class="posts-container">
         {#each filteredForums as forum}
             <div class="posts">
                 <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}">
-                    <p>Post Title: {forum.postTitle}</p>
-                    <p>Body: {forum.body} </p>
-                    <p>User who created post: {forum.artistName} </p>
-                    <p>Created at: {forum.timeStamp}</p>
-                    <p>Rating: {forum.rating.length}</p>
+                    <p>Post Title: {forum?.postTitle}</p>
+                    <p>Body: {forum?.body} </p>
+                    <p>User who created post: {forum?.artistName} </p>
+                    <p>Created at: {forum?.timeStamp}</p>
+                    <p>Rating: {forum?.rating?.length}</p>
                     {#if forum?.tags}
                         <p>Tags: {forum?.tags}</p>
                     {/if}
-                    <p>Number of comments: {forum.comments.length}</p>
+                    <p>Number of comments: {forum?.comments?.length}</p>
                 </a>
+                <Report jwt={jwt} collection={"posts"} id={forum._id} title={replaceSpacesWithHyphens(forum.postTitle)}/>
             </div>
+            
+            
         {/each}
     </div>
     <div class="filter">
@@ -73,10 +76,6 @@
             <label for="post-search">Search for post!</label>
             <input bind:value={searchPost} id="post-search" placeholder="My awesome post!" type="text">
         </div>
-
-        <Report jwt={jwt} collection={"posts"} id={forum._id} title={replaceSpacesWithHyphens(forum.postTitle)}/>
-        <div class="splitter"/>
-    {/each}
 
         <div class="filter-tags">
             <h1>Filter</h1>

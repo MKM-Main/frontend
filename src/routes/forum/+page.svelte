@@ -1,7 +1,9 @@
 <script>
     export let data
     import CreateForum from './CreateForum.svelte';
-    const forums = data.forumData
+    const forums = data?.forumData
+    const jwt = data?.jwt
+    
 
     function replaceSpacesWithHyphens(title) {
         if (title.includes(" ")) {
@@ -34,7 +36,7 @@
         </div>
         {/if}
     {/each}
-    <CreateForum/>
+    <CreateForum jwt={jwt} />
 </div>
 
 
