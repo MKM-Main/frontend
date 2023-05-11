@@ -11,7 +11,7 @@ export const load = async ({fetch, cookies}) => {
 
 
     const userData = await userDataResponse.json()
-
+    
     return {
         jwt,
         userData,
