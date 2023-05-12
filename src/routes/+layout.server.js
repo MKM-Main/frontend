@@ -23,6 +23,7 @@ export const load = async ({fetch, cookies}) => {
 
     const conversationData = await responseConversation.json()
 
+
     return {
         jwt,
         userData,

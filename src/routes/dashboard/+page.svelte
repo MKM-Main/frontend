@@ -169,12 +169,12 @@
 
   </div>
     <h2>Comment reports</h2>
-    {#each comments as comment}
-    {#each comment as a }
+    {#each posts as post}
+    {#each post.comments as a }
     {#if a?.reported?.length >= 3}
     <div class="high-report">
       <p> User who created comment: {a.commentAuthor}</p>
-      <p> Reference: {comment.referenceName}</p>
+      <p> Reference: {post.referenceName}</p>
       <p>{a.commentBody}</p>
       <p>Comment's rating: {a.rating.length}</p>
       <p>Number of Reports:  {a.reported.length}</p>
