@@ -1,10 +1,10 @@
 <script>
-
+    export let postType
 </script>
 
 <div id="loading-spinner" style="display: none;">
     <div class="spinner"></div>
-    <div>Uploading post!</div>
+    <div>Uploading {postType}!</div>
 </div>
 
 

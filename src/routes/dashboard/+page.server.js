@@ -9,15 +9,15 @@ export const load = async ({fetch, params, cookies}) => {
             "Content-Type": "application/json",
             "Accept": "application/json",
             "Authorization": `Bearer ${jwt}`
-        }}).then(res => res.json()).then(data => {
-            console.log(data)
-            userRole = data.userRole
-        });
+        }
+    }).then(res => res.json()).then(data => {
+        userRole = data.userRole
+    });
 
     if (userRole !== "admin") throw redirect(302, "/")
     const userResponse = await fetch("http://localhost:8080/api/users")
     const users = await userResponse.json()
-    
+
 
     const forumResponse = await fetch("http://localhost:8080/forum")
     const forums = await forumResponse.json()
@@ -29,7 +29,7 @@ export const load = async ({fetch, params, cookies}) => {
         users,
         forums,
         posts
-        
+
     }
 
 }

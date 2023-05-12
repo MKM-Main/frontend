@@ -3,21 +3,20 @@
 
     let forumTitle;
     export let jwt;
-    
+
     export const requestForum = async () => {
-        console.log()
         await fetch(`http://localhost:8080/api/forum`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": `Bearer ${jwt}`
-        },
-        body: JSON.stringify({forumTitle})
-    }).then((res) => { 
-        
-    });
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${jwt}`
+            },
+            body: JSON.stringify({forumTitle})
+        }).then((res) => {
+
+        });
     }
 </script>
 
