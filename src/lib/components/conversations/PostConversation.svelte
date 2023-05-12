@@ -4,6 +4,7 @@
     export let jwt;
     export let updateConversations;
     export let user;
+    export let createConversation;
 
     const close = () => dispatch("close")
 
@@ -19,6 +20,7 @@
         .then(data => {
             console.log(data)
             updateConversations(data)
+            createConversation(data)
         })
     }
 </script>

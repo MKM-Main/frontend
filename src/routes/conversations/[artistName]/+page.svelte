@@ -41,6 +41,10 @@
         messages = []
     };
 
+    const emptySocketConversationArray = () => {
+      socketConversationArray = []
+    };
+
     const sendMessage = (params) => {
         socket.emit("new message", [bodyArea, params, loggedInUser, loggedInArtistname])
     }
@@ -52,8 +56,19 @@
         const result = await res.json();
         userProfiles[result.user.artistName] = result.user.profilePictureKey;
         messages = [...messages, data.data];
-        await sortConversations()
+        await sortConversations();
     });
+
+
+    const createConversation = async (action) => {
+      console.log(action)
+      socket.emit("new conversation", action)
+    }
+
+    let socketConversationArray = []
+    socket.on("new conversation", async data => {
+        socketConversationArray = data.data.conversation;
+    })
     
     let userModalFollowArray = [];
 
@@ -94,16 +109,38 @@
         }
       });
       const result = await res.json();
-      conversations = result
+      conversations = result;
     }
 
-    const updateConversations = (data) => {
-      conversations = [...conversations, data[0]]
+    const updateConversations = async () => {
+      const res = await fetch(`http://localhost:8080/api/conversations`,{
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${jwt}`
+        }
+      });
+      const result = await res.json();
+      conversations = result;
+    }
+
+    const patchReadConversation = async (action) => {
+        await fetch(`http://localhost:8080/api/conversations/read/${action}`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${jwt}`
+            },
+        })
+        updateConversations()
     }
 
     onMount(async () => {
         await fetchUserData();
     });
+console.log(conversations)
 </script>
 <div class="conversation-main">
     <div class="left-column">
@@ -112,15 +149,42 @@
         </button>
       </div>
         {#each conversations as conversation}
-        <a on:click={emptySocketArray} href="/conversations/{conversation._id}">
+        {#if conversation.read === false && conversation.sender !== loggedInArtistname}
+          <a on:click={ () => {emptySocketArray(); patchReadConversation(conversation._id)}} href="/conversations/{conversation._id}">
+            <p>unread message</p>
             <div class="horizontal-div">
                 <img alt="" class="conversations-pic" src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
                 <p>{conversation.participants}</p>
                 <p>{conversation.timeStamp}</p>
-                <DeleteConversation conversation={conversation} jwt={jwt}/>
+                <DeleteConversation conversation={conversation} updateDeletedConversation={updateConversations} jwt={jwt}/>
+            </div>
+          </a>
+          {:else}
+          <a on:click={emptySocketArray} href="/conversations/{conversation._id}">
+            <div class="horizontal-div">
+                <img alt="" class="conversations-pic" src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
+                <p>{conversation.participants}</p>
+                <p>{conversation.timeStamp}</p>
+                <DeleteConversation conversation={conversation} updateDeletedConversation={updateConversations} jwt={jwt}/>
             </div>
         </a>
+        {/if}
+          
+        {/each}
         
+        {#each socketConversationArray as socketConversation}
+        {#if socketConversation.sender[0] !== loggedInArtistname}
+        <a on:click={emptySocketConversationArray} href="/conversations/{socketConversation._id}">
+        <div class="horizontal-div">
+            <img alt="" class="conversations-pic" src="{imageSourcePrefix}{socketConversation.profilePictureKeySender}"/>
+            <p>{socketConversation.sender}</p>
+            <p>{socketConversation.timeStamp}</p>
+            <DeleteConversation conversation={socketConversation} jwt={jwt}/>
+        </div>
+        </a>
+        {:else}
+        <div></div>
+        {/if}
         {/each}
     </div>
     {#if conversationsMessages.length !== 0}
@@ -172,7 +236,6 @@
             </div>
           </form>
         </div>
-        
     </div>
     {:else}
     <div class="right-column">
@@ -196,7 +259,7 @@
                     <div class="modal-artistname">
                         {user.artistName}
                     </div>
-                        <PostConversation updateConversations={updateConversations} user={user} on:close={() => modal = false} jwt={jwt} />
+                        <PostConversation updateConversations={updateConversations} createConversation={createConversation} user={user} on:close={() => modal = false} jwt={jwt} />
                 </div>
             {/each}
         </div>
