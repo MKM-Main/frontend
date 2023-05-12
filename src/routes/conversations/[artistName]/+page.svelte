@@ -61,15 +61,19 @@
 
 
     const createConversation = async (action) => {
-      console.log(action)
-      socket.emit("new conversation", action)
+      const socketId = await socket.id;
+      socket.emit("new conversation", [action, socketId]);
     }
 
     let socketConversationArray = []
-    socket.on("new conversation", async data => {
-        socketConversationArray = data.data.conversation;
+      socket.on("new conversation", async data => {
+        socketConversationArray = data.conversation;
+      // if (data?.socketId === socket.id) {
+      //   socketConversationArray = data.conversation;
+      //   console.log(socketConversationArray)
+      // }
     })
-    
+
     let userModalFollowArray = [];
 
     //Fetches the followers and following depending on the fetch action
@@ -125,6 +129,7 @@
     }
 
     const patchReadConversation = async (action) => {
+    try {
         await fetch(`http://localhost:8080/api/conversations/read/${action}`, {
             method: "PATCH",
             credentials: "include",
@@ -133,14 +138,16 @@
                 "Accept": "application/json",
                 "Authorization": `Bearer ${jwt}`
             },
-        })
-        updateConversations()
+        });
+        await updateConversations();
+    } catch (error) {
+        console.error("Error updating conversation:", error);
     }
+}
 
     onMount(async () => {
         await fetchUserData();
     });
-console.log(conversations)
 </script>
 <div class="conversation-main">
     <div class="left-column">
@@ -173,7 +180,7 @@ console.log(conversations)
         {/each}
         
         {#each socketConversationArray as socketConversation}
-        {#if socketConversation.sender[0] !== loggedInArtistname}
+        {#if socketConversation?.sender[0] !== loggedInArtistname}
         <a on:click={emptySocketConversationArray} href="/conversations/{socketConversation._id}">
         <div class="horizontal-div">
             <img alt="" class="conversations-pic" src="{imageSourcePrefix}{socketConversation.profilePictureKeySender}"/>
