@@ -8,6 +8,8 @@
     import CreatePost from "$lib/components/posts/CreatePost.svelte";
     import ShowPost from "$lib/components/posts/ShowPost.svelte";
     import DeletePost from "$lib/components/posts/DeletePost.svelte";
+    import CreateMerch from "./CreateMerch.svelte";
+    import DeleteMerch from "./DeleteMerch.svelte";
 
 
     export let data;
@@ -16,10 +18,11 @@
     const pageArtistName = data.json?.user?.artistName;
     let followersInCount = data.json?.user?.followers?.length;
     let followingInCount = data.json?.user?.following?.length;
+    let merchandise = data.json?.user?.merch
+
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     const profilePictureKey = data.json?.user?.profilePictureKey
     const imageSource = `${imageSourcePrefix}${profilePictureKey}`
-
     let modalNewPost
     let modal = false
 
@@ -103,9 +106,22 @@
     const updatePostSection = (data) => {
         wallposts = [...wallposts, data.newPost]
     }
+    const updateMerchSection = (data) => {
+        merchandise = [...merchandise, data.data]
+    }
 
     const handlePostDeleted = (event) => {
         wallposts = event.detail
+    }
+
+    let showSection = "merch"
+    const handleShownSection = (section) => {
+        showSection = section
+    }
+
+    const handleMerchDeleted = (event) => {
+        const deletedMerchId = event.detail.merchId;
+        merchandise = merchandise.filter(merch => merch._id !== deletedMerchId);
     }
 
 
@@ -119,9 +135,19 @@
     </div>
 
     <div class="allign-items">
-        <div class="artist-name"><h3>{pageArtistName}</h3>
-            <h3>Merch shop link</h3>
-            <h3>Diskografi</h3>
+        <div class="artist-name">
+            <h3>{pageArtistName}</h3>
+        </div>
+        <div class="options">
+            <div>
+                <h2 on:click={() => handleShownSection("posts")}>Posts</h2>
+            </div>
+            <div>
+                <h2 on:click={() => handleShownSection("merch")}>Merch</h2>
+            </div>
+            <div>
+                <h2 on:click={() => handleShownSection("discography")}>Discography</h2>
+            </div>
         </div>
         <div class="follow-div">
             <button on:click={() => { modal = true; fetchAction = "followers"; fetchPageUser(); }}>
@@ -149,43 +175,93 @@
     </div>
 </div>
 
-<div class="main-div">
-    <div>
-        {#each wallposts as wallpost}
-            <div class="wallpost-div">
-                {#if loggedInUser === pageArtistName }
-                    <DeletePost
-                            jwt="{jwt}"
-                            postId="{wallpost._id}"
-                            posts="{wallposts}"
-                            on:postDeleted="{handlePostDeleted}"
-                    />
-                {/if}
-                <ShowPost
-                        post="{wallpost}"
-                        jwt="{jwt}"
-                        loggedInUser="{loggedInUser}"
-                />
-
-                <div class="splitter"/>
-            </div>
-            <div>
-                {#if jwt}
-                    <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
-                                   updateComments={updateComments}/>
-                {/if}
-                {#each wallpost.comments as comment}
-                    <ShowComment
-                            comment={comment}
+{#if showSection === "posts"}
+    <div class="main-wallpost">
+        <div>
+            {#each wallposts as wallpost}
+                <div class="wallpost-div">
+                    {#if loggedInUser === pageArtistName }
+                        <DeletePost
+                                jwt="{jwt}"
+                                postId="{wallpost._id}"
+                                posts="{wallposts}"
+                                on:postDeleted="{handlePostDeleted}"
+                        />
+                    {/if}
+                    <ShowPost
+                            post="{wallpost}"
                             jwt="{jwt}"
                             loggedInUser="{loggedInUser}"
                     />
-                {/each}
-            </div>
-            <br/>
-        {/each}
+
+                    <div class="splitter"/>
+                </div>
+                <div>
+                    {#if jwt}
+                        <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
+                                       updateComments={updateComments}/>
+                    {/if}
+                    {#each wallpost?.comments as comment}
+                        <ShowComment
+                                comment={comment}
+                                jwt="{jwt}"
+                                loggedInUser="{loggedInUser}"
+                        />
+                    {/each}
+                </div>
+                <br/>
+            {/each}
+        </div>
     </div>
-</div>
+{/if}
+{#if showSection === "merch"}
+    <div class="main-merch">
+        <h1>Merch Site</h1>
+        <div class="merch-creation">
+            {#if loggedInUser === pageArtistName}
+                <CreateMerch
+                        loggedInUser="{loggedInUser}"
+                        jwt="{jwt}"
+                        updateMerchSection="{updateMerchSection}"
+                />
+                <Spinner
+                        postType="merch"
+                />
+            {/if}
+        </div>
+        <h1>See {pageArtistName}'s merchandise!</h1>
+        <div class="merch-overview">
+            {#each merchandise as merch}
+                <div class="merch-item">
+                    <img class="merch-image" src="{imageSourcePrefix}{pageArtistName}/{merch._id}" alt="">
+                    <p class="merch-title">Title: {merch.title}</p>
+                    <p class="merch-description">Description: {merch.description}</p>
+                    <p class="merch-price">Price: {merch.price}</p>
+                    <p>Avaliable sizes:</p>
+                    {#each merch.sizes as size }
+                        <p>{size}</p>
+                    {/each}
+                    {#if loggedInUser === pageArtistName}
+                        <DeleteMerch
+                                jwt="{jwt}"
+                                artistName="{pageArtistName}"
+                                merchId="{merch._id}"
+                                on:merchDeleted={handleMerchDeleted}
+                        />
+                    {/if}
+
+                </div>
+            {/each}
+        </div>
+    </div>
+{/if}
+
+{#if showSection === "discography"}
+
+    <div class="main-disc">
+        <h1>Discography</h1>
+    </div>
+{/if}
 
 {#if modalNewPost}
     <Modal on:close={() => modalNewPost = false}>
@@ -197,7 +273,9 @@
                     on:postCreated={() => modalNewPost = false}
                     tags="{data.tagsJson.tags}"
             />
-            <Spinner/>
+            <Spinner
+                    postType="post"
+            />
         </div>
     </Modal>
 
@@ -245,6 +323,21 @@
     margin-right: 60px;
     margin-top: 20px;
     margin-bottom: 20px;
+
+    .options {
+      display: flex;
+      justify-content: space-evenly;
+      margin: 1.25em 0;
+
+      h2 {
+        &:hover {
+          cursor: pointer;
+          background-color: darkorange;
+        }
+      }
+    }
+
+
   }
 
   .img-pic {
@@ -256,6 +349,7 @@
     margin-left: 40px;
     font-size: 20px;
     width: 50%;
+
   }
 
   .artist-name {
@@ -320,7 +414,7 @@
     border-radius: 100px;
   }
 
-  .main-div {
+  .main-wallpost {
     margin-left: 60px;
     margin-right: 60px;
 
@@ -340,6 +434,50 @@
       border-radius: 15px;
       padding: 10px;
       margin-left: 5px;
+    }
+  }
+
+  .main-merch {
+
+    .merch-creation {
+      display: flex;
+      justify-content: center;
+    }
+
+    .merch-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .merch-item {
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-radius: 4px;
+
+      .merch-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .merch-description {
+        margin-bottom: 10px;
+      }
+
+      .merch-price {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .merch-sizes {
+        margin-bottom: 10px;
+      }
+
+      .merch-image {
+        max-width: 10em;
+
+      }
     }
   }
 
