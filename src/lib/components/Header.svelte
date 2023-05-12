@@ -7,8 +7,8 @@
     export let userRole
     export let jwt
     export let imageSource
-
-
+    export let conversation
+    
 </script>
 
 
@@ -22,7 +22,12 @@
     <div>
         {#if jwt}
             <a href="/news">News</a>
-            <a href="/conversations/inbox">Messages</a>
+              {#if conversation}
+              {#if conversation[0].read === false && conversation[0].sender !== artistName}
+                <a href="/conversations/inbox">Messages (new message)</a>
+              {/if}
+                <a href="/conversations/inbox">Messages</a>
+              {/if}
         {/if}
         {#each pages as page}
             <a href="/{page}">{page}</a>
