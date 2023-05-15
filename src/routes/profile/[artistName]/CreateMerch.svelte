@@ -10,7 +10,7 @@
     let formData = new FormData();
 
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
 
         document.getElementById("loading-spinner").style.display = "flex";
 
@@ -19,7 +19,7 @@
         formData.append('sizes', JSON.stringify(sizes));
         formData.append('price', price);
 
-        fetch(`http://localhost:8080/api/users/${loggedInUser}/merch`, {
+        await fetch(`http://localhost:8080/api/users/${loggedInUser}/merch`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -27,7 +27,7 @@
             },
             body: formData
         })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 document.getElementById("loading-spinner").style.display = "none";
                 title = "";

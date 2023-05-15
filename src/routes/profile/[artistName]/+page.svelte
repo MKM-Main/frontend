@@ -10,6 +10,8 @@
     import DeletePost from "$lib/components/posts/DeletePost.svelte";
     import CreateMerch from "./CreateMerch.svelte";
     import DeleteMerch from "./DeleteMerch.svelte";
+    import Discography from "./Discography.svelte";
+    import DeleteDisco from "./DeleteDisco.svelte";
 
 
     export let data;
@@ -19,6 +21,12 @@
     let followersInCount = data.json?.user?.followers?.length;
     let followingInCount = data.json?.user?.following?.length;
     let merchandise = data.json?.user?.merch
+    let discography = data.json?.user?.discography
+    let showCreationForm = true
+
+    const handleShowCreationForm = () => {
+        showCreationForm = !showCreationForm
+    }
 
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     const profilePictureKey = data.json?.user?.profilePictureKey
@@ -114,9 +122,10 @@
         wallposts = event.detail
     }
 
-    let showSection = "merch"
+    let showSection = "discography"
     const handleShownSection = (section) => {
         showSection = section
+        showCreationForm = !showCreationForm
     }
 
     const handleMerchDeleted = (event) => {
@@ -124,7 +133,15 @@
         merchandise = merchandise.filter(merch => merch._id !== deletedMerchId);
     }
 
+    const updateDiscographySection = (data) => {
+        discography = [...discography, data.data]
+    }
 
+
+    const handleDiscoDeleted = (event) => {
+        const deletedDiscoId = event.detail.discoId;
+        discography = discography.filter(disco => disco._id !== deletedDiscoId);
+    }
 </script>
 
 
@@ -219,21 +236,24 @@
         <h1>Merch Site</h1>
         <div class="merch-creation">
             {#if loggedInUser === pageArtistName}
-                <CreateMerch
-                        loggedInUser="{loggedInUser}"
-                        jwt="{jwt}"
-                        updateMerchSection="{updateMerchSection}"
-                />
-                <Spinner
-                        postType="merch"
-                />
+                <button on:click={handleShowCreationForm}>Collapse</button>
+                {#if showCreationForm}
+                    <CreateMerch
+                            loggedInUser="{loggedInUser}"
+                            jwt="{jwt}"
+                            updateMerchSection="{updateMerchSection}"
+                    />
+                    <Spinner
+                            postType="merch"
+                    />
+                {/if}
             {/if}
         </div>
         <h1>See {pageArtistName}'s merchandise!</h1>
         <div class="merch-overview">
             {#each merchandise as merch}
                 <div class="merch-item">
-                    <img class="merch-image" src="{imageSourcePrefix}{pageArtistName}/{merch._id}" alt="">
+                    <img class="merch-image" src="{imageSourcePrefix}{pageArtistName}/merch/{merch._id}" alt="">
                     <p class="merch-title">Title: {merch.title}</p>
                     <p class="merch-description">Description: {merch.description}</p>
                     <p class="merch-price">Price: {merch.price}</p>
@@ -257,9 +277,48 @@
 {/if}
 
 {#if showSection === "discography"}
-
     <div class="main-disc">
         <h1>Discography</h1>
+        {#if loggedInUser === pageArtistName}
+            <button on:click={handleShowCreationForm}>Collapse</button>
+            {#if showCreationForm}
+                <Discography
+                        jwt="{jwt}"
+                        artistName="{loggedInUser}"
+                        updateDiscographySection="{updateDiscographySection}"
+                />
+                <Spinner
+                        postType="discography"
+                />
+            {/if}
+        {/if}
+        <div class="discography-overview">
+            {#each discography as disco }
+                <div class="discography-item">
+                    {#if disco.referenceKey}
+                        <img src="{imageSourcePrefix}{pageArtistName}/discography/{disco.referenceKey}" alt="image">
+                    {/if}
+                    <p>{disco.album ? "Album" : "Single"} Title: {disco.mainTitle}</p>
+                    <p>Streaming service: {disco.selectedService}</p>
+                    <p>Listen here: <a href="{disco.mainUrl}">{disco.mainTitle}</a></p>
+                    <div class="album-container">
+                        {#each disco.songs as album }
+                            <p>Song: <a href="{album.url}">{album.title}</a></p>
+                        {/each}
+                    </div>
+                    <img src="{imageSourcePrefix}logos/{disco.selectedService}.svg" alt="streaming-service">
+                    {#if loggedInUser === pageArtistName}
+                        <DeleteDisco
+                                jwt="{jwt}"
+                                artistName="{pageArtistName}"
+                                discoId="{disco._id}"
+                                on:discoDeleted={handleDiscoDeleted}
+                        />
+
+                    {/if}
+                </div>
+            {/each}
+        </div>
     </div>
 {/if}
 
@@ -326,13 +385,16 @@
 
     .options {
       display: flex;
-      justify-content: space-evenly;
-      margin: 1.25em 0;
 
-      h2 {
-        &:hover {
+      div {
+        margin-right: 10px;
+
+        h2 {
           cursor: pointer;
-          background-color: darkorange;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
     }
@@ -480,5 +542,48 @@
       }
     }
   }
+
+  .discography-overview {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(auto, 1fr));
+    gap: 20px;
+
+    .discography-item {
+      width: 300px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      img {
+        width: 100%;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        margin-bottom: 5px;
+      }
+
+      .album-container {
+        margin-top: 10px;
+      }
+
+      .album-container p {
+        margin-bottom: 3px;
+      }
+
+      a {
+        color: #0000ee;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
 
 </style>
