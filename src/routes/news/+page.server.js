@@ -9,7 +9,7 @@ export const load = async ({fetch, cookies}) => {
         }
     })
 
-    if (!jwt) throw redirect(302, "/")
+    if (!jwt || allPostsResponse.status === 401) throw redirect(302, "/")
 
     const allPosts = await allPostsResponse.json()
 
