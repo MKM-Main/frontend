@@ -70,9 +70,6 @@
         <textarea bind:value={userBody.biography} id="biography" name="biography" placeholder="My awesome bio!"
                   rows="5"></textarea>
 
-        <label for="tags">Tags:</label>
-        <input id="tags" name="tags" type="text">
-
         <label for="new-tag">New tag:</label>
         <input bind:value={newTagValue} id="new-tag" placeholder="my cool tag!" type="text">
         <p on:click={handleNewTag}>Add tag</p>
@@ -86,6 +83,45 @@
     </form>
 </div>
 
-<style>
+<style lang="scss">
+  div {
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5em;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="email"],
+      textarea {
+        width: 100%;
+        padding: 0.5em;
+        margin-bottom: 1em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      input[type="checkbox"] {
+        margin-right: 0.25em;
+        vertical-align: middle;
+      }
+
+      button[type="submit"] {
+        padding: 0.75em 1em;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    }
+  }
+
 
 </style>
