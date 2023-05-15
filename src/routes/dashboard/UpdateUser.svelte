@@ -1,5 +1,5 @@
 <script>
-    export let id;
+    export let artistName;
     // export let refreshUser;
     export let userBody;
     export let currentRole;
@@ -11,7 +11,7 @@
             delete userBody.role
         }
         if(Object.keys(userBody).length !== 0){ 
-        await fetch(`http://localhost:8080/api/admin/users/${id}`, {
+        await fetch(`http://localhost:8080/api/admin/users/${artistName}`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -19,7 +19,7 @@
         "Accept": "application/json",
         "Authorization": `Bearer ${jwt}`
         },
-        body: JSON.stringify({id, userBody})
+        body: JSON.stringify({userBody})
     }).then((res) => { 
 
     });

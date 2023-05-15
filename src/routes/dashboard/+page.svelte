@@ -34,6 +34,17 @@
     }
 
     const totalComments = posts.reduce((count, post) => count + post.comments.length, 0);
+    
+
+    function isRecentSignup(creationDate) {
+    const currentDate = new Date();
+    const parts = creationDate.split(', ')[0].split('/');
+    const creationTimestamp = new Date(
+      `${parts[2]}-${parts[1]}-${parts[0]}`
+    ).getTime();
+    const sevenDaysAgo = currentDate.getTime() - 7 * 24 * 60 * 60 * 1000;
+    return creationTimestamp >= sevenDaysAgo;
+  }
   </script>
 
 
@@ -71,7 +82,7 @@
           <option value="admin" selected={selectedUser.role === 'admin'}>Admin</option>
           <option value="user" selected={selectedUser.role === 'user'}>User</option>
         </select>
-        <UpdateUser jwt={jwt} id={selectedUser._id} userBody={userBody} currentRole={selectedUser.role}/>
+        <UpdateUser jwt={jwt} artistName={selectedUser.artistName} userBody={userBody} currentRole={selectedUser.role}/>
         <DeleteAdmin id={selectedUser._id} apiUrl={"users"} jwt={jwt}/>
       </div>
       
@@ -81,21 +92,19 @@
     </form>
 
   </div>
-<div class="total-signup">
-  <div class="recent-signups" >
-    <h1>Recent signups</h1>
-    <h3>Last 7 days: </h3>
-    {#each users as user }
-    {#if new Date(user.creationDate) >= new Date() - 7 * 24 * 60 * 60 * 1000}
-    <a href="http://localhost:5173/profile/{user.artistName}">{user.artistName}</a>
-    <p>Joined on: {user.creationDate}</p>
-    {/if}
-    {/each}
-
+  <div class="total-signup">
+    <div class="recent-signups">
+      <h1>Recent signups</h1>
+      <h3>Last 7 days:</h3>
+      {#each users as user}
+        {#if isRecentSignup(user.creationDate)}
+          <p><a href="http://localhost:5173/profile/{user.artistName}">{user.artistName}</a> - Joined on: {user.creationDate}</p>
+        {/if}
+      {/each}
+    </div>
   </div>
 
-  
-</div>
+
 <div class="totals">
   <h1>Total:</h1>
   <h3>Users : {users.length}</h3>
