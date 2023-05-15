@@ -12,6 +12,7 @@
     import DeleteMerch from "./DeleteMerch.svelte";
     import Discography from "./Discography.svelte";
     import DeleteDisco from "./DeleteDisco.svelte";
+    import Settings from "./Settings.svelte";
 
 
     export let data;
@@ -122,12 +123,11 @@
         wallposts = event.detail
     }
 
-    let showSection = "discography"
+    let showSection = "settings"
     const handleShownSection = (section) => {
         showSection = section
-        showCreationForm = !showCreationForm
+        showCreationForm = true
     }
-
     const handleMerchDeleted = (event) => {
         const deletedMerchId = event.detail.merchId;
         merchandise = merchandise.filter(merch => merch._id !== deletedMerchId);
@@ -165,6 +165,11 @@
             <div>
                 <h2 on:click={() => handleShownSection("discography")}>Discography</h2>
             </div>
+            {#if loggedInUser === pageArtistName}
+                <div>
+                    <h2 on:click={() => handleShownSection("settings")}>Settings</h2>
+                </div>
+            {/if}
         </div>
         <div class="follow-div">
             <button on:click={() => { modal = true; fetchAction = "followers"; fetchPageUser(); }}>
@@ -173,7 +178,7 @@
             <button on:click={() => { modal = true; fetchAction = "following"; fetchPageUser(); }}>
                 Following {followingInCount}</button>
         </div>
-        <div class="bio-div">Import bio here: Artist making music</div>
+        <div class="bio-div">Import bio here: {data.json.user.biography}</div>
         <div class="btn-div">
             {#if loggedInUser && loggedInUser !== pageArtistName}
                 <div class="follow-div">
@@ -320,6 +325,15 @@
             {/each}
         </div>
     </div>
+{/if}
+{#if showSection === "settings"}
+    <h1>Settings</h1>
+    <Settings
+            jwt="{jwt}"
+            artistName="{loggedInUser}"
+            userData="{data?.json?.user}"
+    />
+
 {/if}
 
 {#if modalNewPost}
