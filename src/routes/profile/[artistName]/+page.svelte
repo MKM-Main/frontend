@@ -311,7 +311,7 @@
                             <p>Song: <a href="{album.url}">{album.title}</a></p>
                         {/each}
                     </div>
-                    <img src="{imageSourcePrefix}logos/{disco.selectedService}.svg" alt="streaming-service">
+                    <img src="{imageSourcePrefix}logos/{disco?.selectedService}.svg" alt="streaming-service">
                     {#if loggedInUser === pageArtistName}
                         <DeleteDisco
                                 jwt="{jwt}"
@@ -332,6 +332,7 @@
             jwt="{jwt}"
             artistName="{loggedInUser}"
             userData="{data?.json?.user}"
+            userTags="{data?.json?.user?.userTags}"
     />
 
 {/if}

@@ -2,10 +2,11 @@
     export let artistName
     export let userData
     export let jwt
+    export let userTags
 
     let tags = []
     let firstName, lastName, age, email, biography
-    let userBody = {firstName, lastName, age, email, biography}
+    let userBody = {firstName, lastName, age, email, biography, userTags}
     let newTagValue
 
 
@@ -14,28 +15,34 @@
     }
 
 
-    const updateUser = async () => {
-        Object.keys(userBody).forEach(key => userBody[key] = userBody[key]?.trim());
-        Object.keys(userBody).forEach((key) => {
-            if (userBody.hasOwnProperty(key) && userBody[key] === "") {
-                delete userBody[key];
+    export const updateUser = async () => {
+        if (!Number) {
+            Object.keys(userBody).forEach(key => userBody[key] = userBody[key]?.trim());
+        }
+        Object.keys(userBody).forEach(key => userBody[key] === "" ? delete userBody[key] : {});
+
+        tags.forEach(tag => {
+            if (tag.checked) {
+                userTags.push(tag.name)
             }
         })
 
-        await fetch(`http://localhost:8080/api/admin/users/${artistName}`, {
-            method: "PATCH",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "Authorization": `Bearer ${jwt}`
-            },
-            body: JSON.stringify({userBody})
-        })
-            .then(() => {
-                location.href = `/profile/${userData.artistName}`
-
+        if (Object.keys(userBody).length !== 0) {
+            await fetch(`http://localhost:8080/api/admin/users/${artistName}`, {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${jwt}`
+                },
+                body: JSON.stringify({userBody})
             })
+                .then(res => res.json())
+                .then(data => {
+                    location.href = data.data.artistName
+                })
+        }
     }
 
 
