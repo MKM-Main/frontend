@@ -1,12 +1,16 @@
 <script>
     import {BASE_URL_LOCAL} from "../../lib/stores.js";
+    import Notification from "../../lib/components/util/Notification.svelte";
     let email, password
+    let notify = false
+
 
     const handleLogin = async () => {
         const data = {
             email,
             password
         }
+        notify = true
         await fetch(`${$BASE_URL_LOCAL}/api/auth/login`, {
             method: "POST",
             credentials: "include",
@@ -17,11 +21,6 @@
         })
             .then(res => {
                 if (res.status === 200) {
-                    /* goto(`/news`, {
-                         replaceState: true,
-                     })
-
-                     */
                     location.href = "/news"
                 }
             })
@@ -39,6 +38,11 @@
         <input bind:value={password} id="password" type="password">
 
         <button id="submit" type="submit">Login</button>
+        <Notification
+                message="Login Success!"
+                notify="{notify}"
+                type="success"
+        />
 
     </form>
 </div>
