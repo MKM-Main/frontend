@@ -4,15 +4,27 @@
     export let deleteComments;
 
     export const deleteFunction = async () => {
-            await fetch(`http://localhost:8080/api/posts/comments/${postid}/${commentid}`, {
-                method: "DELETE",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            }).then(async (res) => {
+        await fetch(`http://localhost:8080/api/posts/comments/${postid}/${commentid}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }).then(async (res) => {
             deleteComments(commentid);
         });
-        }
-    </script>
-    <button on:click={() => deleteFunction()}>Delete button</button>
+    }
+</script>
+<i class="fa-solid fa-trash fa-xl" on:click={deleteFunction}></i>
+
+<style lang="scss">
+  .fa-trash {
+  
+    &:hover {
+      color: red;
+      cursor: pointer;
+      scale: 1.25;
+    }
+  }
+
+</style>

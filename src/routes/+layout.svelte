@@ -14,10 +14,20 @@
 </script>
 
 <Header artistName={artistName}
+        conversation={conversation}
         imageSource={imageSource}
         jwt={jwt}
         userRole={userRole}
-        conversation={conversation}
 />
 <slot/>
 <Footer/>
+
+
+<style lang="scss">
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+  }
+
+</style>

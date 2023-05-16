@@ -59,10 +59,10 @@
 
 <form on:submit={handleSubmit}>
     <label for="title">Merch Title:</label>
-    <input bind:value={title} id="title" required type="text"/>
+    <input bind:value={title} id="title" placeholder="Title" required type="text"/>
 
     <label for="description">Merch Description:</label>
-    <textarea bind:value={description} id="description" required></textarea>
+    <textarea bind:value={description} id="description" placeholder="Description" required></textarea>
 
     <label>Sizes:</label>
     <div>
@@ -87,7 +87,7 @@
     </div>
 
     <label for="price">Price:</label>
-    <input bind:value={price} id="price" required type="number"/>
+    <input bind:value={price} id="price" placeholder="****" required type="number"/>
 
     <label for="file">Image:</label>
     <input accept=".pdf, .jpeg, .jpg, .png" id="file" on:change={handleFileInput} type="file">
@@ -97,12 +97,12 @@
 <style lang="scss">
 
   form {
-    background-color: #f5f5f5;
+    background-color: #1B263B;
     padding: 20px;
     width: 300px;
 
     label {
-      color: #333;
+      color: #E0E1DD;
       display: block;
       margin-bottom: 10px;
     }
@@ -115,8 +115,12 @@
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      color: #555;
+      color: #E0E1DD;
       margin-bottom: 10px;
+
+      &::placeholder {
+        color: #E0E1DD;
+      }
 
       &:focus {
         border-color: #aaa;
@@ -137,8 +141,8 @@
     }
 
     button[type="submit"] {
-      background-color: #007bff;
-      color: #fff;
+      background-color: #E0E1DD;
+      color: #1B263B;
       padding: 10px 20px;
       border: none;
       border-radius: 4px;

@@ -19,57 +19,70 @@
 
 </script>
 <div class="filter-search">
-    <h1>Search</h1>
-    <label for="post-search">Search for users!</label>
-    <input bind:value={searchFilter} id="post-search" placeholder="tag / username" type="text">
+    <h1>Find an artist</h1>
+    <input bind:value={searchFilter} id="post-search" placeholder="Search user" type="text">
 </div>
 
 <div class="container">
     {#each filteredArtists as artist}
-        <div class="artist">
-            <a href="profile/{artist.artistName}">{artist.artistName}</a>
-            <img src={artist.profilePictureKey} alt="artist">
-            {#if artist.biography}
-                <p>{artist.biography}</p>
-            {/if}
-            {#each artist.userTags as tag }
-                <li>{tag}</li>
-            {/each}
-        </div>
+        <a class="artist" href="profile/{artist.artistName}">
+            <div>
+                <h2>{artist.artistName}</h2>
+                <img src={artist.profilePictureKey} alt="artist">
+                {#if artist.biography}
+                    <p>{artist.biography}</p>
+                {/if}
+                {#each artist.userTags as tag }
+                    <li>{tag}</li>
+                {/each}
+            </div>
+        </a>
     {/each}
 </div>
 
 
 <style lang="scss">
   .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    a {
+      text-decoration: none;
+
+    }
 
     .artist {
-      width: 18em;
-      margin-bottom: 1.25em;
+      margin: 2em auto;
+      width: 25em;
       background-color: #f7f7f7;
       padding: 1.25em;
-      border-radius: 0.25em;
-      box-shadow: 0 0.125em 0.25em rgba(0, 0, 0, 0.1);
+      border-radius: 0.75em;
+      -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+      box-shadow: -1px -1px 15px 8px #E0E1DD;
 
-      a {
-        display: block;
+      &:hover {
+        filter: brightness(90%);
+      }
+
+      h2 {
         text-decoration: none;
+        text-align: center;
+        color: #0D1B2A;
+      }
+
+      p {
+        display: block;
         color: #333;
         font-weight: bold;
         margin-bottom: 0.625em;
 
-        &:hover {
-          text-decoration: underline;
-        }
       }
 
       img {
         max-width: 100%;
         height: auto;
         margin-bottom: 0.625em;
+        border-radius: 0.75em;
       }
 
       p {
@@ -93,7 +106,23 @@
         display: inline-block;
         margin-right: 0.375em;
         margin-bottom: 0.375em;
+        color: #0D1B2A;
       }
+    }
+  }
+
+  .filter-search {
+    text-align: center;
+
+    input[type="text"] {
+      text-align: center;
+      flex: 1;
+      padding: 0.5em;
+      font-size: 1em;
+      border: 1px solid #778DA9;
+      border-radius: 0.75em;
+      resize: none;
+      margin-right: 0.75em;
     }
   }
 

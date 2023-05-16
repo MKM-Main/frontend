@@ -1,14 +1,13 @@
 <script>
     import {env} from "$env/dynamic/public";
     import Logout from "../../routes/(auth)/Logout.svelte";
-    let pages = ["forum", "artists", "login"]
+    let pages = ["forum", "artists"]
 
     export let artistName
     export let userRole
     export let jwt
     export let imageSource
     export let conversation
-
 </script>
 
 
@@ -33,7 +32,11 @@
             <a href="/{page}">{page}</a>
         {/each}
     </div>
-
+    {#if !jwt}
+        <div>
+            <a href="/login">Login</a>
+        </div>
+    {/if}
 
     {#if userRole === "admin"}
         <div>
@@ -47,7 +50,7 @@
         <Logout/>
         <div>
             <a href="/profile/{artistName}">
-                <img alt="{artistName}" src="{imageSource}">
+                <img class="profile-image" alt="{artistName}" src="{imageSource}">
             </a>
         </div>
     {/if}
@@ -58,25 +61,62 @@
 
 <style lang="scss">
   .header {
+    background-color: #0D1B2A;
+    color: #E0E1DD;
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    background-color: orange;
-    padding: 3em;
+    padding: 1.25em;
+    -webkit-box-shadow: 5px 5px 15px 5px #0D1B2A;
+    box-shadow: 5px 5px 15px 5px #0D1B2A;
+    margin-bottom: 2.75em;
 
     a {
-      margin: 0 2em;
-      text-transform: capitalize;
+      color: #E0E1DD;
+      margin-right: 0.625em;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1em;
 
-      .home {
-        height: 6.5em;
-      }
-
-      img {
-        height: 2.75em;
-        border-radius: 100px;
+      &:hover {
+        color: #778DA9;
       }
     }
+
+    .home {
+      height: 3.75em;
+    }
+
+    .messages {
+      position: relative;
+
+      &::after {
+        content: 'new message';
+        position: absolute;
+        top: -0.625em;
+        right: -0.625em;
+        background-color: #415A77;
+        color: #E0E1DD;
+        font-size: 0.625em;
+        padding: 0.125em 0.25em;
+        border-radius: 0.25em;
+      }
+    }
+
+    .profile-image {
+      height: 2.5em;
+      width: 2.5em;
+      border-radius: 50%;
+      margin-left: 0.625em;
+    }
+
+    .dashboard-link {
+      margin-left: 0.625em;
+    }
+
+    .logout {
+      margin-right: 0.625em;
+    }
   }
+
 </style>

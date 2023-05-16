@@ -1,6 +1,6 @@
 <script>
-    import { onMount } from "svelte";
-    import { io } from "socket.io-client";
+    import {onMount} from "svelte";
+    import {io} from "socket.io-client";
     import Modal from '../../../lib/components/modal/Modal.svelte';
     import PostConversation from '../../../lib/components/conversations/PostConversation.svelte';
     import DeleteConversation from "../../../lib/components/conversations/DeleteConversation.svelte";
@@ -8,11 +8,11 @@
 
     let userData;
     const fetchUserData = async () => {
-      const res = await fetch(`http://localhost:8080/api/users/${loggedInUserArtistName}`)
+        const res = await fetch(`http://localhost:8080/api/users/${loggedInUserArtistName}`)
         const result = await res.json();
         userData = result;
     }
-    
+
     export let data;
     const loggedInUser = data?.userData?.customMessage?._id;
     const loggedInArtistname = data?.userData?.customMessage?.artistName;
@@ -22,10 +22,9 @@
     let conversationsMessages = data?.conversationMessages;
     let params = data.params;
 
-    
-    
+
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
-    
+
     $: conversationsMessages = data?.conversationMessages
     $: params = data.params;
     $: conversations = data?.conversations
@@ -35,16 +34,16 @@
     let socket = io(`http://localhost:8080/`);
     let bodyArea;
     let socketMessages = []
-    
+
 
     const emptySocketArray = () => {
         socketMessages = []
     };
 
     const emptySocketConversationArray = () => {
-      socketConversationArray = []
+        socketConversationArray = []
     };
-
+    
     const sendMessage = (params) => {
         socket.emit("new message", [bodyArea, params, loggedInUser, loggedInArtistname])
     }
@@ -60,11 +59,11 @@
 
 
     const createConversation = async (action) => {
-      console.log(action)
-      socket.emit("new conversation", action);
+        console.log(action)
+        socket.emit("new conversation", action);
     }
     let socketConversationArray = []
-      socket.on("new conversation", async data => {
+    socket.on("new conversation", async data => {
         socketConversationArray = data.conversation;
     })
 
@@ -91,51 +90,53 @@
                 body: bodyArea
             }),
         }).then(res => res.json())
-        .then(data => {
-            timeStampUpdate = data.message.timeStamp;
-            bodyArea = "";
-            messageList.scrollTop = messageList.scrollHeight;
-        })
+            .then(data => {
+                timeStampUpdate = data.message.timeStamp;
+                bodyArea = "";
+                messageList.scrollTop = messageList.scrollHeight;
+            })
     };
 
     const updateConversations = async () => {
-      const res = await fetch(`http://localhost:8080/api/conversations`,{
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": `Bearer ${jwt}`
-        }
-      });
-      const result = await res.json();
-      conversations = result;
+        const res = await fetch(`http://localhost:8080/api/conversations`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${jwt}`
+            }
+        });
+        const result = await res.json();
+        conversations = result;
     }
 
     const patchReadConversation = async (action) => {
-    try {
-        await fetch(`http://localhost:8080/api/conversations/read/${action}`, {
-            method: "PATCH",
+        try {
+            await fetch(`http://localhost:8080/api/conversations/read/${action}`, {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${jwt}`
+                },
+            });
+            await updateConversations();
+        } catch (error) {
+            console.error("Error updating conversation:", error);
+        }
+    }
+    const updateMessages = async () => {
+        const res = await fetch(`http://localhost:8080/api/conversations/${params}`, {
+            method: "GET",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
                 "Authorization": `Bearer ${jwt}`
-            },
+            }
         });
-        await updateConversations();
-    } catch (error) {
-        console.error("Error updating conversation:", error);
-    }
-}
-    const updateMessages = async () => {
-      const res = await fetch(`http://localhost:8080/api/conversations/${params}`,{
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": `Bearer ${jwt}`
-        }
-      });
-      const result = await res.json();
-      conversationsMessages = result;
+        const result = await res.json();
+        conversationsMessages = result;
     }
     onMount(async () => {
         await fetchUserData();
@@ -143,110 +144,124 @@
 </script>
 <div class="conversation-main">
     <div class="left-column">
-        <div class="send-div"><button on:click={() => { modal = true; fetchPageUser(); }}>
-          <i class="material-icons" style="font-size:36px">chat</i>
-        </button>
-      </div>
+        <div class="send-div">
+            <button on:click={() => { modal = true; fetchPageUser(); }}>
+                <i class="material-icons" style="font-size:36px">chat</i>
+            </button>
+        </div>
 
         {#each conversations as conversation}
-        {#if conversation.read === false && conversation.sender !== loggedInArtistname}
-          <a on:click={ () => {{emptySocketArray()}; patchReadConversation(conversation._id); updateMessages()}} href="/conversations/{conversation._id}">
-            <p>unread message</p>
-            <div class="horizontal-div">
-                <img alt="" class="conversations-pic" src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
-                <p>{conversation.participants}</p>
-                <p>{conversation.timeStamp}</p>
-                <DeleteConversation conversation={conversation} updateDeletedConversation={updateConversations} jwt={jwt}/>
-            </div>
-          </a>
-          {:else}
-          <a on:click={ () => {{emptySocketArray()}; patchReadConversation(conversation._id)}} href="/conversations/{conversation._id}">
-            <div class="horizontal-div">
-                <img alt="" class="conversations-pic" src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
-                <p>{conversation.participants}</p>
-                <p>{conversation.timeStamp}</p>
-                <DeleteConversation conversation={conversation} updateDeletedConversation={updateConversations} jwt={jwt}/>
-            </div>
-        </a>
-        {/if}
-          
+            {#if conversation.read === false && conversation.sender !== loggedInArtistname}
+                <a on:click={ () => {{emptySocketArray()} patchReadConversation(conversation._id); updateMessages()}}
+                   href="/conversations/{conversation._id}">
+                    <p>unread message</p>
+                    <div class="horizontal-div">
+                        <img alt="" class="conversations-pic"
+                             src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
+                        <p>{conversation.participants}</p>
+                        <p>{conversation.timeStamp}</p>
+                        <DeleteConversation conversation={conversation} updateDeletedConversation={updateConversations}
+                                            jwt={jwt}/>
+                    </div>
+                </a>
+            {:else}
+                <a on:click={ () => {{emptySocketArray()} patchReadConversation(conversation._id)}}
+                   href="/conversations/{conversation._id}">
+                    <div class="horizontal-div">
+                        <img alt="" class="conversations-pic"
+                             src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
+                        <p>{conversation.participants}</p>
+                        <p>{conversation.timeStamp}</p>
+                        <DeleteConversation conversation={conversation} updateDeletedConversation={updateConversations}
+                                            jwt={jwt}/>
+                    </div>
+                </a>
+            {/if}
+
         {/each}
-        
+
         {#each socketConversationArray as socketConversation}
-        {#if socketConversation?.receiver[0] !== loggedInArtistname}
-        <div></div>
-        {:else}
-        <a on:click={() => {emptySocketConversationArray(); emptySocketArray(); patchReadConversation(socketConversation._id)}} href="/conversations/{socketConversation._id}">
-          <p>unread message i am a socket</p>
-          <div class="horizontal-div">
-              <img alt="" class="conversations-pic" src="{imageSourcePrefix}{socketConversation.profilePictureKeySender}"/>
-              <p>{socketConversation.sender}</p>
-              <p>{socketConversation.timeStamp}</p>
-              <DeleteConversation conversation={socketConversation} jwt={jwt}/>
-          </div>
-          </a>
-        {/if}
+            {#if socketConversation?.receiver[0] !== loggedInArtistname}
+                <div></div>
+            {:else}
+                <a on:click={() => {emptySocketConversationArray(); emptySocketArray(); patchReadConversation(socketConversation._id)}}
+                   href="/conversations/{socketConversation._id}">
+                    <p>unread message i am a socket</p>
+                    <div class="horizontal-div">
+                        <img alt="" class="conversations-pic"
+                             src="{imageSourcePrefix}{socketConversation.profilePictureKeySender}"/>
+                        <p>{socketConversation.sender}</p>
+                        <p>{socketConversation.timeStamp}</p>
+                        <DeleteConversation conversation={socketConversation} jwt={jwt}/>
+                    </div>
+                </a>
+            {/if}
         {/each}
     </div>
 
     {#if conversationsMessages.length !== 0}
-    <div class="right-column">
-      <div><p>{conversationsMessages.participants}</p></div>
-        <div class="message-list" bind:this={messageList}>
-          {#each conversationsMessages.messages as message}
-            <div class="message-container">
-              {#if message.sender !== loggedInUserArtistName}
-                <div class="left-message">
-                  <a href="/profile/{message.sender}"><img alt="" class="conversations-pic" src="{imageSourcePrefix}{message.profilePictureKey}"/></a>
-                  <p>{message.body}</p>
-                  <p class="timestamp-msg">{message.timeStamp}</p>
-                </div>
-              {:else}
-              <div class="right-message">
-                <p>{message.body}</p>
-                <p class="timestamp-msg">{message.timeStamp}</p>
-              </div>
-              {/if}
-            </div>
-          {/each}
+        <div class="right-column">
+            <div><p>{conversationsMessages.participants}</p></div>
+            <div class="message-list" bind:this={messageList}>
+                {#each conversationsMessages.messages as message}
+                    <div class="message-container">
+                        {#if message.sender !== loggedInUserArtistName}
+                            <div class="left-message">
+                                <a href="/profile/{message.sender}"><img alt="" class="conversations-pic"
+                                                                         src="{imageSourcePrefix}{message.profilePictureKey}"/></a>
+                                <p>{message.body}</p>
+                                <p class="timestamp-msg">{message.timeStamp}</p>
+                            </div>
+                        {:else}
+                            <div class="right-message">
+                                <p>{message.body}</p>
+                                <p class="timestamp-msg">{message.timeStamp}</p>
+                            </div>
+                        {/if}
+                    </div>
+                {/each}
 
 
-          {#each socketMessages as msg}
-            <div class="message-container">
-              {#if msg.params === params}
-                {#if msg.loggedInUser !== loggedInUser}
-                <div class="left-message">
-                  <a href="/profile/{msg.loggedInArtistname}"><img alt="" class="conversations-pic" src="{imageSourcePrefix}{userProfiles[msg.loggedInArtistname]}"/></a>
-                  <p >{msg.dataMessage}</p>
-                  <p class="timestamp-msg">{msg.timeStamp}</p>
-                </div>
-                {:else}
-                <div class="right-message">
-                  <p >{msg.dataMessage}</p>
-                  <p class="timestamp-msg">{msg.timeStamp}</p>
-                </div>
-                {/if}
-              {/if}
+                {#each socketMessages as msg}
+                    <div class="message-container">
+                        {#if msg.params === params}
+                            {#if msg.loggedInUser !== loggedInUser}
+                                <div class="left-message">
+                                    <a href="/profile/{msg.loggedInArtistname}"><img alt="" class="conversations-pic"
+                                                                                     src="{imageSourcePrefix}{userProfiles[msg.loggedInArtistname]}"/></a>
+                                    <p>{msg.dataMessage}</p>
+                                    <p class="timestamp-msg">{msg.timeStamp}</p>
+                                </div>
+                            {:else}
+                                <div class="right-message">
+                                    <p>{msg.dataMessage}</p>
+                                    <p class="timestamp-msg">{msg.timeStamp}</p>
+                                </div>
+                            {/if}
+                        {/if}
+                    </div>
+                {/each}
             </div>
-          {/each}
+
+            <div class="input-message">
+                <form on:submit|preventDefault={patchMessages(params)}>
+                    <div class="input-div">
+                        <textarea bind:value={bodyArea} class="area" name="" id="{params}" cols="40" rows="1"
+                                  key={params}></textarea>
+                        <button class="btn" on:click={ () => {sendMessage(params); updateConversations();}}
+                                type="submit">Send
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <div class="input-message">
-          <form on:submit|preventDefault={patchMessages(params)}>
-            <div class="input-div">
-              <textarea bind:value={bodyArea} class="area" name="" id="{params}" cols="40" rows="1" key={params}></textarea>
-              <button class="btn" on:click={ () => {sendMessage(params); updateConversations();}} type="submit">Send</button>
-            </div>
-          </form>
-        </div>
-    </div>
     {:else}
-    <div class="right-column">
-      <div class="message-list">
-          <div class="message-container">
-          </div>
-      </div>
-    </div>
+        <div class="right-column">
+            <div class="message-list">
+                <div class="message-container">
+                </div>
+            </div>
+        </div>
     {/if}
 </div>
 
@@ -262,7 +277,8 @@
                     <div class="modal-artistname">
                         {user.artistName}
                     </div>
-                        <PostConversation updateConversations={updateConversations} createConversation={createConversation} user={user} on:close={() => modal = false} jwt={jwt} />
+                    <PostConversation updateConversations={updateConversations} createConversation={createConversation}
+                                      user={user} on:close={() => modal = false} jwt={jwt}/>
                 </div>
             {/each}
         </div>
@@ -270,77 +286,83 @@
 {/if}
 
 <style lang="scss">
-    .message-list {
-    height: 420px;
+  .message-list {
+    height: 26.25em;
     overflow-y: auto;
   }
 
   .btn {
-    border: 2px solid black;
-    border-radius: 15px;
+    border: 0.125em solid #000000;
+    border-radius: 0.9375em;
     width: 20%;
-    padding: 10px;
+    padding: 0.625em;
   }
 
   .message-container {
-    margin: 8px;
-    padding: 8px;
-    border-radius: 8px;
+    margin: 0.5em;
+    padding: 0.5em;
+    border-radius: 0.5em;
   }
-    .conversation-main {
-        display: flex;
-        flex-direction: row;
-        margin: 20px;
-        border: 2px solid black;
-        border-radius: 10px;
-        padding: 10px;
-    }
-    .left-column {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        border: 2px solid black;
-        border-radius: 10px;
-        padding: 10px;
-        width: 50%;
-        margin-bottom: 10px;
-        height: 500px;
-        overflow-y: auto;
-    }
-    .right-column {
-        flex: 1;
-        border: 2px solid black;
-        border-radius: 10px;
-        padding: 10px;
-        width: 50%;
-        margin-bottom: 10px;
-        height: 500px;
-    }
 
-    .horizontal-div {
-        display: flex;
-        height: 50px;
-        margin-bottom: 10px;
-        background-color: gray;
-        align-items: center;
-        border-radius: 10px;
-        padding: 10px;
-        cursor: pointer;
-        justify-content: space-between;
-    }
-    .horizontal-div:hover {
-        background-color: #f2f2f2;
-    }
-    .horizontal-div::selection {
-        background-color: #e6f2ff;
-    }
-    .area{
-        border: 2px solid black;
-        border-radius: 10px;
-        padding: 5px;
-    }
+  .conversation-main {
+    display: flex;
+    flex-direction: row;
+    margin: 1.25em;
+    border: 0.125em solid #000000;
+    border-radius: 0.625em;
+    padding: 0.625em;
+  }
 
-    .message-container {
+  .left-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 0.125em solid #000000;
+    border-radius: 0.625em;
+    padding: 0.625em;
+    width: 50%;
+    margin-bottom: 0.625em;
+    height: 31.25em;
+    overflow-y: auto;
+  }
+
+  .right-column {
+    flex: 1;
+    border: 0.125em solid #000000;
+    border-radius: 0.625em;
+    padding: 0.625em;
+    width: 50%;
+    margin-bottom: 0.625em;
+    height: 31.25em;
+  }
+
+  .horizontal-div {
+    display: flex;
+    height: 3.125em;
+    margin-bottom: 0.625em;
+    background-color: gray;
+    align-items: center;
+    border-radius: 0.625em;
+    padding: 0.625em;
+    cursor: pointer;
+    justify-content: space-between;
+  }
+
+  .horizontal-div:hover {
+    background-color: #f2f2f2;
+  }
+
+  .horizontal-div::selection {
+    background-color: #e6f2ff;
+  }
+
+  .area {
+    border: 0.125em solid #000000;
+    border-radius: 0.625em;
+    padding: 0.3125em;
+  }
+
+  .message-container {
     display: flex;
     flex-direction: column;
     max-width: 90%;
@@ -348,17 +370,17 @@
   }
 
   .left-message {
-    margin-bottom: 2px;
-    border-radius: 40px;
-    padding: 16px;
+    margin-bottom: 0.125em;
+    border-radius: 2.5em;
+    padding: 1em;
     align-self: flex-start;
     background-color: #f2f2f2;
   }
 
   .right-message {
-    margin-bottom: 2px;
-    padding: 16px;
-    border-radius: 40px;
+    margin-bottom: 0.125em;
+    padding: 1em;
+    border-radius: 2.5em;
     align-self: flex-end;
     background-color: #4CAF50;
     color: white;
@@ -367,33 +389,36 @@
   .modal-each-div {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 0.625em;
     width: 100%;
     justify-content: space-between;
   }
 
   .img-pic-modal {
-    height: 100px;
-    border-radius: 100px;
+    height: 6.25em;
+    border-radius: 6.25em;
   }
 
-  .conversations-pic{
-    height: 40px;
-    border-radius: 120px;
-    margin-right: 10px;
+  .conversations-pic {
+    height: 2.5em;
+    border-radius: 7.5em;
+    margin-right: 0.625em;
   }
 
-  .input-div{
+  .input-div {
     display: flex;
   }
 
-  .send-div{
+  .send-div {
     display: flex;
     justify-content: flex-end;
-    border-bottom: 1px solid black;
-    margin-bottom: 5px;
+    border-bottom: 0.0625em solid #000000;
+    margin-bottom: 0.3125em;
   }
-  .timestamp-msg{
+
+  .timestamp-msg {
     font-size: small;
   }
+
+
 </style>

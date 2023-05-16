@@ -1,7 +1,6 @@
 <script>
     import {onMount} from "svelte";
     import Modal from '$lib/components/modal/Modal.svelte';
-    import ShowComment from "$lib/components/comments/ShowComment.svelte";
     import CreateComment from "$lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
     import Spinner from "$lib/components/helpers/Spinner.svelte";
@@ -13,6 +12,7 @@
     import Discography from "./Discography.svelte";
     import DeleteDisco from "./DeleteDisco.svelte";
     import Settings from "./Settings.svelte";
+    import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
 
 
     export let data;
@@ -24,9 +24,11 @@
     let merchandise = data.json?.user?.merch
     let discography = data.json?.user?.discography
     let showCreationForm = true
+    let collapseBtnValue = "Close creation section"
 
     const handleShowCreationForm = () => {
         showCreationForm = !showCreationForm
+        collapseBtnValue = collapseBtnValue === "Open creation section" ? "Close creation section" : "Open creation section";
     }
 
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
@@ -123,7 +125,7 @@
         wallposts = event.detail
     }
 
-    let showSection = "settings"
+    let showSection = "merch"
     const handleShownSection = (section) => {
         showSection = section
         showCreationForm = true
@@ -192,6 +194,10 @@
                 <div class="new-post">
                     <button class="btn-new-post" on:click={() => modalNewPost = true}>Post</button>
                 </div>
+                <div>
+                    <button class="collapse-btn"
+                            on:click={handleShowCreationForm}>{collapseBtnValue}</button>
+                </div>
             {/if}
         </div>
     </div>
@@ -215,21 +221,19 @@
                             jwt="{jwt}"
                             loggedInUser="{loggedInUser}"
                     />
-
-                    <div class="splitter"/>
-                </div>
-                <div>
-                    {#if jwt}
-                        <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
-                                       updateComments={updateComments}/>
-                    {/if}
-                    {#each wallpost?.comments as comment}
-                        <ShowComment
-                                comment={comment}
-                                jwt="{jwt}"
-                                loggedInUser="{loggedInUser}"
-                        />
-                    {/each}
+                    <div>
+                        {#if jwt}
+                            <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
+                                           updateComments={updateComments}/>
+                        {/if}
+                        {#each wallpost?.comments as comment}
+                            <ShowComment
+                                    comment={comment}
+                                    jwt="{jwt}"
+                                    loggedInUser="{loggedInUser}"
+                            />
+                        {/each}
+                    </div>
                 </div>
                 <br/>
             {/each}
@@ -241,7 +245,6 @@
         <h1>Merch Site</h1>
         <div class="merch-creation">
             {#if loggedInUser === pageArtistName}
-                <button on:click={handleShowCreationForm}>Collapse</button>
                 {#if showCreationForm}
                     <CreateMerch
                             loggedInUser="{loggedInUser}"
@@ -285,7 +288,6 @@
     <div class="main-disc">
         <h1>Discography</h1>
         {#if loggedInUser === pageArtistName}
-            <button on:click={handleShowCreationForm}>Collapse</button>
             {#if showCreationForm}
                 <Discography
                         jwt="{jwt}"
@@ -414,7 +416,12 @@
       }
     }
 
-
+    .collapse-btn {
+      border: 2px solid black;
+      border-radius: 15px;
+      padding: 10px;
+      margin-left: 5px;
+    }
   }
 
   .img-pic {
@@ -491,26 +498,40 @@
     border-radius: 100px;
   }
 
-  .main-wallpost {
-    margin-left: 60px;
-    margin-right: 60px;
+  .wallpost-div {
+    width: 50%;
+    margin: 0 25%;
+    padding: 1em;
+    border-radius: 0.75em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+    box-shadow: -1px -1px 15px 8px #E0E1DD;
 
-    .wallpost-div {
-      border: 2px solid #000;
-      border-radius: 15px;
-      padding: 50px;
-
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 0.5em;
     }
 
-    .wallpost-body {
-      margin-bottom: 10px;
+    h3 {
+      font-size: 1em;
+      margin-bottom: 0.5em;
     }
 
-    .btn-comment {
-      border: 2px solid black;
-      border-radius: 15px;
-      padding: 10px;
-      margin-left: 5px;
+    h2 {
+      font-size: 1.25em;
+      margin-top: 1em;
+
+      a {
+        color: #415A77;
+        text-decoration: none;
+
+        &:hover {
+          color: #1B263B;
+        }
+      }
     }
   }
 
@@ -519,18 +540,30 @@
     .merch-creation {
       display: flex;
       justify-content: center;
+
+      :first-of-type(button) {
+        color: orange;
+
+      }
     }
 
     .merch-overview {
+      margin-top: 1.75em;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
 
     .merch-item {
-      background-color: #f5f5f5;
+      background-color: #1B263B;
       padding: 20px;
-      border-radius: 4px;
+      border-radius: 0.75em;
+      -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+      box-shadow: -1px -1px 15px 8px #E0E1DD;
+
+      p {
+        color: #E0E1DD;
+      }
 
       .merch-title {
         font-size: 18px;
@@ -553,7 +586,6 @@
 
       .merch-image {
         max-width: 10em;
-
       }
     }
   }

@@ -7,7 +7,7 @@
 
 <div class="comment">
     <a href="/profile/{comment?.commentAuthor}">{comment?.commentAuthor}</a>
-    <p>Comment: {comment?.commentBody}</p>
+    <p>{comment?.commentBody}</p>
     <p>{comment?.timeStamp}</p>
     <Hype
             jwt="{jwt}"
@@ -19,12 +19,25 @@
 
 </div>
 
-<style>
-    .comment {
-        border: 2px solid black;
-        border-radius: 15px;
-        padding: 10px;
-        background-color: #F0F2F5;
-        margin-top: 5px;
+<style lang="scss">
+  .comment {
+    border-radius: 15px;
+    padding: 10px;
+    background-color: #F0F2F5;
+    margin-top: 15px;
+    -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+    box-shadow: -1px -1px 15px 8px #E0E1DD;
+
+    a {
+      text-decoration: none;
+      color: #0D1B2A;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
     }
+
+  }
 </style>

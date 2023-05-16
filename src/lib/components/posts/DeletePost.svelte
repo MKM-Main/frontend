@@ -28,7 +28,7 @@
 <style lang="scss">
   .fa-trash {
     position: relative;
-    left: 97%;
+    left: 50%;
 
     &:hover {
       color: red;

@@ -29,13 +29,10 @@
 <div class="hype-container">
     <i aria-hidden="true" class="fa fa-fire fa-2xl" on:click={hypePost}></i>
     <p>{rating}</p>
-    <p>Hype train!</p>
 </div>
 
 
 <style lang="scss">
-
-
   .hype-container {
     display: flex;
     justify-content: right;
@@ -51,6 +48,7 @@
         scale: 1.25;
         background-color: orange;
         border-radius: 50%;
+        cursor: pointer;
       }
     }
   }

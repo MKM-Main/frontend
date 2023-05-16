@@ -5,24 +5,26 @@
 
 </script>
 
-<div class="widget">
-    <div class="header">
-        <h3>{post?.artistName}</h3>
-        <p>{post?.timeStamp}</p>
-        <div>
-            <i class="fa-solid fa-fire fa-xl"></i>
-            <span>{post?.rating.length}</span>
+{#if post}
+    <div class="widget">
+        <div class="header">
+            <h3>{post?.artistName}</h3>
+            <p>{post?.timeStamp}</p>
+            <div>
+                <i class="fa-solid fa-fire fa-xl"></i>
+                <span>{post?.rating.length}</span>
+            </div>
+        </div>
+        <div class="body">
+            <div class="body-content">
+                <p>{post?.body}</p>
+            </div>
+            <div>
+                <UserUploadedFile keyReference="{post?.keyReference}"/>
+            </div>
         </div>
     </div>
-    <div class="body">
-        <div class="body-content">
-            <p>{post?.body}</p>
-        </div>
-        <div>
-            <UserUploadedFile keyReference="{post?.keyReference}"/>
-        </div>
-    </div>
-</div>
+{/if}
 
 <style lang="scss">
   .widget {

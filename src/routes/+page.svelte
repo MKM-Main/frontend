@@ -1,5 +1,4 @@
 <script>
-    import HypeWidget from "../lib/components/posts/HypeWidget.svelte";
     export let data
     const hypedPost = data.hypedPostData[0]
     const jwt = data.jwt
@@ -7,33 +6,89 @@
 
 </script>
 
-<h1>Welcome to TuneTower</h1>
 
+<div class="front-page">
+    <header>
+        <h1>Welcome to the Musician Hub</h1>
+        <p>Discover, Connect, and Showcase your talent</p>
+    </header>
 
-<div>
-    Welcome to our social media platform for musicians! Here, you can be a part of a growing community of
-    talented musicians from around the world. Whether you're a musician looking to showcase your work or a user looking
-    for the perfect artist for your party or event, our platform has everything you need.
+    <main>
+        <div class="about">
+            <h2>About Us</h2>
+            <p>
+                The Musician Hub is a platform dedicated to supporting new musicians. Whether you're a singer,
+                songwriter,
+                producer, or instrumentalist, we provide you with the tools and resources to grow your music career.
+            </p>
+        </div>
 
-    As a musician, you can create a profile, showcase your music, and connect with other musicians and fans. Our
-    platform is designed to help you expand your network, find new opportunities, and gain valuable exposure. You can
-    also participate in discussions, share your knowledge, and collaborate with other musicians to create amazing music.
+        <div class="discover">
+            <h2>Discover</h2>
+            <p>
+                Explore a wide range of musical genres, discover new artists, and find inspiration for your own music.
+                Our
+                curated collection of tracks and playlists will keep you engaged and motivated on your musical journey.
+            </p>
+        </div>
 
-    For users seeking a musician for their event or party, our platform offers an easy and intuitive way to find the
-    perfect musician. Whether you're planning a wedding reception, birthday party, or any other social event, our
-    platform has a wide selection of talented musicians to choose from. You can search for musicians by genre, location,
-    and availability, and contact them directly to book their services.
+        <div class="connect">
+            <h2>Connect</h2>
+            <p>
+                Connect with fellow musicians, collaborate on projects, and exchange ideas. Our community is filled with
+                talented individuals who are passionate about music. Build your network and grow together.
+            </p>
+        </div>
 
-    Our platform is built on the principles of community, collaboration, and creativity. We believe that by bringing
-    musicians and fans from around the world together, we can create a lively and supportive community that fosters
-    innovation and inspires new ideas. So whether you're a musician or a user, we invite you to be a part of our
-    community and discover all the amazing things our platform has to offer in music.
+        <div class="showcase">
+            <h2>Showcase</h2>
+            <p>
+                Showcase your talent to the world. Create your artist profile, upload your music, and reach a global
+                audience.
+                Gain recognition, receive feedback, and take your music career to the next level.
+            </p>
+        </div>
+    </main>
+
 </div>
 
-<div>
-    <HypeWidget post="{hypedPost}"/>
-</div>
+<style lang="scss">
+  .front-page {
+    color: #0d1b2a;
+    padding: 40px;
 
-<div>
+    header {
+      text-align: center;
+      margin-bottom: 40px;
 
-</div>
+      h1 {
+        color: #0d1b2a;
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+    }
+
+    .about,
+    .discover,
+    .connect,
+    .showcase {
+      margin-bottom: 40px;
+
+      h2 {
+        color: #0d1b2a;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+
+      p {
+        color: #e0e1dd;
+      }
+    }
+  }
+</style>
+

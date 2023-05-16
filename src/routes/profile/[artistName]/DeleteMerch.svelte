@@ -27,6 +27,7 @@
   .fa-trash {
     position: relative;
     left: 97%;
+    color: #E0E1DD;
 
     &:hover {
       color: red;
