@@ -18,7 +18,9 @@
     export let data;
     const jwt = data.jwt
     let wallposts = data.wallposts;
-    const pageArtistName = data.json?.user?.artistName;
+    let pageArtistName
+
+    $: pageArtistName = data.json?.user?.artistName;
     let followersInCount = data.json?.user?.followers?.length;
     let followingInCount = data.json?.user?.following?.length;
     let merchandise = data.json?.user?.merch
@@ -125,7 +127,7 @@
         wallposts = event.detail
     }
 
-    let showSection = "merch"
+    let showSection = "posts"
     const handleShownSection = (section) => {
         showSection = section
         showCreationForm = true
@@ -180,7 +182,7 @@
             <button on:click={() => { modal = true; fetchAction = "following"; fetchPageUser(); }}>
                 Following {followingInCount}</button>
         </div>
-        <div class="bio-div">Import bio here: {data.json.user.biography}</div>
+        <div class="bio-div">Biography: {data.json.user.biography}</div>
         <div class="btn-div">
             {#if loggedInUser && loggedInUser !== pageArtistName}
                 <div class="follow-div">
@@ -242,7 +244,6 @@
 {/if}
 {#if showSection === "merch"}
     <div class="main-merch">
-        <h1>Merch Site</h1>
         <div class="merch-creation">
             {#if loggedInUser === pageArtistName}
                 {#if showCreationForm}
@@ -253,6 +254,7 @@
                     />
                     <Spinner
                             postType="merch"
+                            color="#E0E1DD"
                     />
                 {/if}
             {/if}
@@ -286,7 +288,6 @@
 
 {#if showSection === "discography"}
     <div class="main-disc">
-        <h1>Discography</h1>
         {#if loggedInUser === pageArtistName}
             {#if showCreationForm}
                 <Discography
@@ -296,6 +297,7 @@
                 />
                 <Spinner
                         postType="discography"
+                        color="#E0E1DD"
                 />
             {/if}
         {/if}
@@ -329,7 +331,6 @@
     </div>
 {/if}
 {#if showSection === "settings"}
-    <h1>Settings</h1>
     <Settings
             jwt="{jwt}"
             artistName="{loggedInUser}"

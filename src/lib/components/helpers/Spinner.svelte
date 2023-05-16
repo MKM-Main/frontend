@@ -1,8 +1,9 @@
 <script>
     export let postType
+    export let color
 </script>
 
-<div id="loading-spinner" style="display: none;">
+<div id="loading-spinner" style="display: none; color: {color}">
     <div class="spinner"></div>
     <div>Uploading {postType}!</div>
 </div>

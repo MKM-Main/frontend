@@ -53,6 +53,15 @@
     -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
     box-shadow: -1px -1px 15px 8px #E0E1DD;
 
+    .post {
+      width: 100%;
+    }
+
+    .comment {
+      width: 75%;
+      margin: auto;
+    }
+
     h1 {
       font-size: 1.5em;
       margin-bottom: 0.5em;

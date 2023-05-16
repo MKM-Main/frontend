@@ -72,10 +72,10 @@
         </select>
 
         <label for="title">Title</label>
-        <input bind:value={mainTitle} id="title" required type="text">
+        <input bind:value={mainTitle} id="title" placeholder="My awesome title" required type="text">
 
         <label for="main-url">URL</label>
-        <input bind:value={mainUrl} id="main-url" name="mainUrl" type="url">
+        <input bind:value={mainUrl} id="main-url" name="mainUrl" placeholder="link" type="url">
 
         <label for="album">Album</label>
         <input id="album" name="album" on:change={handleAlbum} type="checkbox">
@@ -104,9 +104,9 @@
 
 <style lang="scss">
   .form-container {
-    max-width: 400px;
+    width: 35em;
     margin: 0 auto;
-    background-color: #f4f4f4;
+    background-color: #0D1B2A;
     padding: 20px;
     border-radius: 8px;
   }
@@ -118,6 +118,7 @@
   }
 
   label {
+    color: #E0E1DD;
     margin-bottom: 8px;
     font-weight: bold;
   }
@@ -131,10 +132,16 @@
     margin-bottom: 16px;
     width: 100%;
     font-size: 16px;
+    color: #E0E1DD;
+
+    &::placeholder {
+      color: #E0E1DD;
+      opacity: 0.5;
+    }
   }
 
   select {
-    background-color: #fff;
+    background-color: #0D1B2A;
     cursor: pointer;
   }
 
@@ -143,12 +150,13 @@
   }
 
   button {
-    background-color: #4caf50;
+    background-color: #778DA9;
     color: #fff;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #45a049;
+      background-color: #415A77;
 
     }
   }
@@ -156,6 +164,10 @@
   .item-container {
     .remove-song {
       background-color: red;
+
+      &:hover {
+        background-color: darkred;
+      }
 
     }
   }

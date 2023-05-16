@@ -8,12 +8,16 @@
     let firstName, lastName, age, email, biography
     let userBody = {firstName, lastName, age, email, biography, userTags}
     let newTagValue
+    let showCurrentTags = false
 
 
-    const handleNewTag = () => {
+    const handleNewTag = (e) => {
+        e.preventDefault()
         tags = [...tags, {name: newTagValue, checked: true}]
     }
-
+    const handleDeleteTag = (tagIndex) => {
+        userTags.splice(tagIndex, 1)
+    }
 
     export const updateUser = async () => {
         if (!Number) {
@@ -26,6 +30,7 @@
                 userTags.push(tag.name)
             }
         })
+
 
         if (Object.keys(userBody).length !== 0) {
             await fetch(`http://localhost:8080/api/admin/users/${artistName}`, {
@@ -72,13 +77,26 @@
 
         <label for="new-tag">New tag:</label>
         <input bind:value={newTagValue} id="new-tag" placeholder="my cool tag!" type="text">
-        <p on:click={handleNewTag}>Add tag</p>
+        <button class="btn-add-tag" on:click={handleNewTag}>Add tag</button>
 
         {#each tags as tag, idx}
             <label for="tag-{idx}">{tag.name}</label>
             <input id="tag-{idx}" on:change={() => tag.checked = !tag.checked} checked={tag.checked} type="checkbox">
         {/each}
 
+        <button on:click={() => showCurrentTags = !showCurrentTags} type="button">See current user tags</button>
+
+
+        {#if showCurrentTags}
+            <div class="current-tags">
+                {#each userTags as currentTag, idx}
+                    <label for="currentTag-{idx}">{currentTag}</label>
+                    <input id="currentTag-{idx}" on:change={() => currentTag.checked = !currentTag.checked}
+                           checked={currentTag.checked} type="checkbox">
+                    <button type="submit" on:click={() => handleDeleteTag(idx)}>Delete</button>
+                {/each}
+            </div>
+        {/if}
         <button type="submit">Submit</button>
     </form>
 </div>
@@ -89,8 +107,10 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      background-color: #0D1B2A;
 
       label {
+        color: #E0E1DD;
         display: flex;
         align-items: center;
         margin-bottom: 0.5em;
@@ -105,6 +125,12 @@
         margin-bottom: 1em;
         border: 1px solid #ccc;
         border-radius: 4px;
+        color: #E0E1DD;
+
+        &::placeholder {
+          color: #E0E1DD;
+          opacity: 0.5;
+        }
       }
 
       input[type="checkbox"] {
@@ -112,16 +138,41 @@
         vertical-align: middle;
       }
 
-      button[type="submit"] {
+      button[type="submit"],
+      button[type="button"] {
         padding: 0.75em 1em;
-        background-color: #007bff;
+        background-color: #415A77;
         color: #fff;
         border: none;
-        border-radius: 4px;
+        border-radius: 0.75em;
         cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #778DA9;
+        }
+      }
+
+      .btn-add-tag {
+        font-size: 1em;
+        padding: 0.5em 1em;
+        background-color: #415A77;
+        color: #E0E1DD;
+        border: none;
+        border-radius: 0.75em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #778DA9;
+        }
+      }
+
+      .current-tags {
+        display: flex;
+        gap: 20px;
+
       }
     }
   }
-
-
 </style>
