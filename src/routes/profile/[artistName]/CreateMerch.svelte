@@ -99,7 +99,7 @@
   form {
     background-color: #1B263B;
     padding: 20px;
-    width: 300px;
+    width: 35em;
 
     label {
       color: #E0E1DD;
@@ -120,6 +120,7 @@
 
       &::placeholder {
         color: #E0E1DD;
+        opacity: 0.5;
       }
 
       &:focus {

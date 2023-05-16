@@ -25,7 +25,10 @@
     </div>
 {/if}
 <div class="post-file">
-    <UserUploadedFile keyReference="{post?.keyReference}"/>
+    <UserUploadedFile
+            artistName="{post.artistName}"
+            keyReference="{post?.keyReference}"
+    />
 </div>
 
 <style lang="scss">
