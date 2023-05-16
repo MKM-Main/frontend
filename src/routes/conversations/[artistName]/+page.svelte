@@ -34,11 +34,11 @@
     let modal = false
     let socket = io(`http://localhost:8080/`);
     let bodyArea;
-    let messages = []
+    let socketMessages = []
     
 
     const emptySocketArray = () => {
-        messages = []
+        socketMessages = []
     };
 
     const emptySocketConversationArray = () => {
@@ -50,28 +50,22 @@
     }
 
     let userProfiles = {};
-
     socket.on("new message", async data => {
         const res = await fetch(`http://localhost:8080/api/users/${data.data.loggedInArtistname}`);
         const result = await res.json();
         userProfiles[result.user.artistName] = result.user.profilePictureKey;
-        messages = [...messages, data.data];
-        await sortConversations();
+        socketMessages = [...socketMessages, data.data];
+        await updateConversations();
     });
 
 
     const createConversation = async (action) => {
-      const socketId = await socket.id;
-      socket.emit("new conversation", [action, socketId]);
+      console.log(action)
+      socket.emit("new conversation", action);
     }
-
     let socketConversationArray = []
       socket.on("new conversation", async data => {
         socketConversationArray = data.conversation;
-      // if (data?.socketId === socket.id) {
-      //   socketConversationArray = data.conversation;
-      //   console.log(socketConversationArray)
-      // }
     })
 
     let userModalFollowArray = [];
@@ -104,18 +98,6 @@
         })
     };
 
-    const sortConversations = async () => {
-      const res = await fetch(`http://localhost:8080/api/conversations`,{
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": `Bearer ${jwt}`
-        }
-      });
-      const result = await res.json();
-      conversations = result;
-    }
-
     const updateConversations = async () => {
       const res = await fetch(`http://localhost:8080/api/conversations`,{
         headers: {
@@ -144,7 +126,17 @@
         console.error("Error updating conversation:", error);
     }
 }
-
+    const updateMessages = async () => {
+      const res = await fetch(`http://localhost:8080/api/conversations/${params}`,{
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${jwt}`
+        }
+      });
+      const result = await res.json();
+      conversationsMessages = result;
+    }
     onMount(async () => {
         await fetchUserData();
     });
@@ -155,9 +147,10 @@
           <i class="material-icons" style="font-size:36px">chat</i>
         </button>
       </div>
+
         {#each conversations as conversation}
         {#if conversation.read === false && conversation.sender !== loggedInArtistname}
-          <a on:click={ () => {emptySocketArray(); patchReadConversation(conversation._id)}} href="/conversations/{conversation._id}">
+          <a on:click={ () => {{emptySocketArray()}; patchReadConversation(conversation._id); updateMessages()}} href="/conversations/{conversation._id}">
             <p>unread message</p>
             <div class="horizontal-div">
                 <img alt="" class="conversations-pic" src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
@@ -167,7 +160,7 @@
             </div>
           </a>
           {:else}
-          <a on:click={emptySocketArray} href="/conversations/{conversation._id}">
+          <a on:click={ () => {{emptySocketArray()}; patchReadConversation(conversation._id)}} href="/conversations/{conversation._id}">
             <div class="horizontal-div">
                 <img alt="" class="conversations-pic" src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
                 <p>{conversation.participants}</p>
@@ -180,20 +173,22 @@
         {/each}
         
         {#each socketConversationArray as socketConversation}
-        {#if socketConversation?.sender[0] !== loggedInArtistname}
-        <a on:click={emptySocketConversationArray} href="/conversations/{socketConversation._id}">
-        <div class="horizontal-div">
-            <img alt="" class="conversations-pic" src="{imageSourcePrefix}{socketConversation.profilePictureKeySender}"/>
-            <p>{socketConversation.sender}</p>
-            <p>{socketConversation.timeStamp}</p>
-            <DeleteConversation conversation={socketConversation} jwt={jwt}/>
-        </div>
-        </a>
-        {:else}
+        {#if socketConversation?.receiver[0] !== loggedInArtistname}
         <div></div>
+        {:else}
+        <a on:click={() => {emptySocketConversationArray(); emptySocketArray(); patchReadConversation(socketConversation._id)}} href="/conversations/{socketConversation._id}">
+          <p>unread message i am a socket</p>
+          <div class="horizontal-div">
+              <img alt="" class="conversations-pic" src="{imageSourcePrefix}{socketConversation.profilePictureKeySender}"/>
+              <p>{socketConversation.sender}</p>
+              <p>{socketConversation.timeStamp}</p>
+              <DeleteConversation conversation={socketConversation} jwt={jwt}/>
+          </div>
+          </a>
         {/if}
         {/each}
     </div>
+
     {#if conversationsMessages.length !== 0}
     <div class="right-column">
       <div><p>{conversationsMessages.participants}</p></div>
@@ -211,11 +206,12 @@
                 <p>{message.body}</p>
                 <p class="timestamp-msg">{message.timeStamp}</p>
               </div>
-                
               {/if}
             </div>
           {/each}
-          {#each messages as msg}
+
+
+          {#each socketMessages as msg}
             <div class="message-container">
               {#if msg.params === params}
                 {#if msg.loggedInUser !== loggedInUser}
@@ -229,17 +225,17 @@
                   <p >{msg.dataMessage}</p>
                   <p class="timestamp-msg">{msg.timeStamp}</p>
                 </div>
-                  
                 {/if}
               {/if}
             </div>
           {/each}
         </div>
+
         <div class="input-message">
           <form on:submit|preventDefault={patchMessages(params)}>
             <div class="input-div">
               <textarea bind:value={bodyArea} class="area" name="" id="{params}" cols="40" rows="1" key={params}></textarea>
-              <button class="btn" on:click={ () => {sendMessage(params); sortConversations()}} type="submit">Send</button>
+              <button class="btn" on:click={ () => {sendMessage(params); updateConversations();}} type="submit">Send</button>
             </div>
           </form>
         </div>

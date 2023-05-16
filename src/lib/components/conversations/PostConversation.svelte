@@ -7,7 +7,6 @@
     export let createConversation;
 
     const close = () => dispatch("close")
-
     const postNewConversation = async (action) => {
         await fetch(`http://localhost:8080/api/conversations/${action}`, {
             method: "POST",
@@ -15,10 +14,9 @@
                 "Content-Type": "application/json",
                 Accept: "application/json",
                 Authorization: `Bearer ${jwt}`,
-            }
+            },
         }).then(res => res.json())
         .then(data => {
-            console.log(data)
             updateConversations(data)
             createConversation(data)
         })
