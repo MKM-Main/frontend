@@ -28,10 +28,19 @@
 </div>
 
 <style>
-    .btn {
-        border: 2px solid black;
-        border-radius: 15px;
-        width: 20%;
-        padding: 10px;
-    }
+    a {
+        font-size: 1em;
+        padding: 0.5em 1em;
+        background-color: #1B263B;
+        color: #E0E1DD;
+        border: none;
+        border-radius: 0.75em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+
+        &:hover {
+          background-color: #778DA9;
+        }
+      }
 </style>
