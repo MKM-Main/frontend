@@ -45,25 +45,27 @@
 </script>
 
 
-<h1>{forumTitle}</h1>
 <div class="forum-container">
     <div class="posts-container">
+        <h1>{forumTitle}</h1>
         {#each filteredForums as forum}
             <div class="posts">
                 <a href="/forum/{replaceSpacesWithHyphens(forum.referenceName)}/{replaceSpacesWithHyphens(forum.postTitle)}">
-                    <p>Post Title: {forum?.postTitle}</p>
-                    <p>User who created post: {forum?.artistName} </p>
-                    <p>Created at: {forum?.timeStamp}</p>
+                    <h2>{forum?.postTitle}</h2>
+                    <h3>Author: {forum?.artistName} </h3>
+                    <p>Date: {forum?.timeStamp}</p>
                     <p>Rating: {forum?.rating?.length}</p>
                     {#if forum?.tags}
                         <p>Tags: {forum?.tags}</p>
                     {/if}
-                    <p>Number of comments: {forum?.comments?.length}</p>
                 </a>
                 <Report jwt={jwt} collection={"posts"} id={forum?._id}
                         title={replaceSpacesWithHyphens(forum?.postTitle)}/>
             </div>
         {/each}
+        <div class="btn-container">
+            <button class="btn-create-post" on:click={() => modal = !modal}>Create new post!</button>
+        </div>
     </div>
     <div class="filter">
         <div class="filter-search">
@@ -85,9 +87,6 @@
     </div>
 
 </div>
-<div class="btn-container">
-    <button class="btn-create-post" on:click={() => modal = !modal}>Create new post!</button>
-</div>
 {#if modal}
     <Modal on:close={() => modal = false}>
         <div class="new-post">
@@ -98,7 +97,8 @@
                     updatePostSection="{updatePostSection}"
                     on:postCreated={() => modal = false}
                     tags="{tags}"/>
-            <Spinner/>
+            <Spinner
+                    postType="post"/>
         </div>
     </Modal>
 {/if}
@@ -106,53 +106,63 @@
 
 <style lang="scss">
   .forum-container {
-    display: grid;
-    grid-template-columns: 70% 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
 
     .posts-container {
-      .posts {
-        border: 2px solid lightgrey;
-        padding: 20px;
+      text-align: center;
+      flex: 1;
 
-        p {
-          margin: 10px 0;
+      .posts {
+        margin: 1em 5% 1.35em 5%;
+        border-radius: 20px;
+        -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+        box-shadow: -1px -1px 15px 8px #E0E1DD;
+
+        &:hover {
+          background-color: #E0E1DD;
         }
 
         a {
           text-decoration: none;
-          color: black;
+          color: #333333;
+
+          p {
+            margin: 0;
+          }
         }
       }
     }
 
     .filter {
-      border: 2px solid lightgrey;
-      padding: 20px;
+      flex: 0 0 200px;
+      margin-left: 20px;
 
-      .filter-search {
-        margin-bottom: 2rem;
-      }
+      .filter-search,
+      .filter-tags {
+        margin-bottom: 20px;
 
-      h1 {
-        font-size: 24px;
-        font-weight: bold;
-      }
+        h1 {
+          color: #333333;
+          margin-bottom: 10px;
+        }
 
-      label {
-        display: block;
-        margin: 10px 0;
-        font-size: 16px;
-      }
+        label {
+          display: block;
+          margin-bottom: 5px;
+          color: #666666;
+        }
 
-      input[type="radio"] {
-        margin-right: 5px;
+        input[type="text"],
+        input[type="radio"] {
+          padding: 5px;
+          border: 1px solid #cccccc;
+          border-radius: 5px;
+        }
       }
     }
-  }
-
-  .btn-container {
-    text-align: center;
-    margin-top: 20px;
   }
 
   .btn-create-post {
