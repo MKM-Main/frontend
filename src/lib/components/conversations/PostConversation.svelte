@@ -7,6 +7,7 @@
     export let createConversation;
 
     const close = () => dispatch("close")
+
     const postNewConversation = async (action) => {
         await fetch(`http://localhost:8080/api/conversations/${action}`, {
             method: "POST",
@@ -24,7 +25,7 @@
 </script>
 
 <div class="div-btn-modal">
-    <a class="btn" href="/conversations/inbox" on:click={() => { postNewConversation(user?.artistName), close()}}>Send message</a>
+    <a class="btn" href="/conversations/inbox" on:click={() => { postNewConversation(user), close()}}>Send message</a>
 </div>
 
 <style>

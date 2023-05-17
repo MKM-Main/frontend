@@ -288,6 +288,7 @@
   <Modal on:close={() => (modal = false)}>
     <div class="modal">
       {#each userModalFollowArray as user}
+      
         <div class="modal-each-div">
           <div class="modal-profile-picture">
             <img alt="" class="img-pic-modal" src="{imageSourcePrefix}{user.profilePictureKey}"/>
@@ -295,7 +296,7 @@
           <div class="modal-artistname">
             {user.artistName}
           </div>
-          <PostConversation {updateConversations} {createConversation} {user} on:close={() => (modal = false)} {jwt}/>
+          <PostConversation {updateConversations} {createConversation} user={user.artistName} on:close={() => (modal = false)} {jwt}/>
         </div>
       {/each}
     </div>

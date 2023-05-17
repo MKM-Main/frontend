@@ -14,7 +14,6 @@
     import Settings from "./Settings.svelte";
     import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
 
-
     export let data;
     const jwt = data.jwt
     let wallposts = data.wallposts;
@@ -27,6 +26,7 @@
     let discography = data.json?.user?.discography
     let showCreationForm = true
     let collapseBtnValue = "Close creation section"
+
 
     const handleShowCreationForm = () => {
         showCreationForm = !showCreationForm
@@ -148,7 +148,6 @@
     }
 </script>
 
-
 <div class="header-div">
     <div class="profile-picture">
         <img alt="" class="img-pic"
@@ -188,10 +187,11 @@
                 <div class="follow-div">
                     <button class="btn-follow" on:click={patchFollowing(followingState)}>{followingState}</button>
                 </div>
+                <div class="message-div">
+                  <a href="/conversations/inbox"><button class="btn-follow">Message</button></a>
+                </div>
             {/if}
-            <div class="message-div">
-                <button class="btn-message">Message</button>
-            </div>
+            
             {#if loggedInUser === pageArtistName}
                 <div class="new-post">
                     <button class="btn-new-post" on:click={() => modalNewPost = true}>Post</button>
