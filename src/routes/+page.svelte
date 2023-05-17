@@ -1,10 +1,14 @@
 <script>
 import { env } from "$env/dynamic/public";
 import UserUploadedFile from "../lib/components/files/UserUploadedFile.svelte";
+import { onMount } from "svelte";
+import { onDestroy } from "svelte";
 
 export let data;
 const posts = data.postData;
 const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
+const users = data?.usersData?.data;
+
 
 const filteredArrays = posts.reduce((filtered, post) => {
   if (post.reference !== "wallpost") {
@@ -28,7 +32,42 @@ const topPosts = filteredArrays
     const truncatedText = lines.join('\n'); // Join the lines back into a string
     return truncatedText.length < text.length ? truncatedText + '...' : truncatedText;
   }
+  
+  function isRecentSignup(creationDate) {
+        const currentDate = new Date();
+        const parts = creationDate.split(', ')[0].split('/');
+        const creationTimestamp = new Date(
+            `${parts[2]}-${parts[1]}-${parts[0]}`
+        ).getTime();
+        const sevenDaysAgo = currentDate.getTime() - 7 * 24 * 60 * 60 * 1000;
+        return creationTimestamp >= sevenDaysAgo;
+    }
+    
+  
+  let slideIndex = 0;
+  let timer;
 
+  function showSlides() {
+    let i;
+    let slides = document.getElementsByClassName("mySlides");
+    for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+    }
+    slideIndex++;
+    if (slideIndex > slides.length) {slideIndex = 1;}
+    slides[slideIndex-1].style.display = "block";
+    timer = setTimeout(showSlides, 2000); // Change image every 2 seconds
+  }
+
+  // Call the showSlides function when the component is mounted
+  onMount(() => {
+    showSlides();
+  });
+
+  // Stop the timer when the component is unmounted
+  onDestroy(() => {
+    clearTimeout(timer);
+  });
 </script>
 
 <div class="front-page">
@@ -47,20 +86,35 @@ const topPosts = filteredArrays
     {#each topPosts as post}
     <div class="top-post">
       <h2>{post.postTitle}</h2>
+      <h2>{post.keyReference}</h2>
       <UserUploadedFile className={"frontpage-media-top5"} keyReference={post.keyReference} artistName={post.artistName}/>
       <p class="post-body">{truncateText(post.body)}</p>
-      <p>{post.artistName}</p>
+      <p> <b>{post.artistName}</b></p>
       <p>Rating: {post.rating.length}</p>
       <a href="http://localhost:5173/forum/{post.referenceName}/{post.postTitle}"> GO TO POST</a> 
     </div>
     {/each}
-
   </div>
 
   <div class="new-users-week">
-    <h3>Users joined last 3 days</h3>
+    <div class="slideshow-container">
+      {#each users as user, index}
+        {#if isRecentSignup(user.creationDate)}
+          <div class="mySlides fade" style="display: {index === 0 ? 'block' : 'none'};">
+            <div class="slide-content-wrapper">
+              <!-- <div class="numbertext"><p>{index + 1}</p></div> -->
+              <div class="numbertext"><p>{user.artistName}</p></div>
+            </div>
+            <img class="slider-img" src="{imageSourcePrefix}{user.profilePictureKey}" alt="">
+          </div>
+        {/if}
+      {/each}
+    </div>
   </div>
 
+  
+
+    
 </div>
 
 
@@ -164,5 +218,43 @@ const topPosts = filteredArrays
       }
     }
   }
+
+  * {box-sizing: border-box;}
+body {font-family: Verdana, sans-serif;}
+.mySlides {display: none;}
+img {vertical-align: middle;}
+
+.new-users-week{
+  max-width: 65%;
+}
+.slideshow-container {
+  position: relative;
+
+    .numbertext {
+    color: #f2f2f2;
+    font-size: 100px;
+  }
+  .slide-content-wrapper {
+    position: absolute;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+  .fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
+  }
+
+  @keyframes fade {
+    from {opacity: .4} 
+    to {opacity: 1}
+  }
+
+  .slider-img{
+    width: 500px;
+  }
+}
 </style>
 
