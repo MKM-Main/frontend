@@ -2,6 +2,7 @@
     import {env} from "$env/dynamic/public";
     export let keyReference
     export let artistName
+    export let className
 
 </script>
 
@@ -15,7 +16,7 @@
 
 {#if keyReference?.endsWith(".mp4")}
     <div class="video-container">
-        <video controls="controls">
+        <video class="{className}" controls="controls">
             <source src="{env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX}{artistName}/posts/{keyReference}" type="video/mp4">
         </video>
     </div>
@@ -28,11 +29,14 @@
     keyReference?.endsWith(".png") ||
     keyReference?.endsWith(".pdf")}
     <div class="image-container">
-        <img src="{env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX}{artistName}/posts/{keyReference}" alt="image">
+        <img class="{className}" src="{env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX}{artistName}/posts/{keyReference}" alt="image">
     </div>
 {/if}
 
 <style>
+    .frontpage-media-top5{
+        max-width: 200px;
+    }
     img {
         max-width: 500px;
     }

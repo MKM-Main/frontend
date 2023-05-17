@@ -59,7 +59,7 @@
         </div>
     {/each}
     {#if jwt}
-        <CreateComment jwt={jwt} reference={"forum"} search={post.postTitle}
+        <CreateComment jwt={jwt} reference={"forum"} search={post._id}
                        updateComments={updateComments}/>
     {/if}
 </div>

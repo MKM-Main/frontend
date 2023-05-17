@@ -1,61 +1,135 @@
 <script>
-    export let data
-    const hypedPost = data.hypedPostData[0]
-    const jwt = data.jwt
+import { env } from "$env/dynamic/public";
+import UserUploadedFile from "../lib/components/files/UserUploadedFile.svelte";
 
+export let data;
+const posts = data.postData;
+const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
+
+const filteredArrays = posts.reduce((filtered, post) => {
+  if (post.reference !== "wallpost") {
+    const todaysDate = new Date().toLocaleString("en-GB").split(', ')[0];
+    const filteredComments = post.comments.filter(comment => comment.timeStamp.split(', ')[0] === todaysDate);
+    filtered.push({ post, filteredComments });
+  }
+  return filtered;
+}, []);
+
+const topPosts = filteredArrays
+  .sort((a, b) => b.filteredComments.length - a.filteredComments.length)
+  .slice(0, 5)
+  .map(obj => obj.post);
+
+  console.log(topPosts)
+
+  // Short down the body of the post and replace with ...
+  function truncateText(text) {
+    const lines = text.split('\n').slice(0, 3); // Get first 3 lines of the text
+    const truncatedText = lines.join('\n'); // Join the lines back into a string
+    return truncatedText.length < text.length ? truncatedText + '...' : truncatedText;
+  }
 
 </script>
 
-
 <div class="front-page">
-    <header>
-        <h1>Welcome to the Musician Hub</h1>
-        <p>Discover, Connect, and Showcase your talent</p>
-    </header>
+  <h1>WELCOME TO TUNE TOWER</h1>
 
-    <main>
-        <div class="about">
-            <h2>About Us</h2>
-            <p>
-                The Musician Hub is a platform dedicated to supporting new musicians. Whether you're a singer,
-                songwriter,
-                producer, or instrumentalist, we provide you with the tools and resources to grow your music career.
-            </p>
-        </div>
+  <div class="info-section">
+    <h3>Discover, Connect, and Showcase your talent</h3>
+  </div>
 
-        <div class="discover">
-            <h2>Discover</h2>
-            <p>
-                Explore a wide range of musical genres, discover new artists, and find inspiration for your own music.
-                Our
-                curated collection of tracks and playlists will keep you engaged and motivated on your musical journey.
-            </p>
-        </div>
+  <div class="popular-forum">
+    <h3>Most active forums</h3>
+  </div>
 
-        <div class="connect">
-            <h2>Connect</h2>
-            <p>
-                Connect with fellow musicians, collaborate on projects, and exchange ideas. Our community is filled with
-                talented individuals who are passionate about music. Build your network and grow together.
-            </p>
-        </div>
+  <div class="top-5-posts">
+    <h3>Most popular post!!!</h3>
+    {#each topPosts as post}
+    <div class="top-post">
+      <h2>{post.postTitle}</h2>
+      <UserUploadedFile className={"frontpage-media-top5"} keyReference={post.keyReference} artistName={post.artistName}/>
+      <p class="post-body">{truncateText(post.body)}</p>
+      <p>{post.artistName}</p>
+      <p>Rating: {post.rating.length}</p>
+      <a href="http://localhost:5173/forum/{post.referenceName}/{post.postTitle}"> GO TO POST</a> 
+    </div>
+    {/each}
 
-        <div class="showcase">
-            <h2>Showcase</h2>
-            <p>
-                Showcase your talent to the world. Create your artist profile, upload your music, and reach a global
-                audience.
-                Gain recognition, receive feedback, and take your music career to the next level.
-            </p>
-        </div>
-    </main>
+  </div>
+
+  <div class="new-users-week">
+    <h3>Users joined last 3 days</h3>
+  </div>
 
 </div>
 
+
+
 <style lang="scss">
+    .post-body {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+    .top-post {
+    width: 50%;
+    margin: 25px 25%;
+    padding: 0.5em;
+    border-radius: 0.75em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: -1px -1px 15px 8px #e0e1dd;
+    background-color: #ffffff;
+    overflow: hidden;
+    
+      a {
+        font-size: 1em;
+        padding: 0.5em 1em;
+        background-color: #1B263B;
+        color: #E0E1DD;
+        border: none;
+        border-radius: 0.75em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+
+        &:hover {
+          background-color: #778DA9;
+        }
+    }
+  }
+
+  .top-post-file {
+    width: 50%;
+    margin: 0 auto;
+    max-height: 20em;
+    overflow: hidden;
+  }
+
+  .file-content {
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .file-content UserUploadedFile {
+    max-width: 100%;
+    max-height: 100%;
+    
+  }
+
   .front-page {
     color: #0d1b2a;
     padding: 40px;
+    display: grid;
+    grid-template-columns: 70% 30%;
 
     header {
       text-align: center;

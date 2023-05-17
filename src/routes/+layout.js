@@ -1,7 +1,7 @@
 import Header from "../lib/components/Header.svelte";
 import Footer from "../lib/components/Footer.svelte";
-
-export const load = async ({data, cookies}) => {
+//KAN IKKE HENTE COOKIES HER
+export const load = async ({data}) => {
 
     const hypedPost = await fetch("http://localhost:8080/api/posts/hyped", {
         method: "GET",
