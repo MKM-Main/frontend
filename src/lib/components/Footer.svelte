@@ -7,7 +7,7 @@
 
 <style lang="scss">
   .footer {
-    margin-top: 80%;
+    margin-top: 20%;
     position: sticky;
     background-color: #0D1B2A;
     color: #E0E1DD;

@@ -8,6 +8,7 @@
 const posts = data.postData;
   const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
   const users = data?.usersData?.data;
+  const jwt = data?.jwt;
   
   
 const filteredArrays = posts.reduce((filtered, post) => {
@@ -47,65 +48,146 @@ const filteredArrays = posts.reduce((filtered, post) => {
 
   
     let slideIndex = 0;
+    let slideReleaseIndex = 0;
     let timer;
 
-    function showSlides() {
-      const slides = document.querySelectorAll(".mySlides");
 
+  function showSlides(classSelectors) {
+    const slides = document.querySelectorAll(classSelectors);
+    console.log(classSelectors)
+    if(classSelectors === ".mySlides"){
       slides.forEach((slide, index) => {
-      slide.style.display = index === slideIndex ? "block" : "none";
-      });
-
-      slideIndex++;
-      if (slideIndex >= slides.length) {
-        slideIndex = 0;
-      }
-
-      timer = setTimeout(showSlides, 2000); // Change image every 2 seconds
-    }   
-  
-    // Call the showSlides function when the component is mounted
-    onMount(() => {
-      showSlides();
+      slide.style.display = index === slideIndex ? 'block' : 'none';
     });
-  
-    // Stop the timer when the component is unmounted
-    onDestroy(() => {
-      clearTimeout(timer);
+
+    slideIndex++;
+    if (slideIndex >= slides.length) {
+      slideIndex = 0;
+    }
+
+    timer = setTimeout(() => showSlides(classSelectors), 2000);
+    }else if(classSelectors === ".mySlides-release"){
+      slides.forEach((slide, index) => {
+      slide.style.display = index === slideReleaseIndex ? 'block' : 'none';
     });
+
+    slideReleaseIndex++;
+    if (slideReleaseIndex >= slides.length) {
+      slideReleaseIndex = 0;
+    }
+
+    timer = setTimeout(() => showSlides(classSelectors), 4000);
+    }
+    
+  }
+
+  onMount(() => {
+    showSlides('.mySlides');
+    showSlides('.mySlides-release');
+  });
+
+  onDestroy(() => {
+    clearTimeout(timer);
+  });
   </script>
   <div class="header">
-  <h1>Tune</h1>
 </div>
   <div class="front-page">
-    
-      <div>
-        <h3>New Releases</h3>
+    <div></div>
+    <div class="new-users-week">
+      <div class="slideshow-container">
+        {#each users as user, index}
+          {#if isRecentSignup(user.creationDate)}
+            <div class="mySlides fade" style="display: {index === 0 ? 'block' : 'none'};">
+              <a href="/profile/{user.artistName}" target="_blank"><div class="slide-content-wrapper" style="background-image: url('{imageSourcePrefix}{user.profilePictureKey}');">
+                <div class="numbertext">
+                  <p>{user.artistName}</p>
+                </div>
+                <div class="user-tags">
+                  {#each user.userTags as tag}
+                    <p>{tag}</p>
+                  {/each}
+                </div>
+              </div></a>
+            </div>
+          {/if}
+        {/each}
+        {#if !jwt}
+          <a href="/signup"><button class="sign-up-btn">Sign up today</button></a>
+        {/if}
+      </div>
 
+  </div>
+
+  <div></div>
+
+      <div>
+        <div class="slideshow-container-release">
+          {#each users as user, index}
+            {#each user.discography as discography}
+              {#if discography.isNewRelease === true || discography.length !== 0}
+              <div class="mySlides-release fade-release" style="display: {index === 0 ? 'block' : 'none'};">
+                <h2>{discography.mainTitle}</h2>
+                <div class="release-img-container">
+                  <a href="/profile/{user.artistName}"><img class="release-img" src="https://soundvenue.com/wp-content/uploads/2022/09/DSC06972-2192x1233.jpg?v=1664274891" alt=""></a>
+                </div>
+                <div class="release-content">
+                  <h2>{user.artistName}</h2>
+                  <p>Release Date: <b>{discography.releaseDate}</b></p>
+                  {#if discography.album === true}
+                    <p>New album comming up</p>
+                    {:else}
+                    <p>Single</p>
+                  {/if}
+
+                  <div class="release-service">
+                    <a href="{discography.mainUrl}" target="_blank"><img class="service-img" src="{imageSourcePrefix}logos/{discography.selectedService}.svg" alt=""></a>
+                  </div>
+                </div>
+              </div>
+              {/if}
+            {/each}
+          {/each} 
+        </div>
       </div>
   
+      <div class="info-section">
+        <h1>Tune Tower</h1>
+        <div class="about">
+          <h2>About Us</h2>
+          <p>
+              Tune Tower is a platform dedicated to supporting new musicians. Whether you're a singer,
+              songwriter,
+              producer, or instrumentalist, we provide you with the tools and resources to grow your music career.
+          </p>
+      </div>
+      <div class="discover">
+          <h2>Discover</h2>
+          <p>
+              Explore a wide range of musical genres, discover new artists, and find inspiration for your own music.
+              Our
+              curated collection of tracks and playlists will keep you engaged and motivated on your musical journey.
+          </p>
+      </div>
 
-      <div class="new-users-week">
-        <div class="slideshow-container">
-          {#each users as user, index}
-            {#if isRecentSignup(user.creationDate)}
-              <div class="mySlides fade" style="display: {index === 0 ? 'block' : 'none'};">
-                <a href="/profile/{user.artistName}" target="_blank"><div class="slide-content-wrapper" style="background-image: url('{imageSourcePrefix}{user.profilePictureKey}');">
-                  <div class="numbertext">
-                    <p>{user.artistName}</p>
-                  </div>
-                  <div class="user-tags">
-                    {#each user.userTags as tag}
-                      <p>{tag}</p>
-                    {/each}
-                  </div>
-                </div></a>
-              </div>
-            {/if}
-          {/each}
-        </div>
-    </div>
-  
+      <div class="connect">
+          <h2>Connect</h2>
+          <p>
+              Connect with fellow musicians, collaborate on projects, and exchange ideas. Our community is filled with
+              talented individuals who are passionate about music. Build your network and grow together.
+          </p>
+      </div>
+
+      <div class="showcase">
+          <h2>Showcase</h2>
+          <p>
+              Showcase your talent to the world. Create your artist profile, upload your music, and reach a global
+              audience.
+              Gain recognition, receive feedback, and take your music career to the next level.
+          </p>
+      </div>
+      </div>
+      
     <div class="top-5-posts">
       {#each topPosts as post}
       <div class="top-post">
@@ -118,9 +200,7 @@ const filteredArrays = posts.reduce((filtered, post) => {
       </div>
       {/each}
     </div>
-  </div>
-  
-  
+  </div>  
   
   <style lang="scss">
     h1{
@@ -136,7 +216,7 @@ const filteredArrays = posts.reduce((filtered, post) => {
   
       .top-post {
       width: 50%;
-      margin: 25px 25%;
+      margin: 0% 25% 5% 25%;
       padding: 0.5em;
       border-radius: 0.75em;
       display: flex;
@@ -232,14 +312,27 @@ const filteredArrays = posts.reduce((filtered, post) => {
   
   .new-users-week{
     max-width: 100%;
+    margin-bottom: 5%;
 
+    button{
+      font-size: 1em;
+      margin-left: 20%;
+      margin-right: 20%;
+      height: 2em;
+      width: 60%;
+      background-color: #1B263B;
+      color: #E0E1DD;
+      border: none;
+      border-radius: 0.75em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+  }
   }
   .slideshow-container {
     a{
       text-decoration: none;
     }
-
-    
       .numbertext {
       color: #f2f2f2;
       font-size: 100px;
@@ -249,7 +342,6 @@ const filteredArrays = posts.reduce((filtered, post) => {
       font-size: 20px;
     }
     .slide-content-wrapper {
-      
       background-size: cover;
       background-position: center;
       border-radius: 20px;
@@ -258,6 +350,7 @@ const filteredArrays = posts.reduce((filtered, post) => {
       align-items: center;
       justify-content: center;
       z-index: 1;
+      margin-bottom: 5%;
     }
     .fade {
       animation-name: fade;
@@ -273,4 +366,53 @@ const filteredArrays = posts.reduce((filtered, post) => {
       width: 500px;
     }
   }
+  .mySlides-release {display: none;}
+  .slideshow-container-release {
+    background-color: #415A77;
+    max-width: 75%;
+    box-shadow: -1px -1px 15px 8px #e0e1dd;
+    border-radius: 20px;
+    
+    .fade-release {
+      animation-name: fade-release;
+      animation-duration: 1.5s;
+    }
+
+    @keyframes fade-release {
+      from {opacity: .4} 
+      to {opacity: 1}
+    }
+
+    .release-img {
+      max-width: 100%;
+      height: 17em;
+      padding: 1em;
+      border-radius: 20px;
+      // object-fit: contain;
+    }
+    .release-img-container{
+      object-fit: contain;
+    }
+    .release-content{
+      text-align: center;
+    }
+    .release-service{
+      object-fit: contain;
+    }
+    .service-img{
+      object-fit: contain;
+      max-width: 100%;
+      padding: 1em;
+      height: 7em;
+      &:hover{
+        filter: brightness(70%);
+      }
+    }
+    h2{
+      text-align: center;
+      padding-top: 0.5em;
+    }
+  }
+
+  
   </style>
