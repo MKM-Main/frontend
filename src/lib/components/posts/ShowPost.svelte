@@ -26,7 +26,7 @@
 {/if}
 <div class="post-file">
     <UserUploadedFile
-            artistName="{post.artistName}"
+            artistId="{post.artistId}"
             keyReference="{post?.keyReference}"
     />
 </div>

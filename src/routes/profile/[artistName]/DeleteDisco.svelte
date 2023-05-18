@@ -2,13 +2,13 @@
     import {createEventDispatcher} from 'svelte';
 
     export let jwt;
-    export let artistName;
+    export let artistId;
     export let discoId;
 
     const dispatch = createEventDispatcher();
 
     const deleteMerch = async () => {
-        await fetch(`http://localhost:8080/api/users/${artistName}/discography/${discoId}`, {
+        await fetch(`http://localhost:8080/api/users/${artistId}/discography/${discoId}`, {
             method: "DELETE",
             credentials: "include",
             headers: {

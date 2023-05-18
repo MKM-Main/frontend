@@ -4,7 +4,7 @@
     let sizes = [];
     let price = '';
 
-    export let loggedInUser;
+    export let loggedInUserId;
     export let jwt;
     export let updateMerchSection;
     let formData = new FormData();
@@ -19,7 +19,7 @@
         formData.append('sizes', JSON.stringify(sizes));
         formData.append('price', price);
 
-        await fetch(`http://localhost:8080/api/users/${loggedInUser}/merch`, {
+        await fetch(`http://localhost:8080/api/users/${loggedInUserId}/merch`, {
             method: 'POST',
             credentials: 'include',
             headers: {

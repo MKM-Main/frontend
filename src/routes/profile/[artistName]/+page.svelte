@@ -17,9 +17,12 @@
     export let data;
     const jwt = data.jwt
     let wallposts = data.wallposts;
-    let pageArtistName
+    let pageArtistName = data.json?.user?.artistName
+    let pageArtistId = data.json?.user?._id
 
-    $: pageArtistName = data.json?.user?.artistName;
+    //$: pageArtistName = data.json?.user?.artistName;
+    //$: pageArtistId = data.json?.user?._id
+
     let followersInCount = data.json?.user?.followers?.length;
     let followingInCount = data.json?.user?.following?.length;
     let merchandise = data.json?.user?.merch
@@ -39,6 +42,7 @@
     let modal = false
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
+    const loggedInUserId = data?.userData?.customMessage._id
     let loggedInUserFollow = [];
     let userModalFollowArray = [];
 
@@ -126,7 +130,7 @@
         wallposts = event.detail
     }
 
-    let showSection = "posts"
+    let showSection = "settings"
     const handleShownSection = (section) => {
         showSection = section
         showCreationForm = true
@@ -249,7 +253,7 @@
             {#if loggedInUser === pageArtistName}
                 {#if showCreationForm}
                     <CreateMerch
-                            loggedInUser="{loggedInUser}"
+                            loggedInUserId="{loggedInUserId}"
                             jwt="{jwt}"
                             updateMerchSection="{updateMerchSection}"
                     />
@@ -264,18 +268,18 @@
         <div class="merch-overview">
             {#each merchandise as merch}
                 <div class="merch-item">
-                    <img class="merch-image" src="{imageSourcePrefix}{pageArtistName}/merch/{merch._id}" alt="">
+                    <img class="merch-image" src="{imageSourcePrefix}{pageArtistId}/merch/{merch._id}" alt="">
                     <p class="merch-title">Title: {merch.title}</p>
                     <p class="merch-description">Description: {merch.description}</p>
                     <p class="merch-price">Price: {merch.price}</p>
-                    <p>Avaliable sizes:</p>
+                    <p>Available sizes:</p>
                     {#each merch.sizes as size }
                         <p>{size}</p>
                     {/each}
                     {#if loggedInUser === pageArtistName}
                         <DeleteMerch
                                 jwt="{jwt}"
-                                artistName="{pageArtistName}"
+                                artistId="{pageArtistId}"
                                 merchId="{merch._id}"
                                 on:merchDeleted={handleMerchDeleted}
                         />
@@ -293,7 +297,7 @@
             {#if showCreationForm}
                 <Discography
                         jwt="{jwt}"
-                        artistName="{loggedInUser}"
+                        artistId="{pageArtistId}"
                         updateDiscographySection="{updateDiscographySection}"
                 />
                 <Spinner
@@ -305,9 +309,7 @@
         <div class="discography-overview">
             {#each discography as disco }
                 <div class="discography-item">
-                    {#if disco.referenceKey}
-                        <img src="{imageSourcePrefix}{pageArtistName}/discography/{disco.referenceKey}" alt="image">
-                    {/if}
+                    <img src="{imageSourcePrefix}{pageArtistId}/discography/{disco._id}" alt="{disco.mainTitle}">
                     <p>{disco.album ? "Album" : "Single"} Title: {disco.mainTitle}</p>
                     {#if disco.releaseDate}
                         <p>{disco.releaseDate}</p>
@@ -325,7 +327,7 @@
                     {#if loggedInUser === pageArtistName}
                         <DeleteDisco
                                 jwt="{jwt}"
-                                artistName="{pageArtistName}"
+                                artistId="{pageArtistId}"
                                 discoId="{disco._id}"
                                 on:discoDeleted={handleDiscoDeleted}
                         />

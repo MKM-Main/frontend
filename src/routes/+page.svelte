@@ -3,14 +3,14 @@
   import UserUploadedFile from "../lib/components/files/UserUploadedFile.svelte";
   import { onMount } from "svelte";
   import { onDestroy } from "svelte";
-  
+
   export let data;
-const posts = data.postData;
+  const posts = data.postData;
   const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
   const users = data?.usersData?.data;
+
   const jwt = data?.jwt;
-  
-  
+
 const filteredArrays = posts.reduce((filtered, post) => {
     if (post.reference !== "wallpost") {
       const todaysDate = new Date().toLocaleString("en-GB").split(', ')[0];
@@ -19,21 +19,21 @@ const filteredArrays = posts.reduce((filtered, post) => {
     }
     return filtered;
   }, []);
-  
+
   const topPosts = filteredArrays
   .sort((a, b) => b.filteredComments.length - a.filteredComments.length)
     .slice(0, 5)
     .map(obj => obj.post);
-  
+
     console.log(topPosts)
-  
+
     // Short down the body of the post and replace with ...
     function truncateText(text) {
       const lines = text.split('\n').slice(0, 3); // Get first 3 lines of the text
       const truncatedText = lines.join('\n'); // Join the lines back into a string
       return truncatedText.length < text.length ? truncatedText + '...' : truncatedText;
     }
-    
+
     function isRecentSignup(creationDate) {
           const currentDate = new Date();
           const parts = creationDate.split(', ')[0].split('/');
@@ -43,10 +43,10 @@ const filteredArrays = posts.reduce((filtered, post) => {
           const sevenDaysAgo = currentDate.getTime() - 7 * 24 * 60 * 60 * 1000;
           return creationTimestamp >= sevenDaysAgo;
       }
-      
-    
 
-  
+
+
+
     let slideIndex = 0;
     let slideReleaseIndex = 0;
     let timer;
@@ -65,10 +65,24 @@ const filteredArrays = posts.reduce((filtered, post) => {
       slideIndex = 0;
     }
 
+
+      timer = setTimeout(showSlides, 2000); // Change image every 2 seconds
+    }
+
+    // Call the showSlides function when the component is mounted
+    onMount(() => {
+      showSlides();
+    });
+
+    // Stop the timer when the component is unmounted
+    onDestroy(() => {
+      clearTimeout(timer);
+
     timer = setTimeout(() => showSlides(classSelectors), 2000);
     }else if(classSelectors === ".mySlides-release"){
       slides.forEach((slide, index) => {
       slide.style.display = index === slideReleaseIndex ? 'block' : 'none';
+
     });
 
     slideReleaseIndex++;
@@ -93,6 +107,14 @@ const filteredArrays = posts.reduce((filtered, post) => {
   <div class="header">
 </div>
   <div class="front-page">
+
+
+      <div>
+        <h3>New Releases</h3>
+
+      </div>
+
+
     <div></div>
     <div class="new-users-week">
       <div class="slideshow-container">
@@ -116,6 +138,7 @@ const filteredArrays = posts.reduce((filtered, post) => {
           <a href="/signup"><button class="sign-up-btn">Sign up today</button></a>
         {/if}
       </div>
+
 
   </div>
 
@@ -149,6 +172,10 @@ const filteredArrays = posts.reduce((filtered, post) => {
             {/each}
           {/each} 
         </div>
+
+    </div>
+
+
       </div>
   
       <div class="info-section">
@@ -188,20 +215,31 @@ const filteredArrays = posts.reduce((filtered, post) => {
       </div>
       </div>
       
+
     <div class="top-5-posts">
       {#each topPosts as post}
       <div class="top-post">
         <h2>{post.postTitle}</h2>
-        <UserUploadedFile className={"frontpage-media-top5"} keyReference={post.keyReference} artistName={post.artistName}/>
+        <UserUploadedFile
+                className={"frontpage-media-top5"}
+                keyReference={post.keyReference}
+                artistId={post.artistId}/>
         <p class="post-body">{truncateText(post.body)}</p>
         <p> <b>{post.artistName}</b></p>
         <p>Rating: {post.rating.length}</p>
-        <a href="http://localhost:5173/forum/{post.referenceName}/{post.postTitle}"> GO TO POST</a> 
+        <a href="http://localhost:5173/forum/{post.referenceName}/{post.postTitle}"> GO TO POST</a>
       </div>
       {/each}
     </div>
+
+  </div>
+
+
+
+
   </div>  
   
+
   <style lang="scss">
     h1{
       text-align: center;
@@ -213,7 +251,7 @@ const filteredArrays = posts.reduce((filtered, post) => {
       overflow: hidden;
       text-overflow: ellipsis;
     }
-  
+
       .top-post {
       width: 50%;
       margin: 0% 25% 5% 25%;
@@ -226,7 +264,7 @@ const filteredArrays = posts.reduce((filtered, post) => {
       box-shadow: -1px -1px 15px 8px #e0e1dd;
       background-color: #ffffff;
       overflow: hidden;
-      
+
         a {
           font-size: 1em;
           padding: 0.5em 1em;
@@ -237,20 +275,20 @@ const filteredArrays = posts.reduce((filtered, post) => {
           cursor: pointer;
           transition: background-color 0.3s ease;
           text-decoration: none;
-  
+
           &:hover {
             background-color: #778DA9;
           }
       }
     }
-  
+
     .top-post-file {
       width: 50%;
       margin: 0 auto;
       max-height: 20em;
       overflow: hidden;
     }
-  
+
     .file-content {
       max-width: 100%;
       max-height: 100%;
@@ -258,58 +296,58 @@ const filteredArrays = posts.reduce((filtered, post) => {
       justify-content: center;
       align-items: center;
     }
-  
+
     .file-content UserUploadedFile {
       max-width: 100%;
       max-height: 100%;
-      
+
     }
-  
+
     .front-page {
       color: #0d1b2a;
       padding: 40px;
       display: grid;
       grid-template-columns: 33% 33% 33%;
-  
+
       header {
         text-align: center;
         margin-bottom: 40px;
-  
+
         h1 {
           color: #0d1b2a;
           font-size: 32px;
           margin-bottom: 10px;
         }
       }
-  
+
       .about,
       .discover,
       .connect,
       .showcase {
         margin-bottom: 40px;
-  
+
         h2 {
           color: #0d1b2a;
           font-size: 24px;
           margin-bottom: 10px;
         }
       }
-  
+
       footer {
         text-align: center;
         margin-top: 40px;
-  
+
         p {
           color: #e0e1dd;
         }
       }
     }
-  
+
     * {box-sizing: border-box;}
   body {font-family: Verdana, sans-serif;}
   .mySlides {display: none;}
   img {vertical-align: middle;}
-  
+
   .new-users-week{
     max-width: 100%;
     margin-bottom: 5%;
@@ -356,16 +394,19 @@ const filteredArrays = posts.reduce((filtered, post) => {
       animation-name: fade;
       animation-duration: 1.5s;
     }
-  
+
     @keyframes fade {
-      from {opacity: .4} 
+      from {opacity: .4}
       to {opacity: 1}
     }
-  
+
     .slider-img{
       width: 500px;
     }
   }
+
+  </style>
+
   .mySlides-release {display: none;}
   .slideshow-container-release {
     background-color: #415A77;
@@ -416,3 +457,4 @@ const filteredArrays = posts.reduce((filtered, post) => {
 
   
   </style>
+

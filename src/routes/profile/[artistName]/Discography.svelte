@@ -1,5 +1,5 @@
 <script>
-    export let artistName;
+    export let artistId;
     export let jwt;
     export let updateDiscographySection
 
@@ -44,7 +44,7 @@
         formData.append("isNewRelease", isNewRelease)
         formData.append("releaseDate", releaseDate)
 
-        await fetch(`http://localhost:8080/api/users/${artistName}/discography`, {
+        await fetch(`http://localhost:8080/api/users/${artistId}/discography`, {
             method: 'POST',
             credentials: 'include',
             headers: {
