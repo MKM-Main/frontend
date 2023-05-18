@@ -3,13 +3,15 @@
     export let jwt;
     export let updateDiscographySection
 
-    let selectedService = '';
+    let selectedService = "";
     let album = false;
     let songs = [];
     let mainTitle = "";
     let title = "";
     let mainUrl = "";
     let url = "";
+    let isNewRelease = false
+    let releaseDate = ""
     let formData = new FormData();
 
     const handleChange = (event) => {
@@ -39,7 +41,8 @@
         formData.append("mainUrl", mainUrl)
         formData.append("album", album)
         formData.append("songs", JSON.stringify(songs))
-
+        formData.append("isNewRelease", isNewRelease)
+        formData.append("releaseDate", releaseDate)
 
         await fetch(`http://localhost:8080/api/users/${artistName}/discography`, {
             method: 'POST',
@@ -69,6 +72,7 @@
             <option value="">Select streaming service</option>
             <option value="apple">Apple Music</option>
             <option value="spotify">Spotify</option>
+            <option value="other">Other</option>
         </select>
 
         <label for="title">Title</label>
@@ -77,8 +81,15 @@
         <label for="main-url">URL</label>
         <input bind:value={mainUrl} id="main-url" name="mainUrl" placeholder="link" type="url">
 
+        <label for="release-date">Release date</label>
+        <input bind:value={releaseDate} id="release-date" type="date">
+
+        <label for="new-release">New Release?</label>
+        <input bind:checked={isNewRelease} id="new-release" type="checkbox">
+
         <label for="album">Album</label>
         <input id="album" name="album" on:change={handleAlbum} type="checkbox">
+
 
         <label for="file">Image:</label>
         <input accept=".pdf, .jpeg, .jpg, .png" id="file" multiple on:change={handleFileInput} type="file">
