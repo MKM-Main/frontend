@@ -8,7 +8,7 @@ export const load = async ({fetch, cookies}) => {
         }
     })
     const userData = await userDataResponse.json()
-    if (!jwt) return
+    //if (!jwt) return
 
     const postResponse = await fetch("http://localhost:8080/api/posts", {
         headers: {
@@ -33,7 +33,7 @@ export const load = async ({fetch, cookies}) => {
             "Authorization": `Bearer ${jwt}`
         }
     })
-    if(userDataResponse.status === 401) return
+    //if(userDataResponse.status === 401) return
     const conversationData = await responseConversation.json()
     
 
