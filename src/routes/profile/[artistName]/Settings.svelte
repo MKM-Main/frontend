@@ -48,9 +48,12 @@
                     Authorization: `Bearer ${jwt}`,
                 },
                 body: formData,
-            });
-            fetchRequests.push(profilePictureRequest);
+            })
+                .then((res) => res.json())
+
+            fetchRequests.push(profilePictureRequest)
         }
+        //TODO: Kig på rækkefølge af de to kald her ift. jwt sign i backend
 
         if (Object.keys(userBody).length !== 0) {
             const updateUserRequest = fetch(`http://localhost:8080/api/admin/users/${artistName}`, {
@@ -64,12 +67,12 @@
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    location.href = data.data.artistName;
+                    location.href = data.data.artistName
                 });
-            fetchRequests.push(updateUserRequest);
+            fetchRequests.push(updateUserRequest)
         }
 
-        await Promise.all(fetchRequests);
+        await Promise.all(fetchRequests)
     };
 
 
