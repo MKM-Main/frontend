@@ -9,7 +9,8 @@
     let userBody = {firstName, lastName, age, email, biography, userTags}
     let newTagValue
     let showCurrentTags = false
-
+    let formData = new FormData()
+    let artistId = userData._id
 
     const handleNewTag = (e) => {
         e.preventDefault()
@@ -19,36 +20,57 @@
         userTags.splice(tagIndex, 1)
     }
 
+    const handleFileInput = (event) => {
+        const file = event.target.files[0]
+        formData.append('profilePicture', file)
+    }
+
+
     export const updateUser = async () => {
         if (!Number) {
-            Object.keys(userBody).forEach(key => userBody[key] = userBody[key]?.trim());
+            Object.keys(userBody).forEach((key) => (userBody[key] = userBody[key]?.trim()));
         }
-        Object.keys(userBody).forEach(key => userBody[key] === "" ? delete userBody[key] : {});
+        Object.keys(userBody).forEach((key) => (userBody[key] === "" ? delete userBody[key] : {}));
 
-        tags.forEach(tag => {
+        tags.forEach((tag) => {
             if (tag.checked) {
-                userTags.push(tag.name)
+                userTags.push(tag.name);
             }
-        })
+        });
 
+        const fetchRequests = [];
+
+        if (formData.get("profilePicture")) {
+            const profilePictureRequest = fetch(`http://localhost:8080/api/admin/users/${artistId}/profile-picture`, {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${jwt}`,
+                },
+                body: formData,
+            });
+            fetchRequests.push(profilePictureRequest);
+        }
 
         if (Object.keys(userBody).length !== 0) {
-            await fetch(`http://localhost:8080/api/admin/users/${artistName}`, {
+            const updateUserRequest = fetch(`http://localhost:8080/api/admin/users/${artistName}`, {
                 method: "PATCH",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": `Bearer ${jwt}`
+                    Authorization: `Bearer ${jwt}`,
                 },
-                body: JSON.stringify({userBody})
+                body: JSON.stringify({userBody}),
             })
-                .then(res => res.json())
-                .then(data => {
-                    location.href = data.data.artistName
-                })
+                .then((res) => res.json())
+                .then((data) => {
+                    location.href = data.data.artistName;
+                });
+            fetchRequests.push(updateUserRequest);
         }
-    }
+
+        await Promise.all(fetchRequests);
+    };
 
 
 </script>
@@ -74,6 +96,11 @@
         <label for="biography">Biography:</label>
         <textarea bind:value={userBody.biography} id="biography" name="biography" placeholder="My awesome bio!"
                   rows="5"></textarea>
+
+        <label for="profilePicture">Profile Picture:</label>
+        <input accept=".jpeg, .jpg, .png," id="profilePicture" on:change={handleFileInput}
+               type="file">
+
 
         <label for="new-tag">New tag:</label>
         <input bind:value={newTagValue} id="new-tag" placeholder="my cool tag!" type="text">
@@ -119,6 +146,7 @@
       input[type="text"],
       input[type="number"],
       input[type="email"],
+      input[type="file"],
       textarea {
         width: 100%;
         padding: 0.5em;

@@ -25,12 +25,11 @@
     let merchandise = data.json?.user?.merch
     let discography = data.json?.user?.discography
     let showCreationForm = true
-    let collapseBtnValue = "Close creation section"
+    let collapseBtnValue = "Creation section"
 
 
     const handleShowCreationForm = () => {
         showCreationForm = !showCreationForm
-        collapseBtnValue = collapseBtnValue === "Open creation section" ? "Close creation section" : "Open creation section";
     }
 
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
@@ -188,10 +187,12 @@
                     <button class="btn-follow" on:click={patchFollowing(followingState)}>{followingState}</button>
                 </div>
                 <div class="message-div">
-                  <a href="/conversations/inbox"><button class="btn-follow">Message</button></a>
+                    <a href="/conversations/inbox">
+                        <button class="btn-follow">Message</button>
+                    </a>
                 </div>
             {/if}
-            
+
             {#if loggedInUser === pageArtistName}
                 <div class="new-post">
                     <button class="btn-new-post" on:click={() => modalNewPost = true}>Post</button>
@@ -308,6 +309,9 @@
                         <img src="{imageSourcePrefix}{pageArtistName}/discography/{disco.referenceKey}" alt="image">
                     {/if}
                     <p>{disco.album ? "Album" : "Single"} Title: {disco.mainTitle}</p>
+                    {#if disco.releaseDate}
+                        <p>{disco.releaseDate}</p>
+                    {/if}
                     <p>Streaming service: {disco.selectedService}</p>
                     <p>Listen here: <a href="{disco.mainUrl}">{disco.mainTitle}</a></p>
                     <div class="album-container">
@@ -315,7 +319,9 @@
                             <p>Song: <a href="{album.url}">{album.title}</a></p>
                         {/each}
                     </div>
-                    <img src="{imageSourcePrefix}logos/{disco?.selectedService}.svg" alt="streaming-service">
+                    {#if disco.selectedService !== "other"}
+                        <img src="{imageSourcePrefix}logos/{disco?.selectedService}.svg" alt="streaming-service">
+                    {/if}
                     {#if loggedInUser === pageArtistName}
                         <DeleteDisco
                                 jwt="{jwt}"
@@ -597,12 +603,16 @@
     gap: 20px;
 
     .discography-item {
-      width: 300px;
+      width: 18em;
       margin-bottom: 20px;
       padding: 10px;
       background-color: #f0f0f0;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        filter: brightness(95%);
+      }
 
       img {
         width: 100%;

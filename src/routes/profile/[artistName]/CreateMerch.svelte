@@ -97,7 +97,7 @@
 <style lang="scss">
 
   form {
-    background-color: #1B263B;
+    background-color: #0D1B2A;
     padding: 20px;
     width: 35em;
 
