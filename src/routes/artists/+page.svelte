@@ -6,7 +6,11 @@
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
 
     artists.forEach(artist => {
+      if(artist.profilePictureKey === "blank_profile.webp"){
+        artist.profilePictureKey = `${imageSourcePrefix}${artist.profilePictureKey}`
+      }else{
         artist.profilePictureKey = `${imageSourcePrefix}${artist._id}/profile/${artist.profilePictureKey}`
+      }
     })
     let searchFilter
     let filteredArtists = null
