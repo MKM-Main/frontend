@@ -9,7 +9,13 @@
     const userRole = data?.userData?.customMessage?.role
     const profilePictureKey = data?.userData?.customMessage?.profilePictureKey
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
-    const imageSource = `${imageSourcePrefix}${artistId}/profile/${profilePictureKey}`
+    let imageSource;
+    if(profilePictureKey === "blank_profile.webp"){
+      imageSource = `${imageSourcePrefix}${profilePictureKey}`
+    } else{
+      imageSource = `${imageSourcePrefix}${artistId}/profile/${profilePictureKey}`
+    }
+    
     let conversation = data?.conversationData
     $: conversation = data?.conversationData
 </script>
