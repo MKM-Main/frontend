@@ -17,10 +17,11 @@
     export let data;
     const jwt = data.jwt
     let wallposts = data.wallposts;
-    let pageArtistName = data.json?.user?.artistName
+    let pageArtistName
+    //let pageArtistName = data.json?.user?.artistName
     let pageArtistId = data.json?.user?._id
 
-    //$: pageArtistName = data.json?.user?.artistName;
+    $: pageArtistName = data.json?.user?.artistName;
     //$: pageArtistId = data.json?.user?._id
 
     let followersInCount = data.json?.user?.followers?.length;
@@ -36,7 +37,8 @@
     }
 
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
-    const profilePictureKey = data.json?.user?.profilePictureKey
+    let profilePictureKey = data.json?.user?.profilePictureKey
+    
 
     let imageSource;
     if(profilePictureKey === "blank_profile.webp"){
@@ -137,7 +139,7 @@
         wallposts = event.detail
     }
 
-    let showSection = "settings"
+    let showSection = "posts"
     const handleShownSection = (section) => {
         showSection = section
         showCreationForm = true
