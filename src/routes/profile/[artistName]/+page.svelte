@@ -51,7 +51,7 @@
     let modal = false
 
     const loggedInUser = data?.userData?.customMessage?.artistName;
-    const loggedInUserId = data?.userData?.customMessage._id
+    const loggedInUserId = data?.userData?.customMessage?._id
     let loggedInUserFollow = [];
     let userModalFollowArray = [];
 
