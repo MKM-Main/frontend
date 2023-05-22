@@ -29,7 +29,9 @@
             {/if}
         {/if}
         {#each pages as page}
-            <a href="/{page}">{page}</a>
+            <a href="/{page}">
+                <span class="capitalize">{page}</span>
+            </a>
         {/each}
     </div>
     {#if !jwt}
@@ -60,6 +62,7 @@
 
 
 <style lang="scss">
+
   .header {
     background-color: #0D1B2A;
     color: #E0E1DD;
@@ -77,6 +80,7 @@
       text-decoration: none;
       font-weight: bold;
       font-size: 1em;
+      text-transform:capitalize;
 
       &:hover {
         color: #778DA9;
