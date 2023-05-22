@@ -8,10 +8,18 @@
     const loggedInUser = data?.userData?.customMessage?.artistName
     const posts = data?.allPosts
 
+
+    let shownCommentAmounts = {}
+    let showCommentAmountTexts = {}
+
+    const handleShowAllComments = (postId) => {
+        shownCommentAmounts[postId] = shownCommentAmounts[postId] === 10 ? 2 : 10;
+        showCommentAmountTexts[postId] = showCommentAmountTexts[postId] === "Show more comments" ? "Show less comments" : "Show more comments";
+    }
+
     const updateComments = (newComment, search) => {
         const arrayObject = posts.findIndex(post => post._id === search)
         posts[arrayObject].comments = [...posts[arrayObject].comments, newComment.message]
-
     }
 
 </script>
@@ -24,6 +32,7 @@
         <h3>Go to the artist page and find more interesting artists.</h3>
         <h2><a href="http://localhost:5173/artists">ARTISTS</a></h2>
     {:else}
+
         {#each posts as post}
             <div class="post">
                 <ShowPost
@@ -32,16 +41,18 @@
                         post="{post}"
                 />
                 <h4>Comments</h4>
-                <CreateComment jwt={jwt} reference={"wallposts"} search={post?._id}
-                               updateComments={updateComments}/>
+                <CreateComment jwt={jwt} reference={"wallposts"} search={post?._id} updateComments={updateComments}/>
                 <div class="comment">
-                    {#each post?.comments as comment}
+                    {#each post?.comments.slice(0, shownCommentAmounts[post._id] || 2) as comment}
                         <ShowComment
                                 comment={comment}
                                 jwt="{jwt}"
                                 loggedInUser="{loggedInUser}"
                         />
                     {/each}
+                    <button class="btn-show-comments" on:click={() => handleShowAllComments(post._id)} type="button">
+                        {"Show more comments"}
+                    </button>
                 </div>
             </div>
         {/each}
@@ -91,6 +102,21 @@
         &:hover {
           color: #1B263B;
         }
+      }
+    }
+
+    .btn-show-comments {
+      font-size: 1em;
+      padding: 0.5em 1em;
+      background-color: #415A77;
+      color: #E0E1DD;
+      border: none;
+      border-radius: 0.75em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #778DA9;
       }
     }
   }
