@@ -1,4 +1,5 @@
 <script>
+    import {imageHeight, imageWidth} from "../../../lib/stores.js";
     export let artistName
     export let userData
     export let jwt
@@ -12,8 +13,8 @@
     let formData = new FormData()
     let artistId = userData._id
     let canUpload
-    const height = 2048
-    const width = 2048
+    const height = $imageHeight
+    const width = $imageWidth
     let currentWidth
     let currentHeight
 
@@ -32,12 +33,12 @@
         const reader = new FileReader();
 
         reader.onload = (e) => {
-            currentWidth = img.width
-            currentHeight = img.height
             const img = new Image();
 
             img.onload = () => {
-                canUpload = img.width <= 420 && img.height <= 420;
+                currentWidth = img.width
+                currentHeight = img.height
+                canUpload = img.width <= width && img.height <= height;
             }
             img.src = e.target.result;
         }

@@ -1,5 +1,6 @@
 <script>
     import {BASE_URL_LOCAL} from "../../lib/stores.js";
+    import toast from "svelte-french-toast";
     let email, password
 
 
@@ -18,7 +19,10 @@
         })
             .then(res => {
                 if (res.status === 200) {
-                    location.href = "/news"
+                    toast.success("Login success")
+                    setTimeout(() => {
+                        location.href = "/news"
+                    }, 1500)
                 }
             })
     }

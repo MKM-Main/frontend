@@ -1,4 +1,5 @@
 <script>
+    import {imageHeight, imageWidth} from "../../../lib/stores.js";
     export let artistId;
     export let jwt;
     export let updateDiscographySection
@@ -14,8 +15,8 @@
     let releaseDate = ""
     let formData = new FormData();
     let canUpload
-    let height = 2048
-    let width = 2048
+    let height = $imageHeight
+    let width = $imageWidth
     let currentWidth
     let currentHeight
 
@@ -66,7 +67,7 @@
 
     const handleFileInput = (event) => {
         const file = event.target.files[0]
-        formData.append('profilePicture', file)
+        formData.append('file', file)
 
         const reader = new FileReader();
 
@@ -74,9 +75,9 @@
             const img = new Image();
 
             img.onload = () => {
-                currentHeight = img.height
                 currentWidth = img.width
-                canUpload = img.width <= 420 && img.height <= 420;
+                currentHeight = img.height
+                canUpload = img.width <= width && img.height <= height;
             }
             img.src = e.target.result;
         }

@@ -1,11 +1,14 @@
 <script>
-    let notify = false
+    import toast from "svelte-french-toast";
     const logOut = async () => {
         await fetch("http://localhost:8080/api/auth/logout", {
             method: "GET",
             credentials: "include"
         }).then(() => {
-            location.href = "/"
+            toast.success("Logging out...")
+            setTimeout(() => {
+                location.href = "/"
+            }, 1500)
         })
     }
 </script>

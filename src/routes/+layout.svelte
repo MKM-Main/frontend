@@ -1,5 +1,6 @@
 <script>
     import {env} from "$env/dynamic/public";
+    import {Toaster} from "svelte-french-toast";
     export let data
     const Header = data.Header
     const Footer = data.Footer
@@ -10,12 +11,12 @@
     const profilePictureKey = data?.userData?.customMessage?.profilePictureKey
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     let imageSource;
-    if(profilePictureKey === "blank_profile.webp"){
-      imageSource = `${imageSourcePrefix}${profilePictureKey}`
-    } else{
-      imageSource = `${imageSourcePrefix}${artistId}/profile/${profilePictureKey}`
+    if (profilePictureKey === "blank_profile.webp") {
+        imageSource = `${imageSourcePrefix}${profilePictureKey}`
+    } else {
+        imageSource = `${imageSourcePrefix}${artistId}/profile/${profilePictureKey}`
     }
-    
+
     let conversation = data?.conversationData
     $: conversation = data?.conversationData
 </script>
@@ -26,6 +27,7 @@
         jwt={jwt}
         userRole={userRole}
 />
+<Toaster/>
 <slot/>
 <Footer/>
 

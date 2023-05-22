@@ -3,6 +3,7 @@
   import UserUploadedFile from "../lib/components/files/UserUploadedFile.svelte";
   import { onMount } from "svelte";
   import { onDestroy } from "svelte";
+  import toast, {Toaster} from 'svelte-french-toast'
 
   export let data;
   const posts = data.postData;
@@ -29,8 +30,8 @@
 
     // Short down the body of the post and replace with ...
     function truncateText(text) {
-      const lines = text.split('\n').slice(0, 3); // Get first 3 lines of the text
-      const truncatedText = lines.join('\n'); // Join the lines back into a string
+      const lines = text?.split('\n')?.slice(0, 3); // Get first 3 lines of the text
+      const truncatedText = lines?.join('\n'); // Join the lines back into a string
       return truncatedText.length < text.length ? truncatedText + '...' : truncatedText;
     }
 
@@ -87,6 +88,8 @@
     clearTimeout(timer);
   });
   </script>
+
+<Toaster />
 
 
   <div class="header">

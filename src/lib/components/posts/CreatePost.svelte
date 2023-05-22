@@ -1,4 +1,6 @@
 <script>
+    import {imageHeight, imageWidth} from "../../stores.js";
+    import {createEventDispatcher} from 'svelte'
     export let jwt
     export let reference
     export let updatePostSection
@@ -11,12 +13,11 @@
     let postTags = []
     let newTagValue
     let canUpload
-    const height = 2048
-    const width = 2048
+    const height = $imageHeight
+    const width = $imageWidth
     let currentWidth
     let currentHeight
 
-    import {createEventDispatcher} from 'svelte'
     const dispatch = createEventDispatcher()
 
 
@@ -56,7 +57,7 @@
 
     const handleFileInput = (event) => {
         const file = event.target.files[0]
-        formData.append('profilePicture', file)
+        formData.append('fileType', file)
 
         const reader = new FileReader();
 
@@ -66,7 +67,7 @@
             img.onload = () => {
                 currentWidth = img.width
                 currentHeight = img.height
-                canUpload = img.width <= 420 && img.height <= 420;
+                canUpload = img.width <= width && img.height <= height;
             }
             img.src = e.target.result;
         }
