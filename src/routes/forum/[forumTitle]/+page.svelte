@@ -63,9 +63,11 @@
                         title={replaceSpacesWithHyphens(forum?.postTitle)}/>
             </div>
         {/each}
+        {#if jwt}
         <div class="btn-container">
-            <button class="btn-create-post" on:click={() => modal = !modal}>Create new post!</button>
+          <button class="btn-create-post" on:click={() => modal = !modal}>Create new post!</button>
         </div>
+        {/if}
     </div>
     <div class="filter">
         <div class="filter-search">
