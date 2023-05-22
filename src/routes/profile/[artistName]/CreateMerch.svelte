@@ -3,6 +3,11 @@
     let description = '';
     let sizes = [];
     let price = '';
+    let canUpload
+    const height = 2048
+    const width = 2048
+    let currentWidth
+    let currentHeight
 
     export let loggedInUserId;
     export let jwt;
@@ -51,9 +56,25 @@
         }
     }
 
+
     const handleFileInput = (event) => {
-        const file = event.target.files[0];
-        formData.append('file', file);
+        const file = event.target.files[0]
+        formData.append('profilePicture', file)
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const img = new Image();
+
+            img.onload = () => {
+                currentWidth = img.width
+                currentHeight = img.height
+                canUpload = img.width <= 420 && img.height <= 420;
+            }
+            img.src = e.target.result;
+        }
+        if (!file) canUpload = true
+        reader.readAsDataURL(file);
     }
 </script>
 
@@ -89,9 +110,10 @@
     <label for="price">Price:</label>
     <input bind:value={price} id="price" placeholder="****" required type="number"/>
 
-    <label for="file">Image:</label>
+    <label for="file" style="{canUpload === false ? 'color: red' : ''}">Image
+        : {canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth} ` : ""}</label>
     <input accept=".pdf, .jpeg, .jpg, .png" id="file" on:change={handleFileInput} type="file">
-    <button type="submit">Submit</button>
+    <button class:btn-block-submit={canUpload === false} type="submit">Submit</button>
 </form>
 
 <style lang="scss">
@@ -142,13 +164,27 @@
     }
 
     button[type="submit"] {
-      background-color: #E0E1DD;
-      color: #1B263B;
-      padding: 10px 20px;
-      border: none;
+      background-color: #778DA9;
+      padding: 12px;
       border-radius: 4px;
-      cursor: pointer;
+      border: 1px solid #ccc;
+      margin-bottom: 16px;
+      width: 100%;
+      font-size: 16px;
+      color: #E0E1DD;
+
+      &:hover {
+        background-color: #415A77;
+
+      }
     }
+
+    .btn-block-submit {
+      pointer-events: none;
+      background-color: black;
+    }
+
+
   }
 
 
