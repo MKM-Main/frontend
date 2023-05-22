@@ -3,6 +3,7 @@
     export let comment;
     export let jwt
     export let loggedInUser
+    console.log(comment)
 </script>
 
 <div class="comment">

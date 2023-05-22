@@ -13,6 +13,11 @@
     let isNewRelease = false
     let releaseDate = ""
     let formData = new FormData();
+    let canUpload
+    let height = 2048
+    let width = 2048
+    let currentWidth
+    let currentHeight
 
     const handleChange = (event) => {
         selectedService = event.target.value;
@@ -60,8 +65,23 @@
     }
 
     const handleFileInput = (event) => {
-        const file = event.target.files[0];
-        formData.append('file', file);
+        const file = event.target.files[0]
+        formData.append('profilePicture', file)
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const img = new Image();
+
+            img.onload = () => {
+                currentHeight = img.height
+                currentWidth = img.width
+                canUpload = img.width <= 420 && img.height <= 420;
+            }
+            img.src = e.target.result;
+        }
+        if (!file) canUpload = true
+        reader.readAsDataURL(file);
     }
 </script>
 
@@ -91,7 +111,8 @@
         <input id="album" name="album" on:change={handleAlbum} type="checkbox">
 
 
-        <label for="file">Image:</label>
+        <label for="file" style="{canUpload === false ? 'color: red' : ''}">Image
+            : {canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth} ` : ""}</label>
         <input accept=".pdf, .jpeg, .jpg, .png" id="file" multiple on:change={handleFileInput} type="file">
 
         {#if album}
@@ -108,7 +129,7 @@
             {/each}
             <button on:click={handleAddItem} type="button">Add Song</button>
         {/if}
-        <button type="submit">Submit</button>
+        <button class="btn-submit" class:btn-block-submit={canUpload === false} type="submit">Submit</button>
     </form>
 </div>
 
@@ -136,7 +157,7 @@
 
   input,
   select,
-  button {
+  {
     padding: 12px;
     border-radius: 4px;
     border: 1px solid #ccc;
@@ -160,16 +181,25 @@
     resize: none;
   }
 
-  button {
+  .btn-submit {
     background-color: #778DA9;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-bottom: 16px;
+    width: 100%;
+    font-size: 16px;
+    color: #E0E1DD;
 
     &:hover {
       background-color: #415A77;
 
     }
+  }
+
+  .btn-block-submit {
+    pointer-events: none;
+    background-color: darkgrey;
   }
 
   .item-container {
@@ -179,8 +209,8 @@
       &:hover {
         background-color: darkred;
       }
-
     }
+
   }
 
 </style>

@@ -1,12 +1,18 @@
 <script>
     import ShowPost from "../../lib/components/posts/ShowPost.svelte";
     import ShowComment from "../../lib/components/comments/ShowComment.svelte";
+    import CreateComment from "../../lib/components/comments/CreateComment.svelte";
     export let data
 
     const jwt = data.jwt
     const loggedInUser = data?.userData?.customMessage?.artistName
     const posts = data?.allPosts
 
+    const updateComments = (newComment, search) => {
+        const arrayObject = posts.findIndex(post => post._id === search)
+        posts[arrayObject].comments = [...posts[arrayObject].comments, newComment.message]
+
+    }
 
 </script>
 
@@ -26,6 +32,8 @@
                         post="{post}"
                 />
                 <h4>Comments</h4>
+                <CreateComment jwt={jwt} reference={"wallposts"} search={post?._id}
+                               updateComments={updateComments}/>
                 <div class="comment">
                     {#each post?.comments as comment}
                         <ShowComment

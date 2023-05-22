@@ -38,13 +38,13 @@
 
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX
     let profilePictureKey = data.json?.user?.profilePictureKey
-    
+
 
     let imageSource;
-    if(profilePictureKey === "blank_profile.webp"){
-      imageSource = `${imageSourcePrefix}${profilePictureKey}`
-    } else{
-      imageSource = `${imageSourcePrefix}${pageArtistId}/profile/${profilePictureKey}`
+    if (profilePictureKey === "blank_profile.webp") {
+        imageSource = `${imageSourcePrefix}${profilePictureKey}`
+    } else {
+        imageSource = `${imageSourcePrefix}${pageArtistId}/profile/${profilePictureKey}`
     }
 
     let modalNewPost

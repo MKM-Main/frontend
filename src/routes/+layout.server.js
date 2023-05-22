@@ -19,7 +19,7 @@ export const load = async ({fetch, cookies}) => {
     })
     //if(userDataResponse.status === 401) return
     const conversationData = await responseConversation.json()
-    
+
 
     return {
         jwt,

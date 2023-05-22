@@ -11,6 +11,11 @@
     let showCurrentTags = false
     let formData = new FormData()
     let artistId = userData._id
+    let canUpload
+    const height = 2048
+    const width = 2048
+    let currentWidth
+    let currentHeight
 
     const handleNewTag = (e) => {
         e.preventDefault()
@@ -23,6 +28,21 @@
     const handleFileInput = (event) => {
         const file = event.target.files[0]
         formData.append('profilePicture', file)
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            currentWidth = img.width
+            currentHeight = img.height
+            const img = new Image();
+
+            img.onload = () => {
+                canUpload = img.width <= 420 && img.height <= 420;
+            }
+            img.src = e.target.result;
+        }
+        if (!file) canUpload = true
+        reader.readAsDataURL(file);
     }
 
 
@@ -73,7 +93,7 @@
         }
 
         await Promise.all(fetchRequests)
-    };
+    }
 
 
 </script>
@@ -100,8 +120,10 @@
         <textarea bind:value={userBody.biography} id="biography" name="biography" placeholder="My awesome bio!"
                   rows="5"></textarea>
 
-        <label for="profilePicture">Profile Picture:</label>
-        <input accept=".jpeg, .jpg, .png," id="profilePicture" on:change={handleFileInput}
+        <label for="profilePicture" style="{canUpload === false ? 'color: red' : ''}">Profile
+            Picture: {canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth} ` : ""}</label>
+        <input accept=".jpeg, .jpg, .png," id="profilePicture"
+               on:change={handleFileInput}
                type="file">
 
 
@@ -127,7 +149,7 @@
                 {/each}
             </div>
         {/if}
-        <button type="submit">Submit</button>
+        <button class="btn-submit" class:btn-block-submit={canUpload === false} type="submit">Submit</button>
     </form>
 </div>
 
@@ -169,7 +191,6 @@
         vertical-align: middle;
       }
 
-      button[type="submit"],
       button[type="button"] {
         padding: 0.75em 1em;
         background-color: #415A77;
@@ -184,6 +205,7 @@
         }
       }
 
+      .btn-submit,
       .btn-add-tag {
         font-size: 1em;
         padding: 0.5em 1em;
@@ -203,6 +225,11 @@
         display: flex;
         gap: 20px;
 
+      }
+
+      .btn-block-submit {
+        pointer-events: none;
+        background-color: darkgrey;
       }
     }
   }
