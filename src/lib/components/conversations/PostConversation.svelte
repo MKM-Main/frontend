@@ -1,6 +1,8 @@
 <script>
     import {createEventDispatcher} from "svelte"
     const dispatch = createEventDispatcher()
+    import toast from "svelte-french-toast";
+
     export let jwt;
     export let updateConversations;
     export let user;
@@ -16,7 +18,12 @@
                 Accept: "application/json",
                 Authorization: `Bearer ${jwt}`,
             },
-        }).then(res => res.json())
+        }).then(res => {
+            res.json()
+            if (res.status === 200) {
+                toast.success("Conversation created")
+            }
+        })
         .then(data => {
             updateConversations(data)
             createConversation(data)
