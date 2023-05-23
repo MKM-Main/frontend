@@ -31,7 +31,6 @@
     &:hover {
       color: red;
       cursor: pointer;
-      scale: 1.25;
     }
   }
 

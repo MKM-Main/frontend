@@ -19,11 +19,10 @@
 
 <style lang="scss">
   .fa-trash {
-  
+
     &:hover {
       color: red;
       cursor: pointer;
-      scale: 1.25;
     }
   }
 
