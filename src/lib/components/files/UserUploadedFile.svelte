@@ -39,6 +39,7 @@
 <style>
     .frontpage-media-top5 {
         max-width: 200px;
+        border-radius: 25px;
     }
 
     img {

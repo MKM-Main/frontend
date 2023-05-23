@@ -210,12 +210,18 @@
     <div class="top-5-posts">
       {#each topPosts as post}
       <div class="top-post">
-        <h2>{post.postTitle}</h2>
+        {#if post.postTitle}
+          <h2>{post.postTitle}</h2>
+        {/if}
         <UserUploadedFile className={"frontpage-media-top5"} keyReference={post.keyReference} artistId={post.artistId}/>
         <p class="post-body">{truncateText(post.body)}</p>
         <p> <b>{post.artistName}</b></p>
         <p>Rating: {post.rating.length}</p>
-        <a href="http://localhost:5173/forum/{post.referenceName}/{post.postTitle}"> GO TO POST</a>
+          {#if post.referenceName === "wallpost"}
+              <a href="/profile/{post.artistName}#{post._id}">Go to Post</a>
+              {:else}
+              <a href="/forum/{post.referenceName}/{post.postTitle}#{post._id}">Go to Post</a>
+          {/if}
       </div>
       {/each}
     </div>
@@ -234,7 +240,7 @@
     }
 
       .top-post {
-      width: 50%;
+      width: 65%;
       margin: 0% 25% 5% 25%;
       padding: 0.5em;
       border-radius: 0.75em;
@@ -406,10 +412,12 @@
       max-width: 100%;
       height: 17em;
       padding: 1em;
-      border-radius: 20px;
+      border-radius: 45px;
       // object-fit: contain;
     }
     .release-img-container{
+      display: grid;
+      place-items: center;
       object-fit: contain;
     }
     .release-content{

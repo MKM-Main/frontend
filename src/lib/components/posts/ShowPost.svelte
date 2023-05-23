@@ -1,49 +1,52 @@
 <script>
-    import UserUploadedFile from "../files/UserUploadedFile.svelte";
-    import Hype from "./Hype.svelte";
-    import { env } from "$env/dynamic/public";
-    export let post = null
-    export let jwt
-    export let loggedInUser
+  import UserUploadedFile from "../files/UserUploadedFile.svelte";
+  import Hype from "./Hype.svelte";
+  import {env} from "$env/dynamic/public";
+  export let post = null
+  export let jwt
+  export let loggedInUser
 
-    const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
+  const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
 
 </script>
 
 
 {#if post?.body}
-    <div class="main-container">
-      <div class="img-container">
-        {#if post?.profilePictureKey === "blank_profile.webp"}
-          <a href="/profile/{post?.commentAuthor}"><img class="profile-picture" src="{imageSourcePrefix}{post?.profilePictureKey}" alt=""></a>
-        {:else}
-          <a href="/profile/{post?.commentAuthor}"><img class="profile-picture" src="{imageSourcePrefix}{post?.artistId}/profile/{post?.profilePictureKey}" alt=""></a>
-        {/if}
-        <a href="/profile/{post?.artistName}"><h3>{post?.artistName}</h3></a>
-      </div>
-
-      <div class="content">
-        {#if post.postTitle}
-            <h2>{post.postTitle}</h2>
-        {/if}
-        <p>{post?.body}</p>
-      </div>
-        
-      <div class="post-file">
-        <UserUploadedFile
-                artistId="{post.artistId}"
-                keyReference="{post?.keyReference}"
-        />
-      </div>
-
-        <Hype
-                jwt="{jwt}"
-                loggedInUser="{loggedInUser}"
-                postId="{post._id}"
-                rating="{post?.rating?.length}"
-        />
-        <p>{post?.timeStamp}</p>
+  <div id="{post._id}" class="main-container">
+    <div class="img-container">
+      {#if post?.profilePictureKey === "blank_profile.webp"}
+        <a href="/profile/{post?.commentAuthor}"><img class="profile-picture"
+                                                      src="{imageSourcePrefix}{post?.profilePictureKey}" alt=""></a>
+      {:else}
+        <a href="/profile/{post?.commentAuthor}"><img class="profile-picture"
+                                                      src="{imageSourcePrefix}{post?.artistId}/profile/{post?.profilePictureKey}"
+                                                      alt=""></a>
+      {/if}
+      <a href="/profile/{post?.artistName}"><h3>{post?.artistName}</h3></a>
     </div>
+
+    <div class="content">
+      {#if post.postTitle}
+        <h2>{post.postTitle}</h2>
+      {/if}
+      <p>{post?.body}</p>
+    </div>
+
+    <div class="post-file">
+      <UserUploadedFile
+              artistId="{post.artistId}"
+              keyReference="{post?.keyReference}"
+      />
+    </div>
+
+    <Hype
+            jwt="{jwt}"
+            loggedInUser="{loggedInUser}"
+            postId="{post._id}"
+            rating="{post?.rating?.length}"
+    />
+    <p>{post?.timeStamp}</p>
+  </div>
 {/if}
 
 <style lang="scss">
@@ -66,12 +69,13 @@
         cursor: pointer;
       }
     }
-    h3{
-    margin-left: 0.3em;
-  }
+
+    h3 {
+      margin-left: 0.3em;
+    }
   }
 
-  .content{
+  .content {
     margin-bottom: 1em;
   }
 
@@ -79,12 +83,13 @@
     margin-bottom: 1.25em;
   }
 
-  .profile-picture{
-      width: 4em;
-      height: 4em;
-      border-radius: 20px;
-    }
-  .img-container{
+  .profile-picture {
+    width: 4em;
+    height: 4em;
+    border-radius: 20px;
+  }
+
+  .img-container {
     display: flex;
     align-items: center;
   }
