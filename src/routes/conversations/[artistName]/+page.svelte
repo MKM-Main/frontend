@@ -79,7 +79,7 @@
   let userModalFollowArray = [];
 
   //Fetches the followers and following depending on the fetch action
-  const fetchPageUser = async () => {
+  const fetchUserFollowing = async () => {
     const res = await fetch(
       `http://localhost:8080/api/users/following/${loggedInUserArtistName}`
     );
@@ -117,6 +117,7 @@
     });
     const result = await res.json();
     conversations = result;
+
   };
 
   const patchReadConversation = async (action) => {
@@ -153,6 +154,16 @@
     messageList.scrollTop = messageList.scrollHeight;
   };
 
+  function conversationExists(artistName) {
+  let exists = false;
+  conversations.forEach(conversation => {
+    if (conversation.participants.includes(artistName)) {
+      exists = true;
+    }
+  });
+  return exists;
+}
+
   onMount(async () => {
     await fetchUserData();
   });
@@ -163,7 +174,7 @@
   <div class="left-column">
     <div class="send-div">
       <button
-        on:click={() => {modal = true;fetchPageUser();}}>
+        on:click={() => {modal = true;fetchUserFollowing();}}>
         <i class="material-icons" style="font-size:36px">chat</i>
       </button>
     </div>
@@ -288,16 +299,17 @@
   <Modal on:close={() => (modal = false)}>
     <div class="modal">
       {#each userModalFollowArray as user}
-      
-        <div class="modal-each-div">
-          <div class="modal-profile-picture">
-            <img alt="" class="img-pic-modal" src="{imageSourcePrefix}{user.profilePictureKey}"/>
+        {#if !conversationExists(user.artistName)}
+          <div class="modal-each-div">
+            <div class="modal-profile-picture">
+              <img alt="" class="img-pic-modal" src="{imageSourcePrefix}{user.profilePictureKey}"/>
+            </div>
+            <div class="modal-artistname">
+              {user.artistName}
+            </div>
+            <PostConversation {updateConversations} {createConversation} user={user.artistName} on:close={() => (modal = false)} {jwt}/>
           </div>
-          <div class="modal-artistname">
-            {user.artistName}
-          </div>
-          <PostConversation {updateConversations} {createConversation} user={user.artistName} on:close={() => (modal = false)} {jwt}/>
-        </div>
+        {/if}
       {/each}
     </div>
   </Modal>
