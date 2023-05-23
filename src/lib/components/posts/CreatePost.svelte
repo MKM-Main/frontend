@@ -22,6 +22,7 @@
 
 
     const handleNewTag = () => {
+        if (newTagValue === undefined) return
         tags = [...tags, {name: newTagValue, checked: true}]
     }
 

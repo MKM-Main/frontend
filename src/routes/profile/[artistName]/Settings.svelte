@@ -20,6 +20,7 @@
 
     const handleNewTag = (e) => {
         e.preventDefault()
+        if (newTagValue === undefined) return
         tags = [...tags, {name: newTagValue, checked: true}]
     }
     const handleDeleteTag = (tagIndex) => {
