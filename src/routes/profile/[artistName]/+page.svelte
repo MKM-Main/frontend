@@ -225,6 +225,11 @@
         <div>
             {#each wallposts as wallpost}
                 <div class="wallpost-div">
+                    <ShowPost
+                            post="{wallpost}"
+                            jwt="{jwt}"
+                            loggedInUser="{loggedInUser}"
+                    />
                     {#if loggedInUser === pageArtistName }
                         <DeletePost
                                 jwt="{jwt}"
@@ -233,11 +238,6 @@
                                 on:postDeleted="{handlePostDeleted}"
                         />
                     {/if}
-                    <ShowPost
-                            post="{wallpost}"
-                            jwt="{jwt}"
-                            loggedInUser="{loggedInUser}"
-                    />
                     <div>
                         {#if jwt}
                             <CreateComment jwt={jwt} reference={"wallposts"} search={wallpost?._id}
@@ -524,7 +524,6 @@
     border-radius: 0.75em;
     display: flex;
     justify-content: center;
-    align-items: center;
     flex-direction: column;
     -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
     box-shadow: -1px -1px 15px 8px #E0E1DD;

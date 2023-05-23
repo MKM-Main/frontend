@@ -7,6 +7,7 @@
     import DeleteComment from "../../../../lib/components/comments/DeleteComment.svelte";
     import Report from "../../../../lib/components/util/Report.svelte";
     import CreateComment from "../../../../lib/components/comments/CreateComment.svelte";
+    import UserUploadedFile from "$lib/components/files/UserUploadedFile.svelte";
 
 
     export let data;
@@ -29,19 +30,23 @@
 
 </script>
 
-{#if loggedInUser === post.artistName}
+
+<div class="post-container">
+    <div class="container">
+    <ShowPost
+        jwt="{jwt}"
+        loggedInUser="{loggedInUser}"
+        post="{post}"
+    />
+    {#if loggedInUser === post.artistName}
     <DeletePost
             jwt="{jwt}"
             on:postDeleted={handleDeletedPostRedirect}
             postId="{post._id}"
     />
-{/if}
-<div class="post-container">
-    <ShowPost
-            jwt="{jwt}"
-            loggedInUser="{loggedInUser}"
-            post="{post}"
-    />
+    {/if}
+    </div>
+    
     {#each post.comments as comment}
         <div class="comment">
             <ShowComment
