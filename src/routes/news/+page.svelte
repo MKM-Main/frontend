@@ -14,7 +14,7 @@
 
     const handleShowAllComments = (postId) => {
         shownCommentAmounts[postId] = shownCommentAmounts[postId] === 10 ? 2 : 10;
-        showCommentAmountTexts[postId] = showCommentAmountTexts[postId] === "Show more comments" ? "Show less comments" : "Show more comments";
+        showCommentAmountTexts[postId] = showCommentAmountTexts[postId] === "Show less comments" ? "Show more comments" : "Show less comments";
     }
 
     const updateComments = (newComment, search) => {
@@ -51,7 +51,7 @@
                         />
                     {/each}
                     <button class="btn-show-comments" on:click={() => handleShowAllComments(post._id)} type="button">
-                        {"Show more comments"}
+                        {showCommentAmountTexts[post._id] || "Show more comments"}
                     </button>
                 </div>
             </div>
