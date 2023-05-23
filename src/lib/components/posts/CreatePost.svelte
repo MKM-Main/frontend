@@ -91,10 +91,13 @@
                on:change={handleFileInput} type="file">
         <button class="btn-new-post" class:btn-block-submit={canUpload === false} type="submit">Share!</button>
         <br>
-        {#each tags as tag, idx}
-            <label for="tag-{idx}">{tag.name}</label>
-            <input id="tag-{idx}" on:change={() => tag.checked = !tag.checked} checked={tag.checked} type="checkbox">
-        {/each}
+        <div class="tags-container">
+            {#each tags as tag, idx}
+                <label for="tag-{idx}">{tag.name}</label>
+                <input id="tag-{idx}" on:change={() => tag.checked = !tag.checked} checked={tag.checked}
+                       type="checkbox">
+            {/each}
+        </div>
     </form>
     <label for="new-tag">New tag:</label>
     <input bind:value={newTagValue} id="new-tag" placeholder="my cool tag!" required type="text">
@@ -115,6 +118,10 @@
         padding: 10px;
         margin-left: 5px;
       }
+    }
+
+    .tags-container {
+      display: grid;
     }
 
     .btn-block-submit {
