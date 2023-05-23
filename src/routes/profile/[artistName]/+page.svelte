@@ -16,13 +16,15 @@
 
     export let data;
     const jwt = data.jwt
-    let wallposts = data.wallposts;
+    let wallposts
+    $: wallposts = data.wallposts;
     let pageArtistName
-    //let pageArtistName = data.json?.user?.artistName
     let pageArtistId = data.json?.user?._id
 
     $: pageArtistName = data.json?.user?.artistName;
     //$: pageArtistId = data.json?.user?._id
+    let biography = data.json?.user?.biography
+    $: biography === undefined ? biography = "Welcome to my page" : biography = biography
 
     let followersInCount = data.json?.user?.followers?.length;
     let followingInCount = data.json?.user?.following?.length;
@@ -162,8 +164,7 @@
 
 <div class="header-div">
     <div class="profile-picture">
-        <img alt="" class="img-pic"
-             src={imageSource}/>
+        <img alt="" class="img-pic" src={imageSource}/>
     </div>
 
     <div class="allign-items">
@@ -193,7 +194,7 @@
             <button on:click={() => { modal = true; fetchAction = "following"; fetchPageUser(); }}>
                 Following {followingInCount}</button>
         </div>
-        <div class="bio-div">Biography: {data.json.user.biography}</div>
+        <div class="bio-div">Biography: {biography}</div>
         <div class="btn-div">
             {#if loggedInUser && loggedInUser !== pageArtistName}
                 <div class="follow-div">
