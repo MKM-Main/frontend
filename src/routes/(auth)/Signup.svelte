@@ -2,6 +2,7 @@
 
     import {BASE_URL_LOCAL} from "../../lib/stores.js";
     let firstName, lastName, artistName, email, password
+    export let cookiesAccepted
 
 
     const handleSignup = async () => {
@@ -49,7 +50,7 @@
         <label for="password">Password</label>
         <input bind:value={password} id="password" minlength="8" type="password">
 
-        <button type="submit">Sign up!</button>
+        <button class:cookies-accepted={cookiesAccepted === false} type="submit">Sign up!</button>
     </form>
 </div>
 
@@ -66,6 +67,11 @@
       margin: 8px 0;
       border: 1px solid #ccc;
       border-radius: 0.7em;
+    }
+
+    .cookies-accepted {
+      pointer-events: none;
+      background-color: darkgrey;
     }
   }
 

@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import { onDestroy } from "svelte";
   import toast, {Toaster} from 'svelte-french-toast'
+  import CookieConsent from "$lib/components/util/CookieConsent.svelte";
 
   export let data;
   const posts = data.postData;
@@ -90,8 +91,7 @@
 
 <Toaster />
 
-
-  <div class="header">
+<div class="header">
 </div>
   <div class="front-page">
     <div></div>

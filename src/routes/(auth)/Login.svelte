@@ -2,6 +2,7 @@
     import {BASE_URL_LOCAL} from "../../lib/stores.js";
     import toast from "svelte-french-toast";
     let email, password
+    export let cookiesAccepted
 
 
     const handleLogin = async () => {
@@ -38,7 +39,7 @@
         <label for="password">Password</label>
         <input bind:value={password} id="password" type="password">
 
-        <button id="submit" type="submit">Login</button>
+        <button class:cookies-accepted={cookiesAccepted === false} id="submit" type="submit">Login</button>
     </form>
 </div>
 
@@ -55,6 +56,11 @@
       margin: 8px 0;
       border: 1px solid #ccc;
       border-radius: 0.7em;
+    }
+
+    .cookies-accepted {
+      pointer-events: none;
+      background-color: darkgrey;
     }
   }
 

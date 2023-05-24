@@ -1,6 +1,7 @@
 <script>
     import {env} from "$env/dynamic/public";
     import {Toaster} from "svelte-french-toast";
+    import CookieConsent from "../lib/components/util/CookieConsent.svelte";
     export let data
     const Header = data.Header
     const Footer = data.Footer
@@ -21,6 +22,7 @@
     $: conversation = data?.conversationData
 </script>
 
+<CookieConsent/>
 <Header artistName={artistName}
         conversation={conversation}
         imageSource={imageSource}
