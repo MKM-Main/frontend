@@ -15,10 +15,10 @@
   <div id="{post._id}" class="main-container">
     <div class="img-container">
       {#if post?.profilePictureKey === "blank_profile.webp"}
-        <a href="/profile/{post?.commentAuthor}"><img class="profile-picture"
+        <a href="/profile/{post?.artistName}"><img class="profile-picture"
                                                       src="{imageSourcePrefix}{post?.profilePictureKey}" alt=""></a>
       {:else}
-        <a href="/profile/{post?.commentAuthor}"><img class="profile-picture"
+        <a href="/profile/{post?.artistName}"><img class="profile-picture"
                                                       src="{imageSourcePrefix}{post?.artistId}/profile/{post?.profilePictureKey}"
                                                       alt=""></a>
       {/if}

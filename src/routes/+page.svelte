@@ -52,7 +52,6 @@
 
   function showSlides(classSelectors) {
     const slides = document.querySelectorAll(classSelectors);
-    console.log(classSelectors)
     if(classSelectors === ".mySlides"){
       slides.forEach((slide, index) => {
       slide.style.display = index === slideIndex ? 'block' : 'none';
