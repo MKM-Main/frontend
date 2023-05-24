@@ -13,6 +13,8 @@
     import DeleteDisco from "./DeleteDisco.svelte";
     import Settings from "./Settings.svelte";
     import ShowComment from "../../../lib/components/comments/ShowComment.svelte";
+    import Report from "../../../lib/components/util/Report.svelte";
+    import DeleteComment from "../../../lib/components/comments/DeleteComment.svelte";
 
     export let data;
     const jwt = data.jwt
@@ -130,6 +132,22 @@
         const arrayObject = wallposts.findIndex(wallpost => wallpost._id === search)
         wallposts[arrayObject].comments = [newComment.message, ...wallposts[arrayObject].comments]
     }
+
+    const deleteComments = (commentId) => {
+  wallposts = wallposts.map((post) => {
+    // Copy the post object to avoid modifying the original
+    const updatedPost = { ...post };
+
+    // Check if the comments array exists in the current post object
+    if (updatedPost.comments) {
+      // Filter the comments array to remove the comment with the given commentId
+      updatedPost.comments = updatedPost.comments.filter(
+        (comment) => comment._id !== commentId
+      );
+    }
+    return updatedPost;
+  });
+};
     const updatePostSection = (data) => {
         wallposts = [...wallposts, data.newPost]
     }
@@ -244,11 +262,17 @@
                                            updateComments={updateComments}/>
                         {/if}
                         {#each wallpost?.comments as comment}
+                        <div class="comment">
                             <ShowComment
                                     comment={comment}
                                     jwt="{jwt}"
                                     loggedInUser="{loggedInUser}"
                             />
+                            <Report jwt={jwt} collection={"posts"} postId={wallpost._id} id={comment._id}/>
+                            {#if comment.commentAuthor === loggedInUser}
+                            <DeleteComment postid={wallpost._id} commentid={comment._id} deleteComments={deleteComments}/>
+                            {/if}
+                          </div>
                         {/each}
                     </div>
                 </div>
@@ -400,6 +424,16 @@
 {/if}
 
 <style lang="scss">
+
+  .comment {
+    border-radius: 15px;
+    padding: 10px;
+    background-color: #F0F2F5;
+    margin-top: 15px;
+    -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+    box-shadow: -1px -1px 15px 8px #E0E1DD;
+    width: 100%;
+    }
 
   .new-post {
     form {
