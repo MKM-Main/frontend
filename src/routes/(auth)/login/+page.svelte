@@ -23,10 +23,10 @@
 <Login
         cookiesAccepted="{cookiesAccepted}"
 />
-{#if !cookiesAccepted}
-    <div style="text-align: center">
+<div style="text-align: center">
+    {#if !cookiesAccepted}
         <h3>Please accept cookies before continuing</h3>
-        <p>Don't have an account? <a href="signup">Sign up!</a></p>
-    </div>
-{/if}
+    {/if}
+    <p>Don't have an account? <a href="signup">Sign up!</a></p>
+</div>
 
