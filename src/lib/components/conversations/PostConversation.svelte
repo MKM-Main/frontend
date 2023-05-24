@@ -11,24 +11,27 @@
     const close = () => dispatch("close")
 
     const postNewConversation = async (action) => {
-        await fetch(`http://localhost:8080/api/conversations/${action}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: `Bearer ${jwt}`,
-            },
-        }).then(res => {
-            res.json()
-            if (res.status === 200) {
-                toast.success("Conversation created")
-            }
-        })
-        .then(data => {
-            updateConversations(data)
-            createConversation(data)
-        })
-    }
+  await fetch(`http://localhost:8080/api/conversations/${action}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${jwt}`,
+    },
+  })
+    .then((res) => {
+      console.log(res.status); // Access the response status here
+      if (res.status === 200) {toast.success("Login success")}
+      return res.json();
+    })
+    .then((data) => {
+      updateConversations(data);
+      createConversation(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
 </script>
 
 <div class="div-btn-modal">

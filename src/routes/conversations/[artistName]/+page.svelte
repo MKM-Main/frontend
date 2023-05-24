@@ -45,12 +45,14 @@
   };
 
   const sendMessage = (params) => {
-    socket.emit("new message", [
+    if(bodyArea.trim() !== ""){
+      socket.emit("new message", [
       bodyArea,
       params,
       loggedInUser,
       loggedInArtistname,
     ]);
+    }
   };
 
   let userProfiles = {};
@@ -136,9 +138,9 @@
       console.error("Error updating conversation:", error);
     }
   };
-  const updateMessages = async () => {
+  const updateMessages = async (action) => {
     const res = await fetch(
-      `http://localhost:8080/api/conversations/${params}`,
+      `http://localhost:8080/api/conversations/${action}`,
       {
         method: "GET",
         credentials: "include",
@@ -183,8 +185,7 @@
     <!-- Conversation -->
     {#each conversations as conversation}
       {#if conversation.read === false && conversation.sender !== loggedInArtistname}
-      
-        <a on:click={() => {emptySocketArray(); patchReadConversation(conversation._id); updateMessages();}} href="/conversations/{conversation._id}">
+        <a on:click={() => {emptySocketArray(); patchReadConversation(conversation._id); updateMessages(conversation._id);}} href="/conversations/{conversation._id}">
           <div class="horizontal-div">
             <span class="notification-dot"></span>
             <img alt="" class="conversations-pic" src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
@@ -194,7 +195,7 @@
           </div>
         </a>
       {:else}
-        <a on:click={() => {emptySocketArray(); updateMessages();}} href="/conversations/{conversation._id}">
+        <a on:click={() => {emptySocketArray(); updateMessages(conversation._id);}} href="/conversations/{conversation._id}">
           <div class="horizontal-div">
             <img alt="" class="conversations-pic" src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
             <p>{conversation.participants}</p>
@@ -210,7 +211,7 @@
       {#if socketConversation?.receiver[0] !== loggedInArtistname}
         <div />
       {:else}
-        <a on:click={() => {emptySocketConversationArray(); emptySocketArray(); updateMessages(); patchReadConversation(socketConversation._id);}} href="/conversations/{socketConversation._id}">
+        <a on:click={() => {emptySocketConversationArray(); emptySocketArray(); updateMessages(socketConversation._id); patchReadConversation(socketConversation._id);}} href="/conversations/{socketConversation._id}">
           <div class="horizontal-div">
             <span class="notification-dot"></span>
             <img alt="" class="conversations-pic" src="{imageSourcePrefix}{socketConversation.profilePictureKeySender}"/>
@@ -280,7 +281,7 @@
       <div class="input-message">
         <form on:submit|preventDefault={patchMessages(params)}>
           <div class="input-div">
-            <textarea bind:value={bodyArea} class="area" name="" id={params} cols="40" rows="1" key={params}/>
+            <textarea bind:value={bodyArea} class="area" name="" id={params} cols="40" rows="1" key={params} required/>
             <button class="btn" on:click={() => {sendMessage(params);}} type="submit">Send</button>
           </div>
         </form>
