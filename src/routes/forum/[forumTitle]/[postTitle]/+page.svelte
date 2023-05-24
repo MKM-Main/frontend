@@ -17,7 +17,7 @@
     const loggedInUser = data?.userData?.customMessage?.artistName;
 
     const updateComments = (newComment) => {
-        post.comments = [...post.comments, newComment];
+        post.comments = [newComment, ...post.comments];
     }
 
     const deleteComments = (commentId) => {
