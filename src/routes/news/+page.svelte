@@ -19,7 +19,7 @@
 
     const updateComments = (newComment, search) => {
         const arrayObject = posts.findIndex(post => post._id === search)
-        posts[arrayObject].comments = [...posts[arrayObject].comments, newComment.message]
+        posts[arrayObject].comments = [newComment.message, ...posts[arrayObject].comments ]
     }
 
 </script>

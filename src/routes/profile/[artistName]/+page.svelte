@@ -128,7 +128,7 @@
 
     const updateComments = (newComment, search) => {
         const arrayObject = wallposts.findIndex(wallpost => wallpost._id === search)
-        wallposts[arrayObject].comments = [...wallposts[arrayObject].comments, newComment.message]
+        wallposts[arrayObject].comments = [newComment.message, ...wallposts[arrayObject].comments]
     }
     const updatePostSection = (data) => {
         wallposts = [...wallposts, data.newPost]
