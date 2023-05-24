@@ -84,7 +84,7 @@
         {/if}
 
         <textarea bind:value={postBody} cols="5" id="body" name="body"
-                  placeholder="Share your news!"></textarea>
+                  placeholder="Share your news!" required></textarea>
         <label for="fileType"
                style="{canUpload === false ? 'color: red' : ''}">{canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth} ` : ""}</label>
         <input accept=".pdf, .jpeg, .jpg, .png, .mp4, .m4a, .mp3" id="fileType"
