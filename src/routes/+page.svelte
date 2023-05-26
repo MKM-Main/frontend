@@ -14,7 +14,7 @@
 
 
   const filteredArrays = posts.reduce((filtered, post) => {
-    if (post.reference !== "wallpost") {
+    if (post.referenceName !== "wallpost") {
       const todaysDate = new Date().toLocaleString("en-GB").split(', ')[0];
       const filteredComments = post.comments.filter(comment => comment.timeStamp.split(', ')[0] === todaysDate);
       filtered.push({ post, filteredComments });

@@ -47,11 +47,13 @@
     }
 </script>
 
-
+<div class="dashboard-container">
+  
 {#if userRole === "admin"}
 
 
     <div class="container">
+      <h1>UPDATE USER</h1>
         <form on:submit={selectUser}>
             <label for="userSelect">Select user:</label>
             <select id="userSelect" name="userSelect" required>
@@ -94,6 +96,8 @@
         </form>
 
     </div>
+ 
+  
     <div class="total-signup">
         <div class="recent-signups">
             <h1>Recent signups</h1>
@@ -109,46 +113,62 @@
 
 
     <div class="totals">
+      <div class="stats">
         <h1>Total:</h1>
         <h3>Users : {users.length}</h3>
         <h3>Total Posts : {posts.length}</h3>
         <h3>Total comments : {totalComments}</h3>
         <h3>Total forums: {forums.length}</h3>
-        <h2>Active: </h2>
+      </div>
+        <div class="active-forums">
+        <h2 style="color: green;">Active forums: </h2>
         {#each forums as forum}
             {#if forum.verified === true}
                 <p>{forum.forumTitle}</p>
             {/if}
         {/each}
-        <h2>Not activated</h2>
+        <h2 style="color: red;">Not activated</h2>
         {#each forums as forum}
             {#if forum.verified === false}
                 <p>{forum.forumTitle}</p>
             {/if}
         {/each}
-
+      </div>
     </div>
 
-
+<div class="forum-main"> 
+  <h1>Forum management</h1>
     <div class="forum-container">
-        <h1>Forum management</h1>
+      
         {#each forums as forum}
-            <div class="single-forum">
+
+          <div class="single-forum" data-verified={forum.verified ? "true" : "false"}>
+
+              <div class="forum-title" >
                 <p>{forum.forumTitle}</p>
+              </div>
+              <div class="forum-creation" >
                 <p>{forum.creationDate}</p>
-                {#if forum.verified === true}
+              </div>
+              <div class="forum-verification">
+              {#if forum.verified === true}
                     <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Undo Verification"}/>
                 {/if}
+                
                 {#if forum.verified === false}
-                    <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Verify Forum"}/>
+                
+                <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Verify Forum"}/>
                 {/if}
+              </div>
+              <div class="forum-delete">
                 <DeleteAdmin id={forum._id} apiUrl={"forum"} jwt={jwt}/>
+              </div>
             </div>
         {/each}
     </div>
-
-
+  </div>
 {/if}
+
 <div class="report">
     <h1>Report Section</h1>
     <div class="report-post">
@@ -157,13 +177,13 @@
             {#if post?.reported?.length >= 3}
                 <div class="high-report">
 
+                  <p>User who created post: {post.artistName}</p>
                     <p>Post Titel: {post.postTitle}</p>
-                    <p>User who created post: {post.artistName}</p>
                     <p>Reference: {post.referenceName}</p>
                     <p>Number of reports: {post.reported.length}</p>
                     <p>Number of comments: {post.comments.length}</p>
-                    <button on:click={() =>(post.open = true)}></button>
-                    <a href={post.reported[0].link} target="_blank">Link</a>
+                    <button on:click={() =>(post.open = true)}>Get reports </button>
+                    <a href={post.reported[0].link} target="_blank">Go to subject</a>
                 </div>
                 {#if post.open}
                     <Modal on:close={() => (post.open = false)}>
@@ -190,7 +210,7 @@
                     <p>{a.commentBody}</p>
                     <p>Comment's rating: {a.rating.length}</p>
                     <p>Number of Reports:  {a.reported.length}</p>
-                    <button on:click={() =>(a.open = true)}></button>
+                    <button on:click={() =>(a.open = true)}>Get reports</button>
                 </div>
                 {#if a.open}
                     <Modal on:close={() => (a.open = false)}>
@@ -205,16 +225,38 @@
 
             {/if}
         {/each}
-
-
     {/each}
-
+</div>
 </div>
 <style lang="scss">
+  .dashboard-container {
+    margin: 5em;
+    border-radius: 20px;
+    border: 2px solid;
+    display: grid;
+    grid-template-columns: 1fr ;
+    grid-gap: 20px;
+  }
+  .forum-main{
+    background-color: #0d1b2a;
+    margin-top: 2em;
+    width: 50%;
+    margin-left: 30%;
+    h1{
+      margin-left: 25%;
+      padding-top: 1em;
+      color: white;
+    }
+  }
   .container {
     background-color: #0d1b2a;
     color: #e0e1dd;
     padding: 20px;
+    margin-top: 2em;
+    width: 50%;
+    margin-left: 25%;
+    border-radius: 4px;
+    
   }
 
   form {
@@ -274,15 +316,16 @@
   }
 
   .total-signup {
+    border-radius: 4px;
     background-color: #0d1b2a;
     color: #e0e1dd;
     padding: 20px;
     margin-bottom: 20px;
+    width: 50%;
+    margin-left: 25%;
+    height: auto;
   }
 
-  .recent-signups {
-    margin-bottom: 20px;
-  }
 
   .recent-signups h1 {
     color: #e0e1dd;
@@ -310,10 +353,27 @@
     text-decoration: underline;
   }
 
+
   .totals {
-    background-color: #1b263b;
+    border-radius: 4px;
+    width: 50%;
+    background-color: #0d1b2a;
     color: #e0e1dd;
     padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-left: 25%;
+  }
+
+  .stats {
+    flex: 1;
+    margin-right: 20px;
+    height: auto;
+  }
+
+  .active-forums {
+    flex: 1;
   }
 
   .totals h1 {
@@ -322,20 +382,153 @@
     margin-bottom: 10px;
   }
 
-  .totals h2 {
-    color: #e0e1dd;
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-
   .totals h3 {
-    color: #e0e1dd;
-    font-size: 16px;
-    margin-bottom: 5px;
+    
+    font-size: 20px;
+    margin-bottom: 10px;
   }
 
   .totals p {
     color: #e0e1dd;
     margin-bottom: 5px;
   }
+
+  .totals p:first-child {
+    font-weight: bold;
+  }
+
+  .totals p a {
+    color: #778da9;
+    text-decoration: none;
+  }
+
+  .totals p a:hover {
+    text-decoration: underline;
+  }
+
+  .totals p a:visited {
+    color: #778da9;
+  }
+  .forum-main{
+    width: 50%;
+    margin-left: 25%;
+    border-radius: 5px;
+    
+  }
+  .forum-container {
+    background-color: #0d1b2a;
+    padding: 20px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 20px;
+    
+  }
+
+  .forum-container h1 {
+    color: #333333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin: auto;
+  }
+
+  .single-forum {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .forum-title p {
+    color: #333333;
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .forum-creation p {
+    color: #333333;
+    margin: 0;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+
+  .forum-verification,
+  .forum-delete {
+    margin-top: 10px;
+  }
+
+  .forum-delete button,
+  .forum-verification button {
+    padding: 8px 16px;
+    background-color: #415a77;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .forum-delete button:hover,
+  .forum-verification button:hover {
+    background-color: #354e6e;
+  }
+
+  .single-forum[data-verified="true"] {
+    background-color: green; /* Green */
+  }
+
+  .single-forum[data-verified="false"] {
+    background-color: #ff0000; /* Red */
+  }
+  .report {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #0d1b2a;
+        h1, h2{
+          color: white
+        }
+    }
+
+    .report-post {
+      
+        margin-top: 20px;
+    }
+
+    .high-report {
+
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: white;
+    }
+
+    .high-report p {
+        margin: 5px 0;
+    }
+
+    .high-report button {
+        margin-top: 10px;
+        background-color: #415a77;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .high-report a {
+        display: inline-block;
+        margin-top: 10px;
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    .high-report a:hover {
+        text-decoration: underline;
+    }
 </style>

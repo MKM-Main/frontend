@@ -41,9 +41,7 @@
         <div>
             <p>{comment?.timeStamp}</p>
         </div>
-        {#if comment.commentAuthor === loggedInUser}
-            <DeleteComment postid={postId} commentid={comment._id} deleteComments={deleteComments}//>
-        {/if}
+
     </div>
 </div>
 

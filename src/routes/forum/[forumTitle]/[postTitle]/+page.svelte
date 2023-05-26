@@ -17,7 +17,7 @@
     const loggedInUser = data?.userData?.customMessage?.artistName;
 
     const updateComments = (newComment) => {
-        post.comments = [...post.comments, newComment];
+        post.comments = [newComment, ...post.comments];
     }
 
     const deleteComments = (commentId) => {
@@ -74,6 +74,15 @@
     justify-content: center;
     width: 70%;
     margin: 0 15%;
+    .comment {
+    border-radius: 15px;
+    padding: 10px;
+    background-color: #F0F2F5;
+    margin-top: 15px;
+    -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+    box-shadow: -1px -1px 15px 8px #E0E1DD;
+    width: 100%;
+    }
   }
 </style>
 
