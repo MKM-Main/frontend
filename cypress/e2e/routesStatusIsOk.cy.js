@@ -12,7 +12,7 @@ describe('GET requests to profile and forum routes', () => {
     it('Returns a 200 status for existing forum', function () {
         cy.request({
             method: "GET",
-            url: "http://localhost:5173/forum/Hadeklubben",
+            url: "http://localhost:5173/forum/New-Releases",
             failOnStatusCode: false
         })
             .its("status")
