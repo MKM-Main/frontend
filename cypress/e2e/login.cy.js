@@ -1,4 +1,10 @@
 describe('Login form', () => {
+
+    before("Set cookie consent", () => {
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 30);
+        localStorage.setItem("cookie_consent_accepted", JSON.stringify({accepted: true, expires: expirationDate}));
+    })
     it('Allows user to login with valid credentials', () => {
         const user = {
             email: "malthegram22@gmail.com",
