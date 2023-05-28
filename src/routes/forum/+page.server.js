@@ -1,7 +1,7 @@
 export const load = async ({fetch, cookies}) => {
     
 
-    const response = await fetch("http://localhost:8080/forum", {
+    const response = await fetch("http://localhost:8080/api/forum", {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
