@@ -15,11 +15,11 @@ export const load = async ({fetch, params, cookies}) => {
     })
     const tagsJson = await tagsResponse.json()
 
-    const forumResponse = await fetch(`http://localhost:8080/forum/${params.forumTitle}`);
+    const forumResponse = await fetch(`http://localhost:8080/api/forum/${params.forumTitle}`);
     const forumData = await forumResponse.json();
     const forumTitle = replaceHyphensWithSpaces(params.forumTitle)
 
-    const allForumResponse = await fetch(`http://localhost:8080/forum/`);
+    const allForumResponse = await fetch(`http://localhost:8080/api/forum/`);
     const allForumData = await allForumResponse.json();
 
     if (forumResponse.status === 404) {
