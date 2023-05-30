@@ -1,10 +1,10 @@
 <script>
-  import ForumVerification from './ForumVerification.svelte';
-  import UpdateUser from './UpdateUser.svelte';
-  import DeleteAdmin from './DeleteAdmin.svelte';
-  import Modal from '../../lib/components/modal/Modal.svelte';
+    import ForumVerification from './ForumVerification.svelte';
+    import UpdateUser from './UpdateUser.svelte';
+    import DeleteAdmin from './DeleteAdmin.svelte';
+    import Modal from '$lib/components/modal/Modal.svelte';
 
-  let modal = false;
+    let modal = false;
 
     export let data;
 
@@ -48,185 +48,185 @@
 </script>
 
 <div class="dashboard-container">
-  
-{#if userRole === "admin"}
+
+    {#if userRole === "admin"}
 
 
-    <div class="container">
-      <h1>UPDATE USER</h1>
-        <form on:submit={selectUser}>
-            <label for="userSelect">Select user:</label>
-            <select id="userSelect" name="userSelect" required>
-                <option value="">Find user</option>
+        <div class="container">
+            <h1>UPDATE USER</h1>
+            <form on:submit={selectUser}>
+                <label for="userSelect">Select user:</label>
+                <select id="userSelect" name="userSelect" required>
+                    <option value="">Find user</option>
+                    {#each users as user}
+                        <option value={user._id}>{user.firstName} {user.lastName}</option>
+                    {/each}
+                </select>
+                <button type="submit">Select user</button>
+            </form>
+
+            <form on:submit|preventDefault>
+                {#if selectedUser}
+                    <div class="user-container">
+                        <p>Editing: {selectedUser.firstName} {selectedUser.lastName}</p>
+                        <label for="firstname">Firstname: </label>
+                        <input bind:value={userBody.firstName} name="firstname" type="text"
+                               placeholder={selectedUser.firstName}>
+                        <label for="lastname">Lastname: </label>
+                        <input bind:value={userBody.lastName} name="lastname" type="text"
+                               placeholder={selectedUser.lastName}>
+                        <label for="artistName">Artist Name: </label>
+                        <input bind:value={userBody.artistName} name="artistName" type="text"
+                               placeholder={selectedUser.artistName}>
+                        <label for="email">E-mail: </label>
+                        <input bind:value={userBody.email} type="text" placeholder={selectedUser.email} name="email">
+                        <label for="role">Role: </label>
+                        <select bind:value={userBody.role} name="role" placeholder={selectedUser.role}>
+                            <option value="admin" selected={selectedUser.role === 'admin'}>Admin</option>
+                            <option value="user" selected={selectedUser.role === 'user'}>User</option>
+                        </select>
+                        <UpdateUser jwt={jwt} artistName={selectedUser.artistName} userBody={userBody}
+                                    currentRole={selectedUser.role}/>
+                        <DeleteAdmin id={selectedUser._id} apiUrl={"users"} jwt={jwt}/>
+                    </div>
+
+                {:else}
+                    <p>No user selected.</p>
+                {/if}
+            </form>
+
+        </div>
+
+
+        <div class="total-signup">
+            <div class="recent-signups">
+                <h1>Recent signups</h1>
+                <h3>Last 7 days:</h3>
                 {#each users as user}
-                    <option value={user._id}>{user.firstName} {user.lastName}</option>
+                    {#if isRecentSignup(user.creationDate)}
+                        <p><a href="http://localhost:5173/profile/{user.artistName}">{user.artistName}</a> - Joined
+                            on: {user.creationDate}</p>
+                    {/if}
                 {/each}
-            </select>
-            <button type="submit">Select user</button>
-        </form>
+            </div>
+        </div>
 
-        <form on:submit|preventDefault>
-            {#if selectedUser}
-                <div class="user-container">
-                    <p>Editing: {selectedUser.firstName} {selectedUser.lastName}</p>
-                    <label for="firstname">Firstname: </label>
-                    <input bind:value={userBody.firstName} name="firstname" type="text"
-                           placeholder={selectedUser.firstName}>
-                    <label for="lastname">Lastname: </label>
-                    <input bind:value={userBody.lastName} name="lastname" type="text"
-                           placeholder={selectedUser.lastName}>
-                    <label for="artistName">Artist Name: </label>
-                    <input bind:value={userBody.artistName} name="artistName" type="text"
-                           placeholder={selectedUser.artistName}>
-                    <label for="email">E-mail: </label>
-                    <input bind:value={userBody.email} type="text" placeholder={selectedUser.email} name="email">
-                    <label for="role">Role: </label>
-                    <select bind:value={userBody.role} name="role" placeholder={selectedUser.role}>
-                        <option value="admin" selected={selectedUser.role === 'admin'}>Admin</option>
-                        <option value="user" selected={selectedUser.role === 'user'}>User</option>
-                    </select>
-                    <UpdateUser jwt={jwt} artistName={selectedUser.artistName} userBody={userBody}
-                                currentRole={selectedUser.role}/>
-                    <DeleteAdmin id={selectedUser._id} apiUrl={"users"} jwt={jwt}/>
-                </div>
 
-            {:else}
-                <p>No user selected.</p>
-            {/if}
-        </form>
+        <div class="totals">
+            <div class="stats">
+                <h1>Total:</h1>
+                <h3>Users : {users.length}</h3>
+                <h3>Total Posts : {posts.length}</h3>
+                <h3>Total comments : {totalComments}</h3>
+                <h3>Total forums: {forums.length}</h3>
+            </div>
+            <div class="active-forums">
+                <h2 style="color: green;">Active forums: </h2>
+                {#each forums as forum}
+                    {#if forum.verified === true}
+                        <p>{forum.forumTitle}</p>
+                    {/if}
+                {/each}
+                <h2 style="color: red;">Not activated</h2>
+                {#each forums as forum}
+                    {#if forum.verified === false}
+                        <p>{forum.forumTitle}</p>
+                    {/if}
+                {/each}
+            </div>
+        </div>
 
-    </div>
- 
-  
-    <div class="total-signup">
-        <div class="recent-signups">
-            <h1>Recent signups</h1>
-            <h3>Last 7 days:</h3>
-            {#each users as user}
-                {#if isRecentSignup(user.creationDate)}
-                    <p><a href="http://localhost:5173/profile/{user.artistName}">{user.artistName}</a> - Joined
-                        on: {user.creationDate}</p>
+        <div class="forum-main">
+            <h1>Forum management</h1>
+            <div class="forum-container">
+
+                {#each forums as forum}
+
+                    <div class="single-forum" data-verified={forum.verified ? "true" : "false"}>
+
+                        <div class="forum-title">
+                            <p>{forum.forumTitle}</p>
+                        </div>
+                        <div class="forum-creation">
+                            <p>{forum.creationDate}</p>
+                        </div>
+                        <div class="forum-verification">
+                            {#if forum.verified === true}
+                                <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Undo Verification"}/>
+                            {/if}
+
+                            {#if forum.verified === false}
+
+                                <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Verify Forum"}/>
+                            {/if}
+                        </div>
+                        <div class="forum-delete">
+                            <DeleteAdmin id={forum._id} apiUrl={"forum"} jwt={jwt}/>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+        </div>
+    {/if}
+
+    <div class="report">
+        <h1>Report Section</h1>
+        <div class="report-post">
+            <h2>Post Reports</h2>
+            {#each posts as post }
+                {#if post?.reported?.length >= 3}
+                    <div class="high-report">
+
+                        <p>User who created post: {post.artistName}</p>
+                        <p>Post Titel: {post.postTitle}</p>
+                        <p>Reference: {post.referenceName}</p>
+                        <p>Number of reports: {post.reported.length}</p>
+                        <p>Number of comments: {post.comments.length}</p>
+                        <button on:click={() =>(post.open = true)}>Get reports</button>
+                        <a href={post.reported[0].link} target="_blank">Go to subject</a>
+                    </div>
+                    {#if post.open}
+                        <Modal on:close={() => (post.open = false)}>
+                            {#each post.reported as report}
+                                <p>User who reported: {report.userWhoReported}</p>
+                                <p>{report.timeStamp}</p>
+                                <p>{report.reason}</p>
+                                <p>{report.description}</p>
+                            {/each}
+                        </Modal>
+                    {/if}
+                {/if}
+
+            {/each}
+
+        </div>
+        <h2>Comment reports</h2>
+        {#each posts as post}
+            {#each post.comments as a }
+                {#if a?.reported?.length >= 3}
+                    <div class="high-report">
+                        <p> User who created comment: {a.commentAuthor}</p>
+                        <p> Reference: {post.referenceName}</p>
+                        <p>{a.commentBody}</p>
+                        <p>Comment's rating: {a.rating.length}</p>
+                        <p>Number of Reports:  {a.reported.length}</p>
+                        <button on:click={() =>(a.open = true)}>Get reports</button>
+                    </div>
+                    {#if a.open}
+                        <Modal on:close={() => (a.open = false)}>
+                            {#each a.reported as report}
+                                <p>User who reported: {report.userWhoReported}</p>
+                                <p>{report.timeStamp}</p>
+                                <p>{report.reason}</p>
+                                <p>{report.description}</p>
+                            {/each}
+                        </Modal>
+                    {/if}
+
                 {/if}
             {/each}
-        </div>
-    </div>
-
-
-    <div class="totals">
-      <div class="stats">
-        <h1>Total:</h1>
-        <h3>Users : {users.length}</h3>
-        <h3>Total Posts : {posts.length}</h3>
-        <h3>Total comments : {totalComments}</h3>
-        <h3>Total forums: {forums.length}</h3>
-      </div>
-        <div class="active-forums">
-        <h2 style="color: green;">Active forums: </h2>
-        {#each forums as forum}
-            {#if forum.verified === true}
-                <p>{forum.forumTitle}</p>
-            {/if}
-        {/each}
-        <h2 style="color: red;">Not activated</h2>
-        {#each forums as forum}
-            {#if forum.verified === false}
-                <p>{forum.forumTitle}</p>
-            {/if}
-        {/each}
-      </div>
-    </div>
-
-<div class="forum-main"> 
-  <h1>Forum management</h1>
-    <div class="forum-container">
-      
-        {#each forums as forum}
-
-          <div class="single-forum" data-verified={forum.verified ? "true" : "false"}>
-
-              <div class="forum-title" >
-                <p>{forum.forumTitle}</p>
-              </div>
-              <div class="forum-creation" >
-                <p>{forum.creationDate}</p>
-              </div>
-              <div class="forum-verification">
-              {#if forum.verified === true}
-                    <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Undo Verification"}/>
-                {/if}
-                
-                {#if forum.verified === false}
-                
-                <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Verify Forum"}/>
-                {/if}
-              </div>
-              <div class="forum-delete">
-                <DeleteAdmin id={forum._id} apiUrl={"forum"} jwt={jwt}/>
-              </div>
-            </div>
         {/each}
     </div>
-  </div>
-{/if}
-
-<div class="report">
-    <h1>Report Section</h1>
-    <div class="report-post">
-        <h2>Post Reports</h2>
-        {#each posts as post }
-            {#if post?.reported?.length >= 3}
-                <div class="high-report">
-
-                  <p>User who created post: {post.artistName}</p>
-                    <p>Post Titel: {post.postTitle}</p>
-                    <p>Reference: {post.referenceName}</p>
-                    <p>Number of reports: {post.reported.length}</p>
-                    <p>Number of comments: {post.comments.length}</p>
-                    <button on:click={() =>(post.open = true)}>Get reports </button>
-                    <a href={post.reported[0].link} target="_blank">Go to subject</a>
-                </div>
-                {#if post.open}
-                    <Modal on:close={() => (post.open = false)}>
-                        {#each post.reported as report}
-                            <p>User who reported: {report.userWhoReported}</p>
-                            <p>{report.timeStamp}</p>
-                            <p>{report.reason}</p>
-                            <p>{report.description}</p>
-                        {/each}
-                    </Modal>
-                {/if}
-            {/if}
-
-        {/each}
-
-    </div>
-    <h2>Comment reports</h2>
-    {#each posts as post}
-        {#each post.comments as a }
-            {#if a?.reported?.length >= 3}
-                <div class="high-report">
-                    <p> User who created comment: {a.commentAuthor}</p>
-                    <p> Reference: {post.referenceName}</p>
-                    <p>{a.commentBody}</p>
-                    <p>Comment's rating: {a.rating.length}</p>
-                    <p>Number of Reports:  {a.reported.length}</p>
-                    <button on:click={() =>(a.open = true)}>Get reports</button>
-                </div>
-                {#if a.open}
-                    <Modal on:close={() => (a.open = false)}>
-                        {#each a.reported as report}
-                            <p>User who reported: {report.userWhoReported}</p>
-                            <p>{report.timeStamp}</p>
-                            <p>{report.reason}</p>
-                            <p>{report.description}</p>
-                        {/each}
-                    </Modal>
-                {/if}
-
-            {/if}
-        {/each}
-    {/each}
-</div>
 </div>
 <style lang="scss">
   .dashboard-container {
@@ -234,20 +234,23 @@
     border-radius: 20px;
     border: 2px solid;
     display: grid;
-    grid-template-columns: 1fr ;
+    grid-template-columns: 1fr;
     grid-gap: 20px;
   }
-  .forum-main{
+
+  .forum-main {
     background-color: #0d1b2a;
     margin-top: 2em;
     width: 50%;
     margin-left: 30%;
-    h1{
+
+    h1 {
       margin-left: 25%;
       padding-top: 1em;
       color: white;
     }
   }
+
   .container {
     background-color: #0d1b2a;
     color: #e0e1dd;
@@ -256,7 +259,7 @@
     width: 50%;
     margin-left: 25%;
     border-radius: 4px;
-    
+
   }
 
   form {
@@ -383,7 +386,7 @@
   }
 
   .totals h3 {
-    
+
     font-size: 20px;
     margin-bottom: 10px;
   }
@@ -409,12 +412,14 @@
   .totals p a:visited {
     color: #778da9;
   }
-  .forum-main{
+
+  .forum-main {
     width: 50%;
     margin-left: 25%;
     border-radius: 5px;
-    
+
   }
+
   .forum-container {
     background-color: #0d1b2a;
     padding: 20px;
@@ -422,7 +427,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
-    
+
   }
 
   .forum-container h1 {
@@ -481,54 +486,56 @@
   .single-forum[data-verified="false"] {
     background-color: #ff0000; /* Red */
   }
+
   .report {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #0d1b2a;
-        h1, h2{
-          color: white
-        }
-    }
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #0d1b2a;
 
-    .report-post {
-      
-        margin-top: 20px;
+    h1, h2 {
+      color: white
     }
+  }
 
-    .high-report {
+  .report-post {
 
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: white;
-    }
+    margin-top: 20px;
+  }
 
-    .high-report p {
-        margin: 5px 0;
-    }
+  .high-report {
 
-    .high-report button {
-        margin-top: 10px;
-        background-color: #415a77;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 10px;
-        cursor: pointer;
-    }
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+  }
 
-    .high-report a {
-        display: inline-block;
-        margin-top: 10px;
-        color: #0066cc;
-        text-decoration: none;
-    }
+  .high-report p {
+    margin: 5px 0;
+  }
 
-    .high-report a:hover {
-        text-decoration: underline;
-    }
+  .high-report button {
+    margin-top: 10px;
+    background-color: #415a77;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .high-report a {
+    display: inline-block;
+    margin-top: 10px;
+    color: #0066cc;
+    text-decoration: none;
+  }
+
+  .high-report a:hover {
+    text-decoration: underline;
+  }
 </style>

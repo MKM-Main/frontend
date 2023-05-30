@@ -5,7 +5,7 @@
     export let postId;
     export let title;
 
-    import Modal from "../modal/Modal.svelte";
+    import Modal from '$lib/components/modal/Modal.svelte';
     let modal = false;
 
     const reasons = [
