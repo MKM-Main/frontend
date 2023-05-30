@@ -3,9 +3,9 @@
 
     import Report from "../../../lib/components/util/Report.svelte";
 
-    import Modal from "$lib/components/Modal/Modal.svelte"
     import Spinner from "$lib/components/helpers/Spinner.svelte";
     import CreatePost from "$lib/components/posts/CreatePost.svelte";
+    import Modal from "../../../lib/components/Modal/Modal.svelte";
 
     export let data;
 
@@ -64,9 +64,9 @@
             </div>
         {/each}
         {#if jwt}
-        <div class="btn-container">
-          <button class="btn-create-post" on:click={() => modal = !modal}>Create new post!</button>
-        </div>
+            <div class="btn-container">
+                <button class="btn-create-post" on:click={() => modal = !modal}>Create new post!</button>
+            </div>
         {/if}
     </div>
     <div class="filter">
