@@ -1,12 +1,12 @@
 <script>
-  import {onMount} from "svelte";
-  import {io} from "socket.io-client";
-  import Modal from '$lib/components/modal/Modal.svelte';
-  import PostConversation from "../../../lib/components/conversations/PostConversation.svelte";
-  import DeleteConversation from "../../../lib/components/conversations/DeleteConversation.svelte";
-  import {env} from "$env/dynamic/public";
+    import {onMount} from "svelte";
+    import {io} from "socket.io-client";
+    import PostConversation from "../../../lib/components/conversations/PostConversation.svelte";
+    import DeleteConversation from "../../../lib/components/conversations/DeleteConversation.svelte";
+    import {env} from "$env/dynamic/public";
+    import Modal from "../../../lib/components/Modal/Modal.svelte";
 
-  let userData;
+    let userData;
     const fetchUserData = async () => {
         const res = await fetch(
             `http://localhost:8080/api/users/${loggedInUserArtistName}`
