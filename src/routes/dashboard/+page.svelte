@@ -2,7 +2,7 @@
     import ForumVerification from './ForumVerification.svelte';
     import UpdateUser from './UpdateUser.svelte';
     import DeleteAdmin from './DeleteAdmin.svelte';
-    import Modal from '$lib/components/modal/Modal.svelte';
+    import Modal from "../../lib/components/Modal/Modal.svelte";
 
     let modal = false;
 
