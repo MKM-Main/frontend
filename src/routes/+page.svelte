@@ -7,7 +7,7 @@
   import CookieConsent from "$lib/components/util/CookieConsent.svelte";
 
   export let data;
-  const posts = data.postData;
+  const posts = data.postData.posts;
   const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
   const users = data?.usersData?.data;
   const jwt = data?.jwt;
