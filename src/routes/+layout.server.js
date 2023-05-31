@@ -1,6 +1,6 @@
 export const load = async ({fetch, cookies}) => {
     const jwt = cookies.get("jwt")
-    const userDataResponse = await fetch("http://localhost:8080/profile", {
+    const userDataResponse = await fetch("https://tunetower.onrender.com/profile", {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
@@ -10,7 +10,7 @@ export const load = async ({fetch, cookies}) => {
     const userData = await userDataResponse.json()
     //if (!jwt) return
 
-    const responseConversation = await fetch("http://localhost:8080/api/conversations", {
+    const responseConversation = await fetch("https://tunetower.onrender.com/api/conversations", {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",

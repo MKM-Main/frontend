@@ -1,6 +1,6 @@
 export const load = async ({fetch, cookies}) => {
 
-    const postResponse = await fetch("http://localhost:8080/api/posts", {
+    const postResponse = await fetch("https://tunetower.onrender.com/api/posts", {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
@@ -8,7 +8,7 @@ export const load = async ({fetch, cookies}) => {
     })
     const postData = await postResponse.json()
 
-    const usersDataResponse = await fetch("http://localhost:8080/api/users", {
+    const usersDataResponse = await fetch("https://tunetower.onrender.com/api/users", {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"

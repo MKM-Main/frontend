@@ -3,7 +3,7 @@ import Footer from "../lib/components/Footer.svelte";
 //KAN IKKE HENTE COOKIES HER
 export const load = async ({data}) => {
 
-    const hypedPost = await fetch("http://localhost:8080/api/posts/hyped", {
+    const hypedPost = await fetch("https://tunetower.onrender.com/posts/hyped", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
