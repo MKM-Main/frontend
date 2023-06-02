@@ -22,11 +22,7 @@
             });
 
             if (response.status === 200) {
-                console.log(response)
                 toast.success("Login success");
-                setTimeout(() => {
-                    location.href = "/news";
-                }, 1500);
             }
         } catch (error) {
             console.error("Error during login:", error);
