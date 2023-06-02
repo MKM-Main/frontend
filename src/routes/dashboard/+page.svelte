@@ -3,7 +3,6 @@
     import UpdateUser from './UpdateUser.svelte';
     import DeleteAdmin from './DeleteAdmin.svelte';
     import Modal from "../../lib/components/Modal/Modal.svelte";
-    import {PUBLIC_SITE_URL} from "$env/static/public";
 
     let modal = false;
 
@@ -105,7 +104,8 @@
                 <h3>Last 7 days:</h3>
                 {#each users as user}
                     {#if isRecentSignup(user.creationDate)}
-                        <p><a href="{PUBLIC_SITE_URL}profile/{user.artistName}">{user.artistName}</a> - Joined
+                        <p><a href="https://tunetower-6o9e.onrender.com/profile/{user.artistName}">{user.artistName}</a>
+                            - Joined
                             on: {user.creationDate}</p>
                     {/if}
                 {/each}
