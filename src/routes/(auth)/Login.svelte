@@ -9,25 +9,24 @@
         const data = {
             email,
             password
-        };
-
-        try {
-            const response = await fetch(`${PUBLIC_BASE_URL}api/auth/login`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.status === 200) {
-                toast.success("Login success");
-            }
-        } catch (error) {
-            console.error("Error during login:", error);
         }
-    };
+        await fetch(`${PUBLIC_BASE_URL}api/auth/login`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    toast.success("Login success")
+                    setTimeout(() => {
+                        location.href = "/news"
+                    }, 1500)
+                }
+            })
+    }
 
 
 </script>
