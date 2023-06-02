@@ -1,5 +1,6 @@
 <script>
     import {createEventDispatcher} from 'svelte';
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     const dispatch = createEventDispatcher();
 
     export let jwt
@@ -8,7 +9,7 @@
 
 
     const deletePost = async (postId) => {
-        await fetch(`http://localhost:8080/api/posts/${postId}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/posts/${postId}`, {
             method: "DELETE",
             credentials: "include",
             headers: {

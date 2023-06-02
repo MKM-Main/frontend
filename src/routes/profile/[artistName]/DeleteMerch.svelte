@@ -1,5 +1,6 @@
 <script>
     import {createEventDispatcher} from 'svelte';
+    import {PUBLIC_BASE_URL} from "$env/static/public";
 
     export let jwt;
     export let artistId;
@@ -8,7 +9,7 @@
     const dispatch = createEventDispatcher();
 
     const deleteMerch = async () => {
-        await fetch(`http://localhost:8080/api/users/${artistId}/merch/${merchId}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/users/${artistId}/merch/${merchId}`, {
             method: "DELETE",
             credentials: "include",
             headers: {

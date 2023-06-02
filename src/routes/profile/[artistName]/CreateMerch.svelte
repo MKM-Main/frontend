@@ -1,5 +1,6 @@
 <script>
     import {imageHeight, imageWidth} from "../../../lib/stores.js";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     let title = '';
     let description = '';
     let sizes = [];
@@ -25,7 +26,7 @@
         formData.append('sizes', JSON.stringify(sizes));
         formData.append('price', price);
 
-        await fetch(`http://localhost:8080/api/users/${loggedInUserId}/merch`, {
+        await fetch(`${PUBLIC_BASE_URL}api/users/${loggedInUserId}/merch`, {
             method: 'POST',
             credentials: 'include',
             headers: {

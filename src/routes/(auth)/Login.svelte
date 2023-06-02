@@ -1,6 +1,6 @@
 <script>
-    import {BASE_URL_LOCAL} from "../../lib/stores.js";
     import toast from "svelte-french-toast";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     let email, password
     export let cookiesAccepted
 
@@ -10,7 +10,7 @@
             email,
             password
         }
-        await fetch(`${$BASE_URL_LOCAL}/api/auth/login`, {
+        await fetch(`${PUBLIC_BASE_URL}api/auth/login`, {
             method: "POST",
             credentials: "include",
             headers: {

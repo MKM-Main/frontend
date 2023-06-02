@@ -1,5 +1,6 @@
 <script>
     import {imageHeight, imageWidth} from "../../../lib/stores.js";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     export let artistId;
     export let jwt;
     export let updateDiscographySection
@@ -50,7 +51,7 @@
         formData.append("isNewRelease", isNewRelease)
         formData.append("releaseDate", releaseDate)
 
-        await fetch(`http://localhost:8080/api/users/${artistId}/discography`, {
+        await fetch(`${PUBLIC_BASE_URL}api/users/${artistId}/discography`, {
             method: 'POST',
             credentials: 'include',
             headers: {

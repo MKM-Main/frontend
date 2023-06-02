@@ -1,6 +1,7 @@
 <script>
     import {imageHeight, imageWidth} from "../../stores.js";
     import {createEventDispatcher} from 'svelte'
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     export let jwt
     export let reference
     export let updatePostSection
@@ -40,7 +41,7 @@
         formData.append("tags", JSON.stringify(postTags))
 
 
-        await fetch(`http://localhost:8080/api/posts/${reference}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/posts/${reference}`, {
             method: "POST",
             credentials: "include",
             headers: {

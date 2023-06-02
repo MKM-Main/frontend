@@ -3,6 +3,7 @@
     import UpdateUser from './UpdateUser.svelte';
     import DeleteAdmin from './DeleteAdmin.svelte';
     import Modal from "../../lib/components/Modal/Modal.svelte";
+    import {PUBLIC_SITE_URL} from "$env/static/public";
 
     let modal = false;
 
@@ -10,8 +11,8 @@
 
 
     const userRole = data?.userData?.customMessage?.role
-    const posts = data?.posts
-    const comments = posts.map(post => post.comments)
+    const posts = data?.posts.posts
+    const comments = posts?.map(post => post.comments)
 
 
     const users = data?.users?.data;
@@ -104,7 +105,7 @@
                 <h3>Last 7 days:</h3>
                 {#each users as user}
                     {#if isRecentSignup(user.creationDate)}
-                        <p><a href="http://localhost:5173/profile/{user.artistName}">{user.artistName}</a> - Joined
+                        <p><a href="{PUBLIC_SITE_URL}profile/{user.artistName}">{user.artistName}</a> - Joined
                             on: {user.creationDate}</p>
                     {/if}
                 {/each}

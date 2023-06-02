@@ -1,6 +1,7 @@
+import {PUBLIC_BASE_URL} from "$env/static/public";
 export const load = async ({fetch, cookies}) => {
 
-    const postResponse = await fetch("https://tunetower.onrender.com/api/posts", {
+    const postResponse = await fetch(`${PUBLIC_BASE_URL}api/posts`, {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
@@ -8,7 +9,7 @@ export const load = async ({fetch, cookies}) => {
     })
     const postData = await postResponse.json()
 
-    const usersDataResponse = await fetch("https://tunetower.onrender.com/api/users", {
+    const usersDataResponse = await fetch(`${PUBLIC_BASE_URL}api/users`, {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"

@@ -1,8 +1,9 @@
 import {redirect} from "@sveltejs/kit";
+import {PUBLIC_BASE_URL} from "$env/static/public";
 let userRole;
 export const load = async ({fetch, params, cookies}) => {
     const jwt = cookies.get("jwt")
-    const adminResponse = await fetch("http://localhost:8080/api/admin", {
+    const adminResponse = await fetch(`${PUBLIC_BASE_URL}api/admin`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -15,14 +16,14 @@ export const load = async ({fetch, params, cookies}) => {
     });
 
     if (userRole !== "admin") throw redirect(302, "/")
-    const userResponse = await fetch("http://localhost:8080/api/users")
+    const userResponse = await fetch(`${PUBLIC_BASE_URL}api/users`)
     const users = await userResponse.json()
 
 
-    const forumResponse = await fetch("http://localhost:8080/api/forum")
+    const forumResponse = await fetch(`${PUBLIC_BASE_URL}api/forum`)
     const forums = await forumResponse.json()
 
-    const postsResponse = await fetch("http://localhost:8080/api/posts")
+    const postsResponse = await fetch(`${PUBLIC_BASE_URL}api/posts`)
     const posts = await postsResponse.json()
 
     return {

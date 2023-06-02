@@ -15,6 +15,7 @@
     import Report from "../../../lib/components/util/Report.svelte";
     import DeleteComment from "../../../lib/components/comments/DeleteComment.svelte";
     import Modal from "../../../lib/components/Modal/Modal.svelte";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
 
     export let data;
     const jwt = data.jwt
@@ -62,13 +63,13 @@
     //Fetches the followers and following depending on the fetch action
     let fetchAction = "empty";
     const fetchPageUser = async () => {
-        const res = await fetch(`http://localhost:8080/api/users/${fetchAction}/${pageArtistName}`);
+        const res = await fetch(`${PUBLIC_BASE_URL}api/users/${fetchAction}/${pageArtistName}`);
         const result = await res.json();
         userModalFollowArray = result;
     };
 
     const fetchLoggedInUser = async () => {
-        const res = await fetch(`http://localhost:8080/api/users/${loggedInUser}`);
+        const res = await fetch(`${PUBLIC_BASE_URL}api/users/${loggedInUser}`);
         const result = await res.json();
         loggedInUserFollow = result.user?.following;
     };
@@ -88,7 +89,7 @@
     });
 
     const patchFollowing = async (action) => {
-        await fetch(`http://localhost:8080/api/users/${action}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/users/${action}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -110,7 +111,7 @@
     };
 
     const patchFollowingModal = async (action) => {
-        await fetch(`http://localhost:8080/api/users/unfollow`, {
+        await fetch(`${PUBLIC_BASE_URL}api/users/unfollow`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

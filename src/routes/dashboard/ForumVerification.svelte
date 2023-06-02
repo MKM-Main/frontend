@@ -1,9 +1,10 @@
 <script>
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     export let id;
     export let jwt;
     export let isVeryfied
     export const verifyForum = async () => {
-        await fetch(`http://localhost:8080/api/admin/verify/${id}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/admin/verify/${id}`, {
             method: "PATCH",
             credentials: "include",
             headers: {
@@ -14,7 +15,7 @@
             body: JSON.stringify({id})
         }).then((res) => {
 
-        });
+        })
     }
 </script>
 

@@ -1,11 +1,12 @@
 <script>
 
 
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     let forumTitle;
     export let jwt;
 
     export const requestForum = async () => {
-        await fetch(`http://localhost:8080/api/forum`, {
+        await fetch(`${PUBLIC_BASE_URL}api/forum`, {
             method: "POST",
             credentials: "include",
             headers: {

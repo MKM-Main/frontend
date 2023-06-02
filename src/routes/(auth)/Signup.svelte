@@ -1,6 +1,6 @@
 <script>
 
-    import {BASE_URL_LOCAL} from "../../lib/stores.js";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     let firstName, lastName, artistName, email, password
     export let cookiesAccepted
 
@@ -13,7 +13,7 @@
             email,
             password
         }
-        await fetch(`${$BASE_URL_LOCAL}/api/auth/signup`, {
+        await fetch(`${PUBLIC_BASE_URL}api/auth/signup`, {
             method: "POST",
             credentials: "include",
             headers: {

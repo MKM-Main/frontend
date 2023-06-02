@@ -1,5 +1,6 @@
 <script>
     import {imageHeight, imageWidth} from "../../../lib/stores.js";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     export let artistName
     export let userData
     export let jwt
@@ -63,7 +64,7 @@
         const fetchRequests = [];
 
         if (formData.get("profilePicture")) {
-            const profilePictureRequest = fetch(`http://localhost:8080/api/admin/users/${artistId}/profile-picture`, {
+            const profilePictureRequest = fetch(`${PUBLIC_BASE_URL}api/admin/users/${artistId}/profile-picture`, {
                 method: "PATCH",
                 credentials: "include",
                 headers: {
@@ -78,7 +79,7 @@
         //TODO: Kig på rækkefølge af de to kald her ift. jwt sign i backend
 
         if (Object.keys(userBody).length !== 0) {
-            const updateUserRequest = fetch(`http://localhost:8080/api/admin/users/${artistName}`, {
+            const updateUserRequest = fetch(`${PUBLIC_BASE_URL}api/admin/users/${artistName}`, {
                 method: "PATCH",
                 credentials: "include",
                 headers: {

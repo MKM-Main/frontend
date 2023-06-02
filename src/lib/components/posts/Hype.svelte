@@ -1,4 +1,5 @@
 <script>
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     export let postId
     export let jwt
     export let loggedInUser
@@ -7,7 +8,7 @@
 
     const hypePost = async () => {
         const endpoint = postType === "comments" ? `comments/${postId}` : postId
-        await fetch(`http://localhost:8080/api/posts/${endpoint}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/posts/${endpoint}`, {
                 method: "PATCH",
                 credentials: "include",
                 headers: {

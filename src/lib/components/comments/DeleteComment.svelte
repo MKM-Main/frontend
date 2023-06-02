@@ -1,10 +1,11 @@
 <script>
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     export let postid;
     export let commentid;
     export let deleteComments;
 
     export const deleteFunction = async () => {
-        await fetch(`http://localhost:8080/api/posts/comments/${postid}/${commentid}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/posts/comments/${postid}/${commentid}`, {
             method: "DELETE",
             credentials: "include",
             headers: {

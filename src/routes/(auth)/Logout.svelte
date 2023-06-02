@@ -1,7 +1,8 @@
 <script>
     import toast from "svelte-french-toast";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     const logOut = async () => {
-        await fetch("http://localhost:8080/api/auth/logout", {
+        await fetch(`${PUBLIC_BASE_URL}api/auth/logout`, {
             method: "GET",
             credentials: "include"
         }).then(() => {

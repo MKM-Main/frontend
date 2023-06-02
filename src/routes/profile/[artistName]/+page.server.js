@@ -1,18 +1,19 @@
 import {error} from "@sveltejs/kit";
+import {PUBLIC_BASE_URL} from "$env/static/public";
 export const load = async ({fetch, params, cookies}) => {
     const artistName = params.artistName
     const jwt = cookies.get("jwt")
-    const response = await fetch(`http://localhost:8080/api/users/${artistName}`);
+    const response = await fetch(`${PUBLIC_BASE_URL}api/users/${artistName}`);
     const jsonData = await response.json();
 
-    const wallpostResponse = await fetch(`http://localhost:8080/api/posts/wallposts/${artistName}`, {
+    const wallpostResponse = await fetch(`${PUBLIC_BASE_URL}api/posts/wallposts/${artistName}`, {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
             "Authorization": `Bearer ${jwt}`
         }
     })
-    const tagsResponse = await fetch("http://localhost:8080/api/posts/tags", {
+    const tagsResponse = await fetch(`${PUBLIC_BASE_URL}api/posts/tags`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"

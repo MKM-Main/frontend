@@ -1,5 +1,6 @@
 <script>
     import Modal from "../Modal/Modal.svelte";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     export let id;
     export let jwt;
     export let collection;
@@ -20,7 +21,7 @@
 
     export const report = async () => {
         const currentURL = window.location.href + "/" + title;
-        await fetch(`http://localhost:8080/api/report/${id}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/report/${id}`, {
             method: "PATCH",
             credentials: "include",
             headers: {

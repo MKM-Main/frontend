@@ -1,4 +1,5 @@
 import {error} from '@sveltejs/kit';
+import {PUBLIC_BASE_URL} from "$env/static/public";
 
 export const load = async ({fetch, params, cookies}) => {
 
@@ -7,7 +8,7 @@ export const load = async ({fetch, params, cookies}) => {
         return str.replace(/-/g, " ");
     }
 
-    const tagsResponse = await fetch("http://localhost:8080/api/posts/tags", {
+    const tagsResponse = await fetch(`${PUBLIC_BASE_URL}api/posts/tags`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -15,11 +16,11 @@ export const load = async ({fetch, params, cookies}) => {
     })
     const tagsJson = await tagsResponse.json()
 
-    const forumResponse = await fetch(`http://localhost:8080/api/forum/${params.forumTitle}`);
+    const forumResponse = await fetch(`${PUBLIC_BASE_URL}api/forum/${params.forumTitle}`);
     const forumData = await forumResponse.json();
     const forumTitle = replaceHyphensWithSpaces(params.forumTitle)
 
-    const allForumResponse = await fetch(`http://localhost:8080/api/forum/`);
+    const allForumResponse = await fetch(`${PUBLIC_BASE_URL}api/forum/`);
     const allForumData = await allForumResponse.json();
 
     if (forumResponse.status === 404) {

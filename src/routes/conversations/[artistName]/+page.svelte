@@ -5,11 +5,12 @@
     import DeleteConversation from "../../../lib/components/conversations/DeleteConversation.svelte";
     import {env} from "$env/dynamic/public";
     import Modal from "../../../lib/components/Modal/Modal.svelte";
+    import {PUBLIC_BASE_URL} from "$env/static/public";
 
     let userData;
     const fetchUserData = async () => {
         const res = await fetch(
-            `http://localhost:8080/api/users/${loggedInUserArtistName}`
+            `${PUBLIC_BASE_URL}api/users/${loggedInUserArtistName}`
         );
         const result = await res.json();
         userData = result;
@@ -32,7 +33,7 @@
     $: conversations = data?.conversations;
 
     let modal = false;
-    let socket = io(`http://localhost:8080/`);
+    let socket = io(`${PUBLIC_BASE_URL}`);
     let bodyArea;
     let socketMessages = [];
 
@@ -58,7 +59,7 @@
     let userProfiles = {};
     socket.on("new message", async (data) => {
         const res = await fetch(
-            `http://localhost:8080/api/users/${data.data.loggedInArtistname}`
+            `${PUBLIC_BASE_URL}api/users/${data.data.loggedInArtistname}`
         );
         const result = await res.json();
         userProfiles[result.user.artistName] = result.user.profilePictureKey;
@@ -83,7 +84,7 @@
     //Fetches the followers and following depending on the fetch action
     const fetchUserFollowing = async () => {
         const res = await fetch(
-            `http://localhost:8080/api/users/following/${loggedInUserArtistName}`
+            `${PUBLIC_BASE_URL}api/users/following/${loggedInUserArtistName}`
         );
         const result = await res.json();
         userModalFollowArray = result;
@@ -91,7 +92,7 @@
 
 
     const patchMessages = async (params) => {
-        await fetch(`http://localhost:8080/api/conversations/messages/${params}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/conversations/messages/${params}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -110,7 +111,7 @@
     };
 
     const updateConversations = async () => {
-        const res = await fetch(`http://localhost:8080/api/conversations`, {
+        const res = await fetch(`${PUBLIC_BASE_URL}/api/conversations`, {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
@@ -124,7 +125,7 @@
 
     const patchReadConversation = async (action) => {
         try {
-            await fetch(`http://localhost:8080/api/conversations/read/${action}`, {
+            await fetch(`${PUBLIC_BASE_URL}/api/conversations/read/${action}`, {
                 method: "PATCH",
                 credentials: "include",
                 headers: {
@@ -140,7 +141,7 @@
     };
     const updateMessages = async (action) => {
         const res = await fetch(
-            `http://localhost:8080/api/conversations/${action}`,
+            `${PUBLIC_BASE_URL}api/conversations/${action}`,
             {
                 method: "GET",
                 credentials: "include",

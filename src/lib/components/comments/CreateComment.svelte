@@ -1,4 +1,5 @@
 <script>
+    import {PUBLIC_BASE_URL} from "$env/static/public";
     export let jwt;
     export let search;
     export let updateComments;
@@ -7,7 +8,7 @@
     let commentBody;
 
     const addCommentToPost = async () => {
-        await fetch(`http://localhost:8080/api/posts/comments/${reference}/${search}`, {
+        await fetch(`${PUBLIC_BASE_URL}api/posts/comments/${reference}/${search}`, {
             method: "PATCH",
             credentials: "include",
             headers: {
@@ -20,7 +21,7 @@
             const newComment = await res.json();
             updateComments(newComment, search);
         });
-    };
+    }
 </script>
 
 <form on:submit|preventDefault={addCommentToPost}>
