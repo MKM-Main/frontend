@@ -2,9 +2,6 @@
   "name": "frontend",
   "version": "0.0.1",
   "private": true,
-  "engines": {
-    "node": ">=18.8.0"
-  },
   "scripts": {
     "dev": "vite dev",
     "cy:run": "npx cypress run",
