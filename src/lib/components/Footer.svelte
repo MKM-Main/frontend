@@ -1,6 +1,5 @@
 <div class="footer">
     <span>&copy TuneTower</span>
-    <span>Contact us</span>
 
 </div>
 

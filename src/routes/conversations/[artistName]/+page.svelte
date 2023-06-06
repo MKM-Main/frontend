@@ -176,6 +176,7 @@
 <div class="conversation-main">
     <div class="left-column">
         <div class="send-div">
+            <h3>Start a conversation</h3>
             <button
                     on:click={() => {modal = true;fetchUserFollowing();}}>
                 <i class="material-icons" style="font-size:36px">chat</i>
@@ -498,6 +499,11 @@
     border-bottom: 0.0625em solid #000000;
     margin-bottom: 0.3125em;
     padding-bottom: 0.5em;
+
+    h3 {
+      margin: auto;
+
+    }
   }
 
   .timestamp-msg {

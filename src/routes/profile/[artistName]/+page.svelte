@@ -34,7 +34,7 @@
     let merchandise = data.json?.user?.merch
     let discography = data.json?.user?.discography
     let showCreationForm = true
-    let collapseBtnValue = "Creation section"
+    let collapseBtnValue = "Upload section"
 
 
     const handleShowCreationForm = () => {
@@ -192,20 +192,33 @@
         </div>
         <div class="options">
             <div>
-                <h2 on:click={() => handleShownSection("posts")}>Posts</h2>
+                <h2 class={showSection === "posts" ? "selected" : ""}
+                    on:click={() => handleShownSection("posts")}>
+                    Posts
+                </h2>
             </div>
             <div>
-                <h2 on:click={() => handleShownSection("merch")}>Merch</h2>
+                <h2 class={showSection === "merch" ? "selected" : ""}
+                    on:click={() => handleShownSection("merch")}>
+                    Merch
+                </h2>
             </div>
             <div>
-                <h2 on:click={() => handleShownSection("discography")}>Discography</h2>
+                <h2 class={showSection === "discography" ? "selected" : ""}
+                    on:click={() => handleShownSection("discography")}>
+                    Discography
+                </h2>
             </div>
             {#if loggedInUser === pageArtistName}
                 <div>
-                    <h2 on:click={() => handleShownSection("settings")}>Settings</h2>
+                    <h2 class={showSection === "settings" ? "selected" : ""}
+                        on:click={() => handleShownSection("settings")}>
+                        Settings
+                    </h2>
                 </div>
             {/if}
         </div>
+
         <div class="follow-div">
             <button on:click={() => { modal = true; fetchAction = "followers"; fetchPageUser(); }}>
                 Followers {followersInCount} |
@@ -227,12 +240,16 @@
             {/if}
 
             {#if loggedInUser === pageArtistName}
-                <div class="new-post">
-                    <button class="btn-new-post" on:click={() => modalNewPost = true}>Post</button>
-                </div>
+                {#if showSection === "posts"}
+                    <div class="new-post">
+                        <button class="btn-new-post" on:click={() => modalNewPost = true}>Post</button>
+                    </div>
+                {/if}
                 <div>
-                    <button class="collapse-btn"
-                            on:click={handleShowCreationForm}>{collapseBtnValue}</button>
+                    {#if showSection === "discography" || showSection === "merch"}
+                        <button class="collapse-btn"
+                                on:click={handleShowCreationForm}>{collapseBtnValue}</button>
+                    {/if}
                 </div>
             {/if}
         </div>
@@ -263,7 +280,7 @@
                                            updateComments={updateComments}/>
                         {/if}
                         {#each wallpost?.comments as comment}
-                            <div class="comment">
+                            <div class="comment" id="{comment._id}">
                                 <ShowComment
                                         comment={comment}
                                         jwt="{jwt}"
@@ -468,14 +485,27 @@
             text-decoration: underline;
           }
         }
+
+        .selected {
+          text-decoration: underline;
+        }
       }
     }
+
 
     .collapse-btn {
       border: 2px solid black;
       border-radius: 15px;
       padding: 10px;
       margin-left: 5px;
+
+      &:hover {
+        background-color: #0D1B2A;
+        color: #E0E1DD;
+        scale: 1.1;
+        transition: all 1s ease-in-out;
+      }
+
     }
   }
 
@@ -521,6 +551,13 @@
     border-radius: 15px;
     padding: 10px;
     margin-left: 5px;
+
+    &:hover {
+      background-color: #0D1B2A;
+      color: #E0E1DD;
+      scale: 1.1;
+      transition: all 0.5s ease-in-out;
+    }
   }
 
   .artist-div {

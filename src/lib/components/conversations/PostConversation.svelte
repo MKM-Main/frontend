@@ -22,7 +22,7 @@
         })
             .then((res) => {
                 if (res.status === 200) {
-                    toast.success("Login success")
+                    toast.success("Conversation started ")
                 }
                 return res.json();
             })

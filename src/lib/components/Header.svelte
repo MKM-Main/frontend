@@ -36,6 +36,7 @@
     </div>
     {#if !jwt}
         <div>
+            <a href="/signup">Sign up!</a>
             <a href="/login">Login</a>
         </div>
     {/if}
@@ -80,7 +81,7 @@
       text-decoration: none;
       font-weight: bold;
       font-size: 1em;
-      text-transform:capitalize;
+      text-transform: capitalize;
 
       &:hover {
         color: #778DA9;

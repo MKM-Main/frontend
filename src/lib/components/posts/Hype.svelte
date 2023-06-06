@@ -28,7 +28,7 @@
 </script>
 
 <div class="hype-container">
-    <i aria-hidden="true" class="fa fa-fire fa-2xl" on:click={hypePost}></i>
+    <i aria-hidden="true" class="fa fa-fire fa-2xl" class:block={!jwt} on:click={hypePost}></i>
     <p>{rating}</p>
 </div>
 
@@ -51,6 +51,11 @@
         border-radius: 50%;
         cursor: pointer;
       }
+    }
+
+    .block {
+      cursor: pointer;
+      pointer-events: none;
     }
   }
 

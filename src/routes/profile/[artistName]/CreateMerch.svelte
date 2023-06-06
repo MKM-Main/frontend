@@ -109,8 +109,8 @@
         <label for="size-xl">XL</label>
     </div>
 
-    <label for="price">Price:</label>
-    <input bind:value={price} id="price" placeholder="****" required type="number"/>
+    <label for="price">Price in DKK:</label>
+    <input bind:value={price} id="price" placeholder="999" required type="number"/>
 
     <label for="file" style="{canUpload === false ? 'color: red' : ''}">Image
         : {canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth} ` : ""}</label>

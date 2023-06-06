@@ -7,7 +7,6 @@
     import DeleteComment from "../../../../lib/components/comments/DeleteComment.svelte";
     import Report from "../../../../lib/components/util/Report.svelte";
     import CreateComment from "../../../../lib/components/comments/CreateComment.svelte";
-    import UserUploadedFile from "$lib/components/files/UserUploadedFile.svelte";
 
 
     export let data;
@@ -33,22 +32,26 @@
 
 <div class="post-container">
     <div class="container">
-    <ShowPost
-        jwt="{jwt}"
-        loggedInUser="{loggedInUser}"
-        post="{post}"
-    />
-    {#if loggedInUser === post.artistName}
-    <DeletePost
-            jwt="{jwt}"
-            on:postDeleted={handleDeletedPostRedirect}
-            postId="{post._id}"
-    />
-    {/if}
+        <ShowPost
+                jwt="{jwt}"
+                loggedInUser="{loggedInUser}"
+                post="{post}"
+        />
+        {#if loggedInUser === post.artistName}
+            <DeletePost
+                    jwt="{jwt}"
+                    on:postDeleted={handleDeletedPostRedirect}
+                    postId="{post._id}"
+            />
+        {/if}
     </div>
-    
+
+    {#if jwt}
+        <CreateComment jwt={jwt} reference={"forum"} search={post._id}
+                       updateComments={updateComments}/>
+    {/if}
     {#each post.comments as comment}
-        <div class="comment">
+        <div id="{comment._id}" class="comment">
             <ShowComment
                     comment={comment}
                     jwt="{jwt}"
@@ -63,10 +66,6 @@
             {/if}
         </div>
     {/each}
-    {#if jwt}
-        <CreateComment jwt={jwt} reference={"forum"} search={post._id}
-                       updateComments={updateComments}/>
-    {/if}
 </div>
 
 <style lang="scss">
@@ -74,14 +73,15 @@
     justify-content: center;
     width: 70%;
     margin: 0 15%;
+
     .comment {
-    border-radius: 15px;
-    padding: 10px;
-    background-color: #F0F2F5;
-    margin-top: 15px;
-    -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
-    box-shadow: -1px -1px 15px 8px #E0E1DD;
-    width: 100%;
+      border-radius: 15px;
+      padding: 10px;
+      background-color: #F0F2F5;
+      margin-top: 15px;
+      -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+      box-shadow: -1px -1px 15px 8px #E0E1DD;
+      width: 100%;
     }
   }
 </style>

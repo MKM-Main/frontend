@@ -38,10 +38,10 @@
         <label for="firstName">First name</label>
         <input bind:value={firstName} id="firstName" type="text">
 
-        <label for="lastName">First name</label>
+        <label for="lastName">Last name</label>
         <input bind:value={lastName} id="lastName" type="text">
 
-        <label for="artistName">Arist name</label>
+        <label for="artistName">Artist name</label>
         <input bind:value={artistName} id="artistName" type="text">
 
         <label for="email">Email</label>

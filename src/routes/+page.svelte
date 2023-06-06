@@ -147,11 +147,11 @@
               <div class="mySlides-release fade-release" style="display: {index === 0 ? 'block' : 'none'};">
                 <h2>{discography.mainTitle}</h2>
                 <div class="release-img-container">
+                  <h3>Release Date: {discography.releaseDate}</h3>
                   <a href="/profile/{user.artistName}"><img class="release-img" src="{imageSourcePrefix}{user._id}/discography/{discography._id}" alt=""></a>
                 </div>
                 <div class="release-content">
                   <h2>{user.artistName}</h2>
-                  <p>Release Date: <b>{discography.releaseDate}</b></p>
                   {#if discography.album === true}
                     <p>New album comming up</p>
                     {:else}
@@ -332,7 +332,10 @@
     * {box-sizing: border-box;}
   body {font-family: Verdana, sans-serif;}
   .mySlides {display: none;}
-  img {vertical-align: middle;}
+  img {
+    vertical-align: middle;
+
+  }
 
   .new-users-week{
     max-width: 100%;
@@ -358,8 +361,11 @@
       text-decoration: none;
     }
       .numbertext {
-      color: #f2f2f2;
-      font-size: 100px;
+        color: #f2f2f2;
+        font-size: 100px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
     .user-tags {
       color: #f2f2f2;

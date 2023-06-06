@@ -21,27 +21,27 @@
 
     const updateComments = (newComment, search) => {
         const arrayObject = posts.findIndex(post => post._id === search)
-        posts[arrayObject].comments = [newComment.message, ...posts[arrayObject].comments ]
+        posts[arrayObject].comments = [newComment.message, ...posts[arrayObject].comments]
     }
 
     const deleteComments = (commentId) => {
-    const newPosts = posts.map((post) => {
-    // Copy the post object to avoid modifying the original
-    const updatedPost = { ...post };
+        const newPosts = posts.map((post) => {
+            // Copy the post object to avoid modifying the original
+            const updatedPost = {...post};
 
-    // Check if the comments array exists in the current post object
-    if (updatedPost.comments) {
-      // Filter the comments array to remove the comment with the given commentId
-      updatedPost.comments = updatedPost.comments.filter(
-        (comment) => comment._id !== commentId
-      );
-    }
-    return updatedPost;
-  });
+            // Check if the comments array exists in the current post object
+            if (updatedPost.comments) {
+                // Filter the comments array to remove the comment with the given commentId
+                updatedPost.comments = updatedPost.comments.filter(
+                    (comment) => comment._id !== commentId
+                );
+            }
+            return updatedPost;
+        });
 
-  // Update the posts array with the modified version
-  posts = newPosts;
-};
+        // Update the posts array with the modified version
+        posts = newPosts;
+    };
 </script>
 
 <div class="post-container">
@@ -63,7 +63,7 @@
                 <h4>Comments</h4>
                 <CreateComment jwt={jwt} reference={"wallposts"} search={post?._id} updateComments={updateComments}/>
                 {#each post?.comments.slice(0, shownCommentAmounts[post._id] || 2) as comment}
-                <div class="comment">
+                    <div class="comment" id="{comment._id}">
                         <ShowComment
                                 comment={comment}
                                 jwt="{jwt}"
@@ -71,13 +71,13 @@
                         />
                         <Report jwt={jwt} collection={"posts"} postId={post._id} id={comment._id}/>
                         {#if comment.commentAuthor === loggedInUser}
-                        <DeleteComment postid={post._id} commentid={comment._id} deleteComments={deleteComments}/>
+                            <DeleteComment postid={post._id} commentid={comment._id} deleteComments={deleteComments}/>
                         {/if}
-                      </div>
-                    {/each}
-                    <button class="btn-show-comments" on:click={() => handleShowAllComments(post._id)} type="button">
-                        {showCommentAmountTexts[post._id] || "Show more comments"}
-                    </button>
+                    </div>
+                {/each}
+                <button class="btn-show-comments" on:click={() => handleShowAllComments(post._id)} type="button">
+                    {showCommentAmountTexts[post._id] || "Show more comments"}
+                </button>
             </div>
         {/each}
     {/if}
@@ -101,13 +101,13 @@
     }
 
     .comment {
-    border-radius: 15px;
-    padding: 10px;
-    background-color: #F0F2F5;
-    margin-top: 15px;
-    -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
-    box-shadow: -1px -1px 15px 8px #E0E1DD;
-    width: 100%;
+      border-radius: 15px;
+      padding: 10px;
+      background-color: #F0F2F5;
+      margin-top: 15px;
+      -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+      box-shadow: -1px -1px 15px 8px #E0E1DD;
+      width: 100%;
     }
 
     h1 {

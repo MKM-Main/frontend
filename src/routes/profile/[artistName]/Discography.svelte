@@ -129,7 +129,7 @@
                     <button class="remove-song" type="button" on:click={() => handleRemoveItem(index)}>Remove</button>
                 </div>
             {/each}
-            <button on:click={handleAddItem} type="button">Add Song</button>
+            <button class="add-song" on:click={handleAddItem} type="button">Add Song</button>
         {/if}
         <button class="btn-submit" class:btn-block-submit={canUpload === false} type="submit">Submit</button>
     </form>
@@ -143,6 +143,22 @@
     background-color: #0D1B2A;
     padding: 20px;
     border-radius: 8px;
+
+    .add-song {
+      padding: 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-bottom: 16px;
+      color: #E0E1DD;
+      width: 100%;
+      font-size: 16px;
+      background-color: green;
+
+      &:hover {
+        background-color: rgba(18, 171, 18, 0.99);
+      }
+    }
+
   }
 
   form {
@@ -172,6 +188,10 @@
       color: #E0E1DD;
       opacity: 0.5;
     }
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
   }
 
   select {
@@ -207,12 +227,18 @@
   .item-container {
     .remove-song {
       background-color: red;
+      padding: 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-bottom: 16px;
+      width: 100%;
+      font-size: 16px;
+      color: #E0E1DD;
 
       &:hover {
         background-color: darkred;
       }
     }
-
   }
 
 </style>
