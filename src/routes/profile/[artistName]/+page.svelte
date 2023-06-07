@@ -2,7 +2,6 @@
     import {onMount} from "svelte";
     import CreateComment from "$lib/components/comments/CreateComment.svelte"
     import {env} from "$env/dynamic/public";
-    import Spinner from "$lib/components/helpers/Spinner.svelte";
     import CreatePost from "$lib/components/posts/CreatePost.svelte";
     import ShowPost from "$lib/components/posts/ShowPost.svelte";
     import DeletePost from "$lib/components/posts/DeletePost.svelte";
@@ -310,10 +309,7 @@
                             jwt="{jwt}"
                             updateMerchSection="{updateMerchSection}"
                     />
-                    <Spinner
-                            postType="merch"
-                            color="#E0E1DD"
-                    />
+
                 {/if}
             {/if}
         </div>
@@ -353,10 +349,7 @@
                         artistId="{pageArtistId}"
                         updateDiscographySection="{updateDiscographySection}"
                 />
-                <Spinner
-                        postType="discography"
-                        color="#E0E1DD"
-                />
+
             {/if}
         {/if}
         <div class="discography-overview">
@@ -410,9 +403,6 @@
                     updatePostSection="{updatePostSection}"
                     on:postCreated={() => modalNewPost = false}
                     tags="{data.tagsJson.tags}"
-            />
-            <Spinner
-                    postType="post"
             />
         </div>
     </Modal>

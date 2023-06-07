@@ -17,7 +17,6 @@
     })
 </script>
 
-<h1>Signup</h1>
 
 <Signup cookiesAccepted="{cookiesAccepted}"/>
 {#if !cookiesAccepted}

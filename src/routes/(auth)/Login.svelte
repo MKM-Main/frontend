@@ -18,9 +18,17 @@
             },
             body: JSON.stringify(data)
         })
-            .then(res => {
+            .then(async res => {
                 if (res.status === 200) {
-                    toast.success("Login success")
+                    const data = await res.json()
+                    toast.success(`Welcome ${data.artistName}`, {
+                        style:
+                            `padding: 2em;
+                             border: 2px solid #E0E1DD;
+                             border-radius: 25px;
+                             -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
+                             box-shadow: -1px -1px 15px 8px #E0E1DD;`
+                    })
                     setTimeout(() => {
                         location.href = "/news"
                     }, 1500)

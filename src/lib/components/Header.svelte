@@ -50,7 +50,7 @@
 
 
     {#if jwt}
-        <Logout/>
+        <Logout artistName="{artistName}"/>
         <div>
             <a href="/profile/{artistName}">
                 <img class="profile-image" alt="{artistName}" src="{imageSource}">

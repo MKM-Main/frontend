@@ -1,6 +1,7 @@
 <script>
     import {imageHeight, imageWidth} from "../../../lib/stores.js";
     import {PUBLIC_BASE_URL} from "$env/static/public";
+    import toast from "svelte-french-toast";
     export let artistId;
     export let jwt;
     export let updateDiscographySection
@@ -51,19 +52,25 @@
         formData.append("isNewRelease", isNewRelease)
         formData.append("releaseDate", releaseDate)
 
-        await fetch(`${PUBLIC_BASE_URL}api/users/${artistId}/discography`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            },
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("loading-spinner").style.display = "none";
-                updateDiscographySection(data)
+        await toast.promise(
+            fetch(`${PUBLIC_BASE_URL}api/users/${artistId}/discography`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                },
+                body: formData
             })
+                .then(res => res.json())
+                .then(data => {
+                    updateDiscographySection(data)
+                }),
+            {
+                loading: "Uploading discography",
+                success: "Discography was uploaded",
+                error: "Error uploading discography"
+            }
+        )
     }
 
     const handleFileInput = (event) => {

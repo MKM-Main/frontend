@@ -23,7 +23,6 @@
         })
             .then(res => {
                 if (res.status === 200) {
-                    // goto(`/profile`)
                     location.href = "/news"
                 }
             })

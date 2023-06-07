@@ -2,8 +2,6 @@
 
 
     import Report from "../../../lib/components/util/Report.svelte";
-
-    import Spinner from "$lib/components/helpers/Spinner.svelte";
     import CreatePost from "$lib/components/posts/CreatePost.svelte";
     import Modal from "../../../lib/components/Modal/Modal.svelte";
 
@@ -99,8 +97,6 @@
                     updatePostSection="{updatePostSection}"
                     on:postCreated={() => modal = false}
                     tags="{tags}"/>
-            <Spinner
-                    postType="post"/>
         </div>
     </Modal>
 {/if}

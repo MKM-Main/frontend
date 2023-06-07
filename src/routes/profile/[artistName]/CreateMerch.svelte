@@ -1,6 +1,7 @@
 <script>
     import {imageHeight, imageWidth} from "../../../lib/stores.js";
     import {PUBLIC_BASE_URL} from "$env/static/public";
+    import toast, {Toaster} from "svelte-french-toast";
     let title = '';
     let description = '';
     let sizes = [];
@@ -18,31 +19,33 @@
 
 
     const handleSubmit = async () => {
-
-        document.getElementById("loading-spinner").style.display = "flex";
-
         formData.append('title', title);
         formData.append('description', description);
         formData.append('sizes', JSON.stringify(sizes));
         formData.append('price', price);
 
-        await fetch(`${PUBLIC_BASE_URL}api/users/${loggedInUserId}/merch`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Authorization': `Bearer ${jwt}`
-            },
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("loading-spinner").style.display = "none";
-                title = "";
-                description = "";
-                price = "";
-                sizes = [];
-                updateMerchSection(data);
-            });
+        await toast.promise(
+            fetch(`${PUBLIC_BASE_URL}api/users/${loggedInUserId}/merch`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Authorization': `Bearer ${jwt}`
+                },
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    title = "";
+                    description = "";
+                    price = "";
+                    sizes = [];
+                    updateMerchSection(data);
+                }), {
+                loading: "Uploading merch...",
+                success: "Merch was uploaded",
+                error: "Error uploading merch"
+            }
+        )
     }
 
     const handleSizeSelection = (event) => {
@@ -81,6 +84,7 @@
 </script>
 
 <form on:submit={handleSubmit}>
+    <Toaster/>
     <label for="title">Merch Title:</label>
     <input bind:value={title} id="title" placeholder="Title" required type="text"/>
 

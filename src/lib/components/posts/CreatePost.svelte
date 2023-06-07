@@ -2,6 +2,7 @@
     import {imageHeight, imageWidth} from "../../stores.js";
     import {createEventDispatcher} from 'svelte'
     import {PUBLIC_BASE_URL} from "$env/static/public";
+    import toast, {Toaster} from "svelte-french-toast";
     export let jwt
     export let reference
     export let updatePostSection
@@ -29,7 +30,6 @@
 
 
     const createNewPost = async () => {
-        document.getElementById("loading-spinner").style.display = "flex"
         formData.append("body", postBody)
         formData.append("postTitle", postTitle)
 
@@ -40,21 +40,27 @@
         })
         formData.append("tags", JSON.stringify(postTags))
 
-
-        await fetch(`${PUBLIC_BASE_URL}api/posts/${reference}`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Authorization": `Bearer ${jwt}`
-            },
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
-                postBody = ""
-                dispatch('postCreated')
-                updatePostSection(data)
+        await toast.promise(
+            fetch(`${PUBLIC_BASE_URL}api/posts/${reference}`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Authorization": `Bearer ${jwt}`
+                },
+                body: formData
             })
+                .then(res => res.json())
+                .then(data => {
+                    postBody = ""
+                    dispatch('postCreated')
+                    updatePostSection(data)
+                }),
+            {
+                loading: "Creating post...",
+                success: "Post created",
+                error: "Error creating post"
+            }
+        )
     }
 
     const handleFileInput = (event) => {
@@ -78,6 +84,7 @@
     }
 </script>
 <div class="new-post">
+    <Toaster/>
     <form on:submit|preventDefault={createNewPost}>
         {#if formIsForForum}
             <label for="postTitle">Title:</label>
@@ -102,7 +109,7 @@
     </form>
     <label for="new-tag">New tag:</label>
     <input bind:value={newTagValue} id="new-tag" placeholder="my cool tag!" required type="text">
-    <p on:click={handleNewTag}>Add tag</p>
+    <button on:click={handleNewTag}>Add tag</button>
 </div>
 
 <style lang="scss">
