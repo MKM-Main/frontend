@@ -111,7 +111,7 @@
     };
 
     const updateConversations = async () => {
-        const res = await fetch(`${PUBLIC_BASE_URL}/api/conversations`, {
+        const res = await fetch(`${PUBLIC_BASE_URL}api/conversations`, {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
@@ -125,7 +125,7 @@
 
     const patchReadConversation = async (action) => {
         try {
-            await fetch(`${PUBLIC_BASE_URL}/api/conversations/read/${action}`, {
+            await fetch(`${PUBLIC_BASE_URL}api/conversations/read/${action}`, {
                 method: "PATCH",
                 credentials: "include",
                 headers: {
