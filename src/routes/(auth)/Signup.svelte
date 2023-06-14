@@ -1,6 +1,7 @@
 <script>
 
     import {PUBLIC_BASE_URL} from "$env/static/public";
+    import toast from "svelte-french-toast";
     let firstName, lastName, artistName, email, password
     export let cookiesAccepted
 
@@ -24,6 +25,11 @@
             .then(res => {
                 if (res.status === 200) {
                     location.href = "/news"
+                }
+                if (res.status === 409) {
+                    toast.error("Email is already in use.", {
+                        style: `padding: 25px;`
+                    })
                 }
             })
 
