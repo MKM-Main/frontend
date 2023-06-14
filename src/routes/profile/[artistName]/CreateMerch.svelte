@@ -1,86 +1,86 @@
 <script>
-    import {imageHeight, imageWidth} from "../../../lib/stores.js";
-    import {PUBLIC_BASE_URL} from "$env/static/public";
-    import toast, {Toaster} from "svelte-french-toast";
-    let title = '';
-    let description = '';
-    let sizes = [];
-    let price = '';
-    let canUpload
-    const height = $imageHeight
-    const width = $imageWidth
-    let currentWidth
-    let currentHeight
+  import { imageHeight, imageWidth } from "../../../lib/stores.js";
+  import { PUBLIC_BASE_URL } from "$env/static/public";
+  import toast, { Toaster } from "svelte-french-toast";
 
-    export let loggedInUserId;
-    export let jwt;
-    export let updateMerchSection;
-    let formData = new FormData();
+  let title = "";
+  let description = "";
+  let sizes = [];
+  let price = "";
+  let canUpload;
+  const height = $imageHeight;
+  const width = $imageWidth;
+  let currentWidth;
+  let currentHeight;
+  let formData = new FormData();
 
+  export let loggedInUserId;
+  export let jwt;
+  export let updateMerchSection;
 
-    const handleSubmit = async () => {
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('sizes', JSON.stringify(sizes));
-        formData.append('price', price);
+  const handleSubmit = async () => {
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("sizes", JSON.stringify(sizes));
+      formData.append("price", price);
 
-        await toast.promise(
-            fetch(`${PUBLIC_BASE_URL}api/users/${loggedInUserId}/merch`, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Authorization': `Bearer ${jwt}`
-                },
-                body: formData
-            })
-                .then(res => res.json())
-                .then(data => {
-                    title = "";
-                    description = "";
-                    price = "";
-                    sizes = [];
-                    updateMerchSection(data);
-                }), {
-                loading: "Uploading merch...",
-                success: "Merch was uploaded",
-                error: "Error uploading merch"
-            }
-        )
-    }
+      await toast.promise(
+          fetch(`${PUBLIC_BASE_URL}api/users/${loggedInUserId}/merch`, {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                  Authorization: `Bearer ${jwt}`,
+              },
+              body: formData,
+          })
+              .then((res) => res.json())
+              .then((data) => {
+                  title = "";
+                  description = "";
+                  price = "";
+                  sizes = [];
+                  formData = new FormData();
+                  updateMerchSection(data);
+              }),
+          {
+              loading: "Uploading merch...",
+              success: "Merch was uploaded",
+              error: "Error uploading merch",
+          }
+      );
+  };
 
-    const handleSizeSelection = (event) => {
-        const selectedSize = event.target.value;
+  const handleSizeSelection = (event) => {
+      const selectedSize = event.target.value;
 
-        if (event.target.checked) {
-            sizes.push(selectedSize);
-        } else {
-            const index = sizes.indexOf(selectedSize);
-            if (index > -1) {
-                sizes.splice(index, 1);
-            }
-        }
-    }
+      if (event.target.checked && !sizes.includes(selectedSize)) {
+          sizes.push(selectedSize);
+      } else if (!event.target.checked && sizes.includes(selectedSize)) {
+          const index = sizes.indexOf(selectedSize);
+          sizes.splice(index, 1);
+      }
+  };
 
+  const handleFileInput = (event) => {
+      const file = event.target.files[0];
+      formData.append("file", file);
 
-    const handleFileInput = (event) => {
-        const file = event.target.files[0]
-        formData.append('file', file)
+      const reader = new FileReader();
 
-        const reader = new FileReader();
+      reader.onload = (e) => {
+          const img = new Image();
 
-        reader.onload = (e) => {
-            const img = new Image();
+          img.onload = () => {
+              currentWidth = img.width;
+              currentHeight = img.height;
+              canUpload = img.width <= width && img.height <= height;
+          };
+          img.src = e.target.result;
+      };
 
-            img.onload = () => {
-                currentWidth = img.width
-                currentHeight = img.height
-                canUpload = img.width <= width && img.height <= height;
-            }
-            img.src = e.target.result;
-        }
-        if (!file) canUpload = true
-        reader.readAsDataURL(file);
-    }
+      if (!file) canUpload = true;
+      reader.readAsDataURL(file);
+  };
 </script>
 
 <form on:submit={handleSubmit}>
