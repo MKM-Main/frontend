@@ -1,34 +1,34 @@
 <script>
-    export let data
-    import CreateForum from './CreateForum.svelte';
-    const forums = data?.forumData
-    const jwt = data?.jwt
+  export let data;
+  import CreateForum from "./CreateForum.svelte";
+  const forums = data?.forumData;
+  const jwt = data?.jwt;
 
-
-    function replaceSpacesWithHyphens(title) {
-        if (title.includes(" ")) {
-            return title.replace(/ /g, "-");
-        }
-        return title;
+  function replaceSpacesWithHyphens(title) {
+    if (title.includes(" ")) {
+      return title.replace(/ /g, "-");
     }
-
+    return title;
+  }
 </script>
 
-
 <div class="forum-container">
-    <h1>Forums</h1>
-    {#each forums.forum as forum}
-        {#if forum.verified === true}
-            <a class="forum" href="/forum/{replaceSpacesWithHyphens(forum.forumTitle)}">
-                <div>
-                    <p>{forum.forumTitle}</p>
-                </div>
-            </a>
-        {/if}
-    {/each}
-    {#if jwt}
-        <CreateForum jwt={jwt}/>
+  <h1>Forums</h1>
+  {#each forums.forum as forum}
+    {#if forum.verified === true}
+      <a
+        class="forum"
+        href="/forum/{replaceSpacesWithHyphens(forum.forumTitle)}"
+      >
+        <div>
+          <p>{forum.forumTitle}</p>
+        </div>
+      </a>
     {/if}
+  {/each}
+  {#if jwt}
+    <CreateForum {jwt} />
+  {/if}
 </div>
 
 <style lang="scss">
@@ -41,11 +41,11 @@
     a {
       font-size: 2em;
       text-decoration: none;
-      color: #0D1B2A;
+      color: #0d1b2a;
       font-weight: bold;
 
       &:hover {
-        color: #778DA9;
+        color: #778da9;
       }
     }
 

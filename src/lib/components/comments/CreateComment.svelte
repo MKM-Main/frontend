@@ -1,35 +1,40 @@
 <script>
-    import {PUBLIC_BASE_URL} from "$env/static/public";
-    export let jwt;
-    export let search;
-    export let updateComments;
-    export let reference;
+  import { PUBLIC_BASE_URL } from "$env/static/public";
+  export let jwt;
+  export let search;
+  export let updateComments;
+  export let reference;
 
-    let commentBody;
+  let commentBody;
 
-    const addCommentToPost = async () => {
-        await fetch(`${PUBLIC_BASE_URL}api/posts/comments/${reference}/${search}`, {
-            method: "PATCH",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "Authorization": `Bearer ${jwt}`
-            },
-            body: JSON.stringify({commentBody})
-        }).then(async (res) => {
-            const newComment = await res.json();
-            commentBody = ""
-            updateComments(newComment, search);
-        });
-    }
+  const addCommentToPost = async () => {
+    await fetch(`${PUBLIC_BASE_URL}api/posts/comments/${reference}/${search}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({ commentBody }),
+    }).then(async (res) => {
+      const newComment = await res.json();
+      commentBody = "";
+      updateComments(newComment, search);
+    });
+  };
 </script>
 
 <form on:submit|preventDefault={addCommentToPost}>
-    <div class="comment-post-field">
-        <textarea bind:value={commentBody} id="comment" placeholder="Comment" required></textarea>
-        <button type="submit">Save comment</button>
-    </div>
+  <div class="comment-post-field">
+    <textarea
+      bind:value={commentBody}
+      id="comment"
+      placeholder="Comment"
+      required
+    />
+    <button type="submit">Save comment</button>
+  </div>
 </form>
 
 <style lang="scss">
@@ -50,7 +55,7 @@
         flex: 1;
         padding: 0.5em;
         font-size: 1em;
-        border: 1px solid #778DA9;
+        border: 1px solid #778da9;
         border-radius: 0.75em;
         resize: none;
         margin-right: 0.75em;
@@ -60,19 +65,17 @@
       button {
         font-size: 1em;
         padding: 0.5em 1em;
-        background-color: #1B263B;
-        color: #E0E1DD;
+        background-color: #1b263b;
+        color: #e0e1dd;
         border: none;
         border-radius: 0.75em;
         cursor: pointer;
         transition: background-color 0.3s ease;
 
         &:hover {
-          background-color: #778DA9;
+          background-color: #778da9;
         }
       }
     }
   }
-
-
 </style>
