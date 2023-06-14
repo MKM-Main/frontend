@@ -1,5 +1,6 @@
 <script>
     import {PUBLIC_BASE_URL} from "$env/static/public";
+    import toast from "svelte-french-toast";
     export let artistName;
     // export let refreshUser;
     export let userBody;
@@ -21,10 +22,16 @@
                     "Authorization": `Bearer ${jwt}`
                 },
                 body: JSON.stringify({userBody})
-            }).then((res) => {
-
-            });
+            })
+            .then(res => {
+                toast.success("User updated")
+                console.log(res.status)
+                setTimeout(() => {
+                    location.reload()
+                }, 1500)
+            })
         }
+
     }
 </script>
 
