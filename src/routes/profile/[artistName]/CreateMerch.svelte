@@ -2,7 +2,6 @@
   import { imageHeight, imageWidth } from "../../../lib/stores.js";
   import { PUBLIC_BASE_URL } from "$env/static/public";
   import toast, { Toaster } from "svelte-french-toast";
-
   let title = "";
   let description = "";
   let sizes = [];
@@ -14,9 +13,11 @@
   let currentHeight;
   let formData = new FormData();
 
+
   export let loggedInUserId;
   export let jwt;
   export let updateMerchSection;
+
 
   const handleSubmit = async () => {
       formData.append("title", title);
@@ -80,59 +81,114 @@
 
       if (!file) canUpload = true;
       reader.readAsDataURL(file);
+
   };
 </script>
 
 <form on:submit={handleSubmit}>
-    <Toaster/>
-    <label for="title">Merch Title:</label>
-    <input bind:value={title} id="title" placeholder="Title" required type="text"/>
+  <Toaster />
+  <label for="title">Merch Title:</label>
+  <input
+    bind:value={title}
+    id="title"
+    placeholder="Title"
+    required
+    type="text"
+  />
 
-    <label for="description">Merch Description:</label>
-    <textarea bind:value={description} id="description" placeholder="Description" required></textarea>
+  <label for="description">Merch Description:</label>
+  <textarea
+    bind:value={description}
+    id="description"
+    placeholder="Description"
+    required
+  />
 
-    <label>Sizes:</label>
-    <div>
-        <input bind:group={sizes} id="size-xs" on:change={handleSizeSelection} type="checkbox" value="xs"/>
-        <label for="size-xs">XS</label>
-    </div>
-    <div>
-        <input bind:group={sizes} id="size-s" on:change={handleSizeSelection} type="checkbox" value="s"/>
-        <label for="size-s">S</label>
-    </div>
-    <div>
-        <input bind:group={sizes} id="size-m" on:change={handleSizeSelection} type="checkbox" value="m"/>
-        <label for="size-m">M</label>
-    </div>
-    <div>
-        <input bind:group={sizes} id="size-l" on:change={handleSizeSelection} type="checkbox" value="l"/>
-        <label for="size-l">L</label>
-    </div>
-    <div>
-        <input bind:group={sizes} id="size-xl" on:change={handleSizeSelection} type="checkbox" value="xl"/>
-        <label for="size-xl">XL</label>
-    </div>
+  <label>Sizes:</label>
+  <div>
+    <input
+      bind:group={sizes}
+      id="size-xs"
+      on:change={handleSizeSelection}
+      type="checkbox"
+      value="xs"
+    />
+    <label for="size-xs">XS</label>
+  </div>
+  <div>
+    <input
+      bind:group={sizes}
+      id="size-s"
+      on:change={handleSizeSelection}
+      type="checkbox"
+      value="s"
+    />
+    <label for="size-s">S</label>
+  </div>
+  <div>
+    <input
+      bind:group={sizes}
+      id="size-m"
+      on:change={handleSizeSelection}
+      type="checkbox"
+      value="m"
+    />
+    <label for="size-m">M</label>
+  </div>
+  <div>
+    <input
+      bind:group={sizes}
+      id="size-l"
+      on:change={handleSizeSelection}
+      type="checkbox"
+      value="l"
+    />
+    <label for="size-l">L</label>
+  </div>
+  <div>
+    <input
+      bind:group={sizes}
+      id="size-xl"
+      on:change={handleSizeSelection}
+      type="checkbox"
+      value="xl"
+    />
+    <label for="size-xl">XL</label>
+  </div>
 
-    <label for="price">Price in DKK:</label>
-    <input bind:value={price} id="price" placeholder="999" required type="number"/>
+  <label for="price">Price in DKK:</label>
+  <input
+    bind:value={price}
+    id="price"
+    placeholder="999"
+    required
+    type="number"
+  />
 
-    <label for="file" style="{canUpload === false ? 'color: red' : ''}">
-        Image: {canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth}` : ""}
-    </label>
-    <input accept=".pdf, .jpeg, .jpg, .png" id="file" on:change={handleFileInput} type="file">
-    <button class:btn-block-submit={canUpload === false} type="submit">Submit</button>
+  <label for="file" style={canUpload === false ? "color: red" : ""}>
+    Image: {canUpload === false
+      ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth}`
+      : ""}
+  </label>
+  <input
+    accept=".pdf, .jpeg, .jpg, .png"
+    id="file"
+    on:change={handleFileInput}
+    type="file"
+  />
+  <button class:btn-block-submit={canUpload === false} type="submit"
+    >Submit</button
+  >
 </form>
 
-
 <style lang="scss">
-
   form {
-    background-color: #0D1B2A;
+    background-color: #0d1b2a;
     padding: 20px;
     width: 35em;
 
     label {
-      color: #E0E1DD;
+      color: #e0e1dd;
       display: block;
       margin-bottom: 10px;
     }
@@ -145,11 +201,11 @@
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      color: #E0E1DD;
+      color: #e0e1dd;
       margin-bottom: 10px;
 
       &::placeholder {
-        color: #E0E1DD;
+        color: #e0e1dd;
         opacity: 0.5;
       }
 
@@ -172,18 +228,17 @@
     }
 
     button[type="submit"] {
-      background-color: #778DA9;
+      background-color: #778da9;
       padding: 12px;
       border-radius: 4px;
       border: 1px solid #ccc;
       margin-bottom: 16px;
       width: 100%;
       font-size: 16px;
-      color: #E0E1DD;
+      color: #e0e1dd;
 
       &:hover {
-        background-color: #415A77;
-
+        background-color: #415a77;
       }
     }
 
@@ -191,9 +246,5 @@
       pointer-events: none;
       background-color: black;
     }
-
-
   }
-
-
 </style>

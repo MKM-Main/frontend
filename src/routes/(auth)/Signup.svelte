@@ -1,62 +1,58 @@
 <script>
+  import { PUBLIC_BASE_URL } from "$env/static/public";
+  import toast from "svelte-french-toast";
+  let firstName, lastName, artistName, email, password;
+  export let cookiesAccepted;
 
-    import {PUBLIC_BASE_URL} from "$env/static/public";
-    import toast from "svelte-french-toast";
-    let firstName, lastName, artistName, email, password
-    export let cookiesAccepted
-
-
-    const handleSignup = async () => {
-        const data = {
-            firstName,
-            lastName,
-            artistName,
-            email,
-            password
-        }
-        await fetch(`${PUBLIC_BASE_URL}api/auth/signup`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => {
-                if (res.status === 200) {
-                    location.href = "/news"
-                }
-                if (res.status === 409) {
-                    toast.error("Email is already in use.", {
-                        style: `padding: 25px;`
-                    })
-                }
-            })
-
-    }
-
-
+  const handleSignup = async () => {
+    const data = {
+      firstName,
+      lastName,
+      artistName,
+      email,
+      password,
+    };
+    await fetch(`${PUBLIC_BASE_URL}api/auth/signup`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).then((res) => {
+      if (res.status === 200) {
+        location.href = "/news";
+      }
+      if (res.status === 409) {
+        toast.error("Email is already in use.", {
+          style: `padding: 25px;`,
+        });
+      }
+    });
+  };
 </script>
 
 <div class="signup">
-    <form on:submit|preventDefault={handleSignup}>
-        <label for="firstName">First name</label>
-        <input bind:value={firstName} id="firstName" type="text">
+  <form on:submit|preventDefault={handleSignup}>
+    <label for="firstName">First name</label>
+    <input bind:value={firstName} id="firstName" type="text" />
 
-        <label for="lastName">Last name</label>
-        <input bind:value={lastName} id="lastName" type="text">
+    <label for="lastName">Last name</label>
+    <input bind:value={lastName} id="lastName" type="text" />
 
-        <label for="artistName">Artist name</label>
-        <input bind:value={artistName} id="artistName" type="text">
+    <label for="artistName">Artist name</label>
+    <input bind:value={artistName} id="artistName" type="text" />
 
-        <label for="email">Email</label>
-        <input bind:value={email} id="email" type="email">
+    <label for="email">Email</label>
+    <input bind:value={email} id="email" type="email" />
 
-        <label for="password">Password</label>
-        <input bind:value={password} id="password" minlength="8" type="password">
+    <label for="password">Password</label>
+    <input bind:value={password} id="password" minlength="8" type="password" />
 
-        <button class:cookies-accepted={cookiesAccepted === false} type="submit">Sign up!</button>
-    </form>
+    <button class:cookies-accepted={cookiesAccepted === false} type="submit"
+      >Sign up!</button
+    >
+  </form>
 </div>
 
 <style lang="scss">
@@ -79,6 +75,4 @@
       background-color: darkgrey;
     }
   }
-
-
 </style>

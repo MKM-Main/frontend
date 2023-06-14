@@ -1,29 +1,27 @@
 <script>
-    import UserUploadedFile from "../files/UserUploadedFile.svelte";
-    export let post
-
-
+  import UserUploadedFile from "../files/UserUploadedFile.svelte";
+  export let post;
 </script>
 
 {#if post}
-    <div class="widget">
-        <div class="header">
-            <h3>{post?.artistName}</h3>
-            <p>{post?.timeStamp}</p>
-            <div>
-                <i class="fa-solid fa-fire fa-xl"></i>
-                <span>{post?.rating.length}</span>
-            </div>
-        </div>
-        <div class="body">
-            <div class="body-content">
-                <p>{post?.body}</p>
-            </div>
-            <div>
-                <UserUploadedFile keyReference="{post?.keyReference}"/>
-            </div>
-        </div>
+  <div class="widget">
+    <div class="header">
+      <h3>{post?.artistName}</h3>
+      <p>{post?.timeStamp}</p>
+      <div>
+        <i class="fa-solid fa-fire fa-xl" />
+        <span>{post?.rating.length}</span>
+      </div>
     </div>
+    <div class="body">
+      <div class="body-content">
+        <p>{post?.body}</p>
+      </div>
+      <div>
+        <UserUploadedFile keyReference={post?.keyReference} />
+      </div>
+    </div>
+  </div>
 {/if}
 
 <style lang="scss">
@@ -58,6 +56,5 @@
   }
 
   .body {
-
   }
 </style>
