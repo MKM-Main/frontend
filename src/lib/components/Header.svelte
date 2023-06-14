@@ -1,82 +1,79 @@
 <script>
-    import {env} from "$env/dynamic/public";
-    import Logout from "../../routes/(auth)/Logout.svelte";
-    let pages = ["forum", "artists"]
+  import { env } from "$env/dynamic/public";
+  import Logout from "../../routes/(auth)/Logout.svelte";
+  let pages = ["forum", "artists"];
 
-    export let artistName
-    export let userRole
-    export let jwt
-    export let imageSource
-    export let conversation
+  export let artistName;
+  export let userRole;
+  export let jwt;
+  export let imageSource;
+  export let conversation;
 </script>
 
-
 <div class="header">
-    <div>
-        <a href="/">
-            <img alt="HOME" class="home" src="{env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX}note.svg">
-        </a>
-    </div>
+  <div>
+    <a href="/">
+      <img
+        alt="HOME"
+        class="home"
+        src="{env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX}note.svg"
+      />
+    </a>
+  </div>
 
-    <div>
-        {#if jwt}
-            <a href="/news">News</a>
-            {#if conversation}
-                {#if conversation[0]?.read === false && conversation[0]?.sender !== artistName}
-                    <a href="/conversations/inbox">Messages (new message)</a>
-                {/if}
-                <a href="/conversations/inbox">Messages</a>
-            {/if}
-        {/if}
-        {#each pages as page}
-            <a href="/{page}">
-                <span class="capitalize">{page}</span>
-            </a>
-        {/each}
-    </div>
-    {#if !jwt}
-        <div>
-            <a href="/signup">Sign up!</a>
-            <a href="/login">Login</a>
-        </div>
-    {/if}
-
-    {#if userRole === "admin"}
-        <div>
-            <a href="/dashboard">Dashboard
-            </a>
-        </div>
-    {/if}
-
-
+  <div>
     {#if jwt}
-        <Logout artistName="{artistName}"/>
-        <div>
-            <a href="/profile/{artistName}">
-                <img class="profile-image" alt="{artistName}" src="{imageSource}">
-            </a>
-        </div>
+      <a href="/news">News</a>
+      {#if conversation}
+        {#if conversation[0]?.read === false && conversation[0]?.sender !== artistName}
+          <a href="/conversations/inbox">Messages (new message)</a>
+        {/if}
+        <a href="/conversations/inbox">Messages</a>
+      {/if}
     {/if}
+    {#each pages as page}
+      <a href="/{page}">
+        <span class="capitalize">{page}</span>
+      </a>
+    {/each}
+  </div>
+  {#if !jwt}
+    <div>
+      <a href="/signup">Sign up!</a>
+      <a href="/login">Login</a>
+    </div>
+  {/if}
 
+  {#if userRole === "admin"}
+    <div>
+      <a href="/dashboard">Dashboard </a>
+    </div>
+  {/if}
 
+  {#if jwt}
+    <Logout {artistName} />
+    <div>
+      <a href="/profile/{artistName}">
+        <img class="profile-image" alt={artistName} src={imageSource} />
+      </a>
+    </div>
+  {/if}
 </div>
 
-
 <style lang="scss">
-
   .header {
-    background-color: #0D1B2A;
-    color: #E0E1DD;
+    background-color: #0d1b2a;
+    color: #e0e1dd;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1.25em;
-    -webkit-box-shadow: 5px 5px 15px 5px #0D1B2A;
-    box-shadow: 5px 5px 15px 5px #0D1B2A;
+    -webkit-box-shadow: 5px 5px 15px 5px #0d1b2a;
+    box-shadow: 5px 5px 15px 5px #0d1b2a;
     margin-bottom: 2.75em;
 
     a {
-      color: #E0E1DD;
+      color: #e0e1dd;
       margin-right: 0.625em;
       text-decoration: none;
       font-weight: bold;
@@ -84,7 +81,7 @@
       text-transform: capitalize;
 
       &:hover {
-        color: #778DA9;
+        color: #778da9;
       }
     }
 
@@ -96,12 +93,12 @@
       position: relative;
 
       &::after {
-        content: 'new message';
+        content: "new message";
         position: absolute;
         top: -0.625em;
         right: -0.625em;
-        background-color: #415A77;
-        color: #E0E1DD;
+        background-color: #415a77;
+        color: #e0e1dd;
         font-size: 0.625em;
         padding: 0.125em 0.25em;
         border-radius: 0.25em;
@@ -123,5 +120,4 @@
       margin-right: 0.625em;
     }
   }
-
 </style>

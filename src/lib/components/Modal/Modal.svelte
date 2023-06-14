@@ -1,26 +1,24 @@
 <script>
-    import {createEventDispatcher} from "svelte"
-    const dispatch = createEventDispatcher()
-    const close = () => dispatch("close")
-    const handleKeyClose = (e) => {
-        if (e.key === "Escape") {
-            close()
-        }
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+  const close = () => dispatch("close");
+  const handleKeyClose = (e) => {
+    if (e.key === "Escape") {
+      close();
     }
+  };
 </script>
 
-
-<svelte:window on:keydown={handleKeyClose}/>
+<svelte:window on:keydown={handleKeyClose} />
 <div class="modal-container">
-    <div class="modal">
-        <div class="modal-header">
-            <button on:click={close}>Close</button>
-        </div>
-        <div class="modal-body">
-            <slot></slot>
-        </div>
-
+  <div class="modal">
+    <div class="modal-header">
+      <button on:click={close}>Close</button>
     </div>
+    <div class="modal-body">
+      <slot />
+    </div>
+  </div>
 </div>
 
 <style lang="scss">

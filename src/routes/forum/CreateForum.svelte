@@ -1,40 +1,40 @@
 <script>
+  import { PUBLIC_BASE_URL } from "$env/static/public";
+  let forumTitle;
+  export let jwt;
 
-
-    import {PUBLIC_BASE_URL} from "$env/static/public";
-    let forumTitle;
-    export let jwt;
-
-    export const requestForum = async () => {
-        await fetch(`${PUBLIC_BASE_URL}api/forum`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "Authorization": `Bearer ${jwt}`
-            },
-            body: JSON.stringify({forumTitle})
-        }).then((res) => {
-
-        });
-    }
+  export const requestForum = async () => {
+    await fetch(`${PUBLIC_BASE_URL}api/forum`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({ forumTitle }),
+    }).then((res) => {});
+  };
 </script>
 
 <div class="forum-create">
-    <form on:submit|preventDefault={requestForum}>
-        <input bind:value={forumTitle} id="forumTitle" placeholder="Request new forum" type="forumTitle">
-        <button id="submit" type="submit">Request Forum</button>
-    </form>
+  <form on:submit|preventDefault={requestForum}>
+    <input
+      bind:value={forumTitle}
+      id="forumTitle"
+      placeholder="Request new forum"
+      type="forumTitle"
+    />
+    <button id="submit" type="submit">Request Forum</button>
+  </form>
 </div>
-<!-- <button type="submit" on:click={() => requestForum()}>Request Forum</button> -->
 
+<!-- <button type="submit" on:click={() => requestForum()}>Request Forum</button> -->
 
 <style lang="scss">
   form {
     text-align: center;
     margin-top: 1em;
-
 
     label {
       font-size: 1em;
@@ -46,7 +46,7 @@
       flex: 1;
       padding: 0.5em;
       font-size: 1em;
-      border: 1px solid #778DA9;
+      border: 1px solid #778da9;
       border-radius: 0.75em;
       resize: none;
       margin-right: 0.75em;
@@ -55,15 +55,15 @@
     button {
       font-size: 1em;
       padding: 0.5em 1em;
-      background-color: #1B263B;
-      color: #E0E1DD;
+      background-color: #1b263b;
+      color: #e0e1dd;
       border: none;
       border-radius: 0.75em;
       cursor: pointer;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: #778DA9;
+        background-color: #778da9;
       }
     }
   }

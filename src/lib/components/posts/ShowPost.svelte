@@ -1,26 +1,33 @@
 <script>
   import UserUploadedFile from "../files/UserUploadedFile.svelte";
   import Hype from "./Hype.svelte";
-  import {env} from "$env/dynamic/public";
-  export let post = null
-  export let jwt
-  export let loggedInUser
+  import { env } from "$env/dynamic/public";
+  export let post = null;
+  export let jwt;
+  export let loggedInUser;
 
   const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
-
 </script>
 
-
 {#if post?.body}
-  <div id="{post._id}" class="main-container">
+  <div id={post._id} class="main-container">
     <div class="img-container">
       {#if post?.profilePictureKey === "blank_profile.webp"}
-        <a href="/profile/{post?.artistName}"><img class="profile-picture"
-                                                      src="{imageSourcePrefix}{post?.profilePictureKey}" alt=""></a>
+        <a href="/profile/{post?.artistName}"
+          ><img
+            class="profile-picture"
+            src="{imageSourcePrefix}{post?.profilePictureKey}"
+            alt=""
+          /></a
+        >
       {:else}
-        <a href="/profile/{post?.artistName}"><img class="profile-picture"
-                                                      src="{imageSourcePrefix}{post?.artistId}/profile/{post?.profilePictureKey}"
-                                                      alt=""></a>
+        <a href="/profile/{post?.artistName}"
+          ><img
+            class="profile-picture"
+            src="{imageSourcePrefix}{post?.artistId}/profile/{post?.profilePictureKey}"
+            alt=""
+          /></a
+        >
       {/if}
       <a href="/profile/{post?.artistName}"><h3>{post?.artistName}</h3></a>
     </div>
@@ -34,16 +41,16 @@
 
     <div class="post-file">
       <UserUploadedFile
-              artistId="{post.artistId}"
-              keyReference="{post?.keyReference}"
+        artistId={post.artistId}
+        keyReference={post?.keyReference}
       />
     </div>
 
     <Hype
-            jwt="{jwt}"
-            loggedInUser="{loggedInUser}"
-            postId="{post._id}"
-            rating="{post?.rating?.length}"
+      {jwt}
+      {loggedInUser}
+      postId={post._id}
+      rating={post?.rating?.length}
     />
     <p>{post?.timeStamp}</p>
   </div>
@@ -57,12 +64,12 @@
     border-radius: 0.75em;
     display: flex;
     flex-direction: column;
-    -webkit-box-shadow: -1px -1px 15px 8px #E0E1DD;
-    box-shadow: -1px -1px 15px 8px #E0E1DD;
+    -webkit-box-shadow: -1px -1px 15px 8px #e0e1dd;
+    box-shadow: -1px -1px 15px 8px #e0e1dd;
 
     a {
       text-decoration: none;
-      color: #0D1B2A;
+      color: #0d1b2a;
 
       &:hover {
         text-decoration: underline;
