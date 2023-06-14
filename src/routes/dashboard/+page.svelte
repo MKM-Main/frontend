@@ -18,7 +18,19 @@
 
     const jwt = data?.jwt
 
-    const forums = data?.forums.forum
+    let forums = data?.forums.forum
+    
+    const updateForums = (forumToUpdate) => {
+    forums = forums.map((forum) => {
+    if (forum._id === forumToUpdate._id) {
+      return forumToUpdate; // Update the existing forum
+    }
+    return forum; // Keep the forum unchanged
+    });
+};
+    
+   
+ 
 
     let selectedUser
     let firstName, lastName, artistName, email, role;
@@ -153,12 +165,12 @@
                         </div>
                         <div class="forum-verification">
                             {#if forum.verified === true}
-                                <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Undo Verification"}/>
+                                <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Undo Verification"} updateForums={updateForums} />
                             {/if}
 
                             {#if forum.verified === false}
 
-                                <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Verify Forum"}/>
+                                <ForumVerification id={forum._id} jwt={jwt} isVeryfied={"Verify Forum"} updateForums={updateForums}/>
                             {/if}
                         </div>
                         <div class="forum-delete">
