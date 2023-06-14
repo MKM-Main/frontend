@@ -93,34 +93,36 @@
 
     <label>Sizes:</label>
     <div>
-        <input id="size-xs" on:change={handleSizeSelection} type="checkbox" value="xs"/>
+        <input bind:group={sizes} id="size-xs" on:change={handleSizeSelection} type="checkbox" value="xs"/>
         <label for="size-xs">XS</label>
     </div>
     <div>
-        <input id="size-s" on:change={handleSizeSelection} type="checkbox" value="s"/>
+        <input bind:group={sizes} id="size-s" on:change={handleSizeSelection} type="checkbox" value="s"/>
         <label for="size-s">S</label>
     </div>
     <div>
-        <input id="size-m" on:change={handleSizeSelection} type="checkbox" value="m"/>
+        <input bind:group={sizes} id="size-m" on:change={handleSizeSelection} type="checkbox" value="m"/>
         <label for="size-m">M</label>
     </div>
     <div>
-        <input id="size-l" on:change={handleSizeSelection} type="checkbox" value="l"/>
+        <input bind:group={sizes} id="size-l" on:change={handleSizeSelection} type="checkbox" value="l"/>
         <label for="size-l">L</label>
     </div>
     <div>
-        <input id="size-xl" on:change={handleSizeSelection} type="checkbox" value="xl"/>
+        <input bind:group={sizes} id="size-xl" on:change={handleSizeSelection} type="checkbox" value="xl"/>
         <label for="size-xl">XL</label>
     </div>
 
     <label for="price">Price in DKK:</label>
     <input bind:value={price} id="price" placeholder="999" required type="number"/>
 
-    <label for="file" style="{canUpload === false ? 'color: red' : ''}">Image
-        : {canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth} ` : ""}</label>
+    <label for="file" style="{canUpload === false ? 'color: red' : ''}">
+        Image: {canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth}` : ""}
+    </label>
     <input accept=".pdf, .jpeg, .jpg, .png" id="file" on:change={handleFileInput} type="file">
     <button class:btn-block-submit={canUpload === false} type="submit">Submit</button>
 </form>
+
 
 <style lang="scss">
 

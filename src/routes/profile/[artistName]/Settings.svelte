@@ -76,7 +76,7 @@
 
             fetchRequests.push(profilePictureRequest)
         }
-        //TODO: Kig på rækkefølge af de to kald her ift. jwt sign i backend
+
 
         if (Object.keys(userBody).length !== 0) {
             const updateUserRequest = fetch(`${PUBLIC_BASE_URL}api/admin/users/${artistName}`, {
