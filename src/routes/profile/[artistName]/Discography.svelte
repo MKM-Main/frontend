@@ -42,8 +42,6 @@
     };
 
     const handleSubmit = async () => {
-        document.getElementById("loading-spinner").style.display = "flex";
-
         formData.append("selectedService", selectedService)
         formData.append("mainTitle", mainTitle)
         formData.append("mainUrl", mainUrl)
