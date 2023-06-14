@@ -19,6 +19,7 @@
             body: JSON.stringify({commentBody})
         }).then(async (res) => {
             const newComment = await res.json();
+            commentBody = ""
             updateComments(newComment, search);
         });
     }

@@ -97,7 +97,8 @@
                style="{canUpload === false ? 'color: red' : ''}">{canUpload === false ? `Must not exceed ${height}px * ${width}px | Current size: ${currentHeight} * ${currentWidth} ` : ""}</label>
         <input accept=".pdf, .jpeg, .jpg, .png, .mp4, .m4a, .mp3" id="fileType"
                on:change={handleFileInput} type="file">
-        <button class="btn-new-post" class:btn-block-submit={canUpload === false} type="submit">Share!</button>
+        <button class="btn-new-post" class:btn-block-submit={canUpload === false} id="postBtn" type="submit">Share!
+        </button>
         <br>
         <div class="tags-container">
             {#each tags as tag, idx}

@@ -33,6 +33,9 @@
                         location.href = "/news"
                     }, 1500)
                 }
+                if (res.status === 401) {
+                    toast.error("Login failed. \n Please try again.")
+                }
             })
     }
 

@@ -15,7 +15,8 @@
     let showCommentAmountTexts = {}
 
     const handleShowAllComments = (postId) => {
-        shownCommentAmounts[postId] = shownCommentAmounts[postId] === 10 ? 2 : 10;
+        //
+        shownCommentAmounts[postId] = shownCommentAmounts[postId] === 100 ? 2 : 100;
         showCommentAmountTexts[postId] = showCommentAmountTexts[postId] === "Show less comments" ? "Show more comments" : "Show less comments";
     }
 
