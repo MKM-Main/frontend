@@ -46,7 +46,7 @@
 </script>
 
 <div class="post-container">
-    {#if data.allPosts.message === "no posts" || posts.length === 0}
+    {#if posts.length === 0}
         <h1>My Dear Friend</h1>
         <h3>Either you are not following anyone, or it looks like the people you are following haven't posted anything
             yet.</h3>

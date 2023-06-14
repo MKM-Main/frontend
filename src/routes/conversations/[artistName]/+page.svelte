@@ -37,6 +37,17 @@
     let bodyArea;
     let socketMessages = [];
 
+    let profilePictureKey;
+    
+    const checkForProfilePicture = (artistId, profilePictureKey) => {
+        if (profilePictureKey === "blank_profile.webp") {
+            return `${imageSourcePrefix}${profilePictureKey}`;
+        } else {
+            return `${imageSourcePrefix}${artistId}/profile/${profilePictureKey}`;
+        }
+    }
+
+
     const emptySocketArray = () => {
         socketMessages = [];
     };
@@ -58,16 +69,13 @@
 
     let userProfiles = {};
     socket.on("new message", async (data) => {
-        const res = await fetch(
-            `${PUBLIC_BASE_URL}api/users/${data.data.loggedInArtistname}`
-        );
+        const res = await fetch(`${PUBLIC_BASE_URL}api/users/${data.data.loggedInArtistname}`);
         const result = await res.json();
-        userProfiles[result.user.artistName] = result.user.profilePictureKey;
+        userProfiles[result.user.artistName] = [result.user._id, result.user.profilePictureKey];
+        
         socketMessages = [...socketMessages, data.data];
         await emptySocketConversationArray();
         await updateConversations();
-        // await Promise.resolve();
-        // messageList.scrollTop = messageList.scrollHeight;
     });
 
     const createConversation = async (action) => {
@@ -192,7 +200,7 @@
                     <div class="horizontal-div">
                         <span class="notification-dot"></span>
                         <img alt="" class="conversations-pic"
-                             src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
+                            src={checkForProfilePicture(conversation.participantId, conversation.profilePictureKey)}/>
                         <p>{conversation.participants}</p>
                         <p>{conversation.timeStamp}</p>
                         <DeleteConversation {conversation} updateDeletedConversation={updateConversations} {jwt}/>
@@ -203,7 +211,7 @@
                    href="/conversations/{conversation._id}">
                     <div class="horizontal-div">
                         <img alt="" class="conversations-pic"
-                             src="{imageSourcePrefix}{conversation.profilePictureKey}"/>
+                            src={checkForProfilePicture(conversation.participantId, conversation.profilePictureKey)}/>
                         <p>{conversation.participants}</p>
                         <p>{conversation.timeStamp}</p>
                         <DeleteConversation {conversation} updateDeletedConversation={updateConversations} {jwt}/>
@@ -222,7 +230,7 @@
                     <div class="horizontal-div">
                         <span class="notification-dot"></span>
                         <img alt="" class="conversations-pic"
-                             src="{imageSourcePrefix}{socketConversation.profilePictureKeySender}"/>
+                            src={checkForProfilePicture(socketConversation.senderId, socketConversation.profilePictureKeySender)}/>   
                         <p>{socketConversation.sender}</p>
                         <p>{socketConversation.timeStamp}</p>
                         <DeleteConversation conversation={socketConversation} {jwt}/>
@@ -243,7 +251,7 @@
                                 <div>
                                     <a href="/profile/{message.sender}">
                                         <img alt="" class="conversations-pic"
-                                             src="{imageSourcePrefix}{message.profilePictureKey}"/>
+                                            src={checkForProfilePicture(message.senderId, message.profilePictureKey)}/>
                                     </a>
                                 </div>
                                 <div class="horizontal-socketmessage">
@@ -269,7 +277,7 @@
                                     <div>
                                         <a href="/profile/{msg.loggedInArtistname}">
                                             <img alt="" class="conversations-pic"
-                                                 src="{imageSourcePrefix}{userProfiles[msg.loggedInArtistname]}"/>
+                                            src={checkForProfilePicture(userProfiles[msg.loggedInArtistname][0], userProfiles[msg.loggedInArtistname][1])}/>
                                         </a>
                                     </div>
                                     <div class="horizontal-socketmessage">
@@ -314,7 +322,7 @@
                 {#if !conversationExists(user.artistName)}
                     <div class="modal-each-div">
                         <div class="modal-profile-picture">
-                            <img alt="" class="img-pic-modal" src="{imageSourcePrefix}{user.profilePictureKey}"/>
+                            <img alt="" class="img-pic-modal" src={checkForProfilePicture(user._id, user.profilePictureKey)}/>
                         </div>
                         <div class="modal-artistname">
                             {user.artistName}
