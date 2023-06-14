@@ -94,24 +94,24 @@
 <div class="header">
 </div>
   <div class="front-page">
-    <div></div>
+    <div style="max-width: 25%;"></div>
     <div class="new-users-week">
       <div class="slideshow-container">
+        <h2 class="widget-center">Recent Sign-up's</h2>
         {#each users as user, index}
           {#if isRecentSignup(user.creationDate)}
             <div class="mySlides fade" style="display: {index === 0 ? 'block' : 'none'};">
-
               <a href="/profile/{user.artistName}" target="_blank">
                 {#if user.profilePictureKey === "blank_profile.webp"}
                 <div class="slide-content-wrapper" style="background-image: url('{imageSourcePrefix}{user.profilePictureKey}');">
-                  <div class="numbertext">
-                    <p>{user.artistName}</p>
-                  </div>
-                  <div class="user-tags">
-                    {#each user.userTags as tag}
-                      <p>{tag}</p>
-                    {/each}
-                  </div>
+                    <div class="numbertext">
+                      <p>{user.artistName}</p>
+                    </div>
+                    <div class="user-tags">
+                      {#each user.userTags as tag}
+                        <p>{tag}</p>
+                      {/each}
+                    </div>
                 </div>
                 {:else}
                 <div class="slide-content-wrapper" style="background-image: url('{imageSourcePrefix}{user._id}/profile/{user.profilePictureKey}');">
@@ -140,7 +140,9 @@
   <div></div>
 
       <div>
+        
         <div class="slideshow-container-release">
+          <h1>Upcoming Releases</h1>
           {#each users as user, index}
             {#each user.discography as discography}
               {#if discography.isNewRelease === true || discography.length !== 0}
@@ -207,6 +209,7 @@
       </div>
 
     <div class="top-5-posts">
+      <h2 class="header-top-post">Today's Top 5 Posts</h2>
       {#each topPosts as post}
       <div class="top-post">
         {#if post.postTitle}
@@ -227,6 +230,12 @@
   </div>
 
   <style lang="scss">
+    .header-top-post{
+      margin-left: 40%;
+    }
+    .widget-center{
+      text-align: center;
+    }
     h1{
       text-align: center;
     }
@@ -338,8 +347,10 @@
   }
 
   .new-users-week{
-    max-width: 100%;
+    border-radius: 20px;
+    width: 100%;
     margin-bottom: 5%;
+    box-shadow: -1px -1px 15px 8px #e0e1dd;
 
     button{
       font-size: 1em;
@@ -361,30 +372,49 @@
       text-decoration: none;
     }
       .numbertext {
-        color: #f2f2f2;
-        font-size: 100px;
+        color: rgb(26, 25, 25);
+        font-size: 40px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
     }
     .user-tags {
-      color: #f2f2f2;
+      color: rgb(26, 25, 25);
       font-size: 20px;
     }
     .slide-content-wrapper {
-      background-size: cover;
+      background-size:contain;
       background-position: center;
       border-radius: 20px;
       max-width: 100%;
       display: flex;
+      justify-content: space-between !important;
       align-items: center;
       justify-content: center;
       z-index: 1;
-      margin-bottom: 5%;
+      height: 14em;
+      padding: 1em;
     }
     .fade {
       animation-name: fade;
       animation-duration: 1.5s;
+    }
+
+    .sign-up-btn{
+      font-size: 1em;
+      margin-left: 20%;
+      margin-right: 20%;
+      height: 2em;
+      width: 60%;
+      background-color: #1B263B;
+      color: #E0E1DD;
+      border: none;
+      border-radius: 0.75em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      margin-top: 1em;
+      margin-bottom: 1em;
     }
 
     @keyframes fade {
