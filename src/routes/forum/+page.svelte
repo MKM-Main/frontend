@@ -4,6 +4,7 @@
   const forums = data?.forumData;
   const jwt = data?.jwt;
 
+  //Function to replace spaces with "-". Used for URL handling
   function replaceSpacesWithHyphens(title) {
     if (title.includes(" ")) {
       return title.replace(/ /g, "-");

@@ -5,6 +5,7 @@
   export let jwt;
   export let isVeryfied;
   export let updateForums;
+  
   export const verifyForum = async () => {
     await fetch(`${PUBLIC_BASE_URL}api/admin/verify/${id}`, {
       method: "PATCH",

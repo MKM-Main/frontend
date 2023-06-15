@@ -2,6 +2,8 @@ import { error } from "@sveltejs/kit";
 import { PUBLIC_BASE_URL } from "$env/static/public";
 
 export const load = async ({ fetch, params, cookies }) => {
+
+  //Replace "-" with spaces. Used for URL handling
   function replaceHyphensWithSpaces(str) {
     return str.replace(/-/g, " ");
   }
@@ -19,9 +21,6 @@ export const load = async ({ fetch, params, cookies }) => {
   );
   const forumData = await forumResponse.json();
   const forumTitle = replaceHyphensWithSpaces(params.forumTitle);
-
-  const allForumResponse = await fetch(`${PUBLIC_BASE_URL}api/forum/`);
-  const allForumData = await allForumResponse.json();
 
   if (forumResponse.status === 404) {
     throw error(404, {

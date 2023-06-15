@@ -2,10 +2,10 @@
   import { PUBLIC_BASE_URL } from "$env/static/public";
   import toast from "svelte-french-toast";
   export let artistName;
-  // export let refreshUser;
   export let userBody;
   export let currentRole;
   export let jwt;
+
   export const updateUser = async () => {
     Object.keys(userBody).forEach(
       (key) => (userBody[key] = userBody[key].trim())
@@ -28,7 +28,6 @@
         body: JSON.stringify({ userBody }),
       }).then((res) => {
         toast.success("User updated");
-        console.log(res.status);
         setTimeout(() => {
           location.reload();
         }, 1500);

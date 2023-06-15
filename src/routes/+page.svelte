@@ -10,6 +10,7 @@
   const users = data?.usersData?.data;
   const jwt = data?.jwt;
 
+  // Filters all posts within 24 hours and makes sure it's a post from forum
   const filteredArrays = posts.reduce((filtered, post) => {
     if (post.referenceName !== "wallpost") {
       const todaysDate = new Date().toLocaleString("en-GB").split(", ")[0];
@@ -20,21 +21,25 @@
     }
     return filtered;
   }, []);
-
+  
+  //get top 5 post - Based on # of comments within 24 hours.
   const topPosts = filteredArrays
     .sort((a, b) => b.filteredComments.length - a.filteredComments.length)
     .slice(0, 5)
     .map((obj) => obj.post);
 
-  // Short down the body of the post and replace with ...
+  // Short down the body of the post on frontpage and replace with ...
   function truncateText(text) {
-    const lines = text?.split("\n")?.slice(0, 3); // Get first 3 lines of the text
-    const truncatedText = lines?.join("\n"); // Join the lines back into a string
+    // Get first 3 lines of the text
+    const lines = text?.split("\n")?.slice(0, 3); 
+    // Join the lines back into a string
+    const truncatedText = lines?.join("\n"); 
     return truncatedText.length < text.length
       ? truncatedText + "..."
       : truncatedText;
   }
 
+  //Check for signup last 7 days
   function isRecentSignup(creationDate) {
     const currentDate = new Date();
     const parts = creationDate.split(", ")[0].split("/");
@@ -49,6 +54,7 @@
   let slideReleaseIndex = 0;
   let timer;
 
+  //Slider functionality frontpage  
   function showSlides(classSelectors) {
     const slides = document.querySelectorAll(classSelectors);
     if (classSelectors === ".mySlides") {

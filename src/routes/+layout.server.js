@@ -10,7 +10,6 @@ export const load = async ({ fetch, cookies }) => {
     },
   });
   const userData = await userDataResponse.json();
-  //if (!jwt) return
 
   const responseConversation = await fetch(
     `${PUBLIC_BASE_URL}api/conversations`,
@@ -22,7 +21,7 @@ export const load = async ({ fetch, cookies }) => {
       },
     }
   );
-  //if(userDataResponse.status === 401) return
+  
   const conversationData = await responseConversation.json();
 
   return {
