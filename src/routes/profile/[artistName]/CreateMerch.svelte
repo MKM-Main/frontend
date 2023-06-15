@@ -12,7 +12,7 @@
   let currentWidth;
   let currentHeight;
   let formData = new FormData();
-
+  let fileInput;
 
   export let loggedInUserId;
   export let jwt;
@@ -40,6 +40,7 @@
                   description = "";
                   price = "";
                   sizes = [];
+                  fileInput.value = "";
                   formData = new FormData();
                   updateMerchSection(data);
               }),
@@ -175,6 +176,7 @@
     id="file"
     on:change={handleFileInput}
     type="file"
+    bind:this={fileInput}
   />
   <button class:btn-block-submit={canUpload === false} type="submit"
     >Submit</button
