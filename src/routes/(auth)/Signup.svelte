@@ -28,6 +28,11 @@
           style: `padding: 25px;`,
         });
       }
+      if (res.status === 400) {
+        toast.error("Password must min. 8 characters - Atleast 1 character A-Z", {
+          style: `padding: 25px;`,
+        });
+      }
     });
   };
 </script>
