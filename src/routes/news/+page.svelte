@@ -13,8 +13,8 @@
   let shownCommentAmounts = {};
   let showCommentAmountTexts = {};
 
+  //Function that handles the show more and less option on the comments
   const handleShowAllComments = (postId) => {
-    //
     shownCommentAmounts[postId] = shownCommentAmounts[postId] === 100 ? 2 : 100;
     showCommentAmountTexts[postId] =
       showCommentAmountTexts[postId] === "Show less comments"
@@ -22,6 +22,7 @@
         : "Show less comments";
   };
 
+  //Updates the comments dynamically after one comment is created
   const updateComments = (newComment, search) => {
     const arrayObject = posts.findIndex((post) => post._id === search);
     posts[arrayObject].comments = [
@@ -30,6 +31,7 @@
     ];
   };
 
+  //Update the comments dynamically after a comment is deleted
   const deleteComments = (commentId) => {
     const newPosts = posts.map((post) => {
       // Copy the post object to avoid modifying the original
