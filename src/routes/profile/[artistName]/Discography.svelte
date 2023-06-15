@@ -21,6 +21,7 @@
   let width = $imageWidth;
   let currentWidth;
   let currentHeight;
+  let fileInput;
 
   const handleChange = (event) => {
     selectedService = event.target.value;
@@ -61,6 +62,14 @@
       })
         .then((res) => res.json())
         .then((data) => {
+          mainTitle = "";
+          mainUrl = "";
+          album = false;
+          songs = [];
+          isNewRelease = false;
+          releaseDate = null;
+          selectedService = ""
+          fileInput.value = "";
           updateDiscographySection(data);
           formData = new FormData()
         }),
@@ -147,6 +156,7 @@
       multiple
       on:change={handleFileInput}
       type="file"
+      bind:this={fileInput}
     />
 
     {#if album}
