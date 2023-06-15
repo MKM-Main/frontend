@@ -6,5 +6,6 @@
 
 # Admin panel
 To test the admin functionality on the application use the following credentials:
-email: malthegram22@gmail.com
+\n
+email: tunetower@gmail.com
 password: 123
