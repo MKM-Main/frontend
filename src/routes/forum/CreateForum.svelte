@@ -1,33 +1,40 @@
 <script>
-  import { PUBLIC_BASE_URL } from "$env/static/public";
+  import {PUBLIC_BASE_URL} from "$env/static/public";
+  import toast from "svelte-french-toast";
   export let jwt;
 
-  let forumTitle;
+    let forumTitle;
 
-  export const requestForum = async () => {
-    await fetch(`${PUBLIC_BASE_URL}api/forum`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${jwt}`,
-      },
-      body: JSON.stringify({ forumTitle }),
-    })
-  };
+    export const requestForum = async () => {
+        await toast.promise(fetch(`${PUBLIC_BASE_URL}api/forum`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: `Bearer ${jwt}`,
+                },
+                body: JSON.stringify({forumTitle}),
+            }),
+            {
+                loading: "Requesting forum...",
+                success: "Forum is requested",
+                error: "Error happened during request"
+            }
+        )
+    };
 </script>
 
 <div class="forum-create">
-  <form on:submit|preventDefault={requestForum}>
-    <input
-      bind:value={forumTitle}
-      id="forumTitle"
-      placeholder="Request new forum"
-      type="forumTitle"
-    />
-    <button id="submit" type="submit">Request Forum</button>
-  </form>
+    <form on:submit|preventDefault={requestForum}>
+        <input
+                bind:value={forumTitle}
+                id="forumTitle"
+                placeholder="Request new forum"
+                type="forumTitle"
+        />
+        <button id="submit" type="submit">Request Forum</button>
+    </form>
 </div>
 
 <style lang="scss">

@@ -28,11 +28,11 @@
 
   let selectedUser;
   let firstName, lastName, artistName, email, role;
-  let userBody = { firstName, lastName, artistName, email, role };
+  let userBody = {firstName, lastName, artistName, email, role};
 
-  //Checks and deletes for undefined values 
+  //Checks and deletes for undefined values
   Object.keys(userBody).forEach((key) =>
-    userBody[key] === undefined ? delete userBody[key] : {}
+          userBody[key] === undefined ? delete userBody[key] : {}
   );
 
   //Handle selecteded user
@@ -42,10 +42,10 @@
     selectedUser = users.find((user) => user._id === userId);
   }
 
-  //Checks all posts for comments add to a count 
+  //Checks all posts for comments add to a count
   const totalComments = posts.reduce(
-    (count, post) => count + post.comments.length,
-    0
+          (count, post) => count + post.comments.length,
+          0
   );
 
   // Checks if a signup is recent based on the creation date
@@ -53,7 +53,7 @@
     const currentDate = new Date();
     const parts = creationDate.split(", ")[0].split("/");
     const creationTimestamp = new Date(
-      `${parts[2]}-${parts[1]}-${parts[0]}`
+            `${parts[2]}-${parts[1]}-${parts[0]}`
     ).getTime();
     const sevenDaysAgo = currentDate.getTime() - 7 * 24 * 60 * 60 * 1000;
     return creationTimestamp >= sevenDaysAgo;
@@ -81,52 +81,54 @@
             <p>Editing: {selectedUser.firstName} {selectedUser.lastName}</p>
             <label for="firstname">Firstname: </label>
             <input
-              bind:value={userBody.firstName}
-              name="firstname"
-              type="text"
-              placeholder={selectedUser.firstName}
+                    bind:value={userBody.firstName}
+                    name="firstname"
+                    type="text"
+                    placeholder={selectedUser.firstName}
             />
             <label for="lastname">Lastname: </label>
             <input
-              bind:value={userBody.lastName}
-              name="lastname"
-              type="text"
-              placeholder={selectedUser.lastName}
+                    bind:value={userBody.lastName}
+                    name="lastname"
+                    type="text"
+                    placeholder={selectedUser.lastName}
             />
             <label for="artistName">Artist Name: </label>
             <input
-              bind:value={userBody.artistName}
-              name="artistName"
-              type="text"
-              placeholder={selectedUser.artistName}
+                    bind:value={userBody.artistName}
+                    name="artistName"
+                    type="text"
+                    placeholder={selectedUser.artistName}
             />
             <label for="email">E-mail: </label>
             <input
-              bind:value={userBody.email}
-              type="text"
-              placeholder={selectedUser.email}
-              name="email"
+                    bind:value={userBody.email}
+                    type="text"
+                    placeholder={selectedUser.email}
+                    name="email"
             />
             <label for="role">Role: </label>
             <select
-              bind:value={userBody.role}
-              name="role"
-              placeholder={selectedUser.role}
+                    bind:value={userBody.role}
+                    name="role"
+                    placeholder={selectedUser.role}
             >
               <option value="admin" selected={selectedUser.role === "admin"}
-                >Admin</option
+              >Admin
+              </option
               >
               <option value="user" selected={selectedUser.role === "user"}
-                >User</option
+              >User
+              </option
               >
             </select>
             <UpdateUser
-              {jwt}
-              artistName={selectedUser.artistName}
-              {userBody}
-              currentRole={selectedUser.role}
+                    {jwt}
+                    artistName={selectedUser.artistName}
+                    {userBody}
+                    currentRole={selectedUser.role}
             />
-            <DeleteAdmin id={selectedUser._id} apiUrl={"users"} {jwt} />
+            <DeleteAdmin id={selectedUser._id} apiUrl={"users"} {jwt}/>
           </div>
         {:else}
           <p>No user selected.</p>
@@ -142,8 +144,8 @@
           {#if isRecentSignup(user.creationDate)}
             <p>
               <a
-                href="http://localhost:5173/profile/{user.artistName}"
-                >{user.artistName}</a
+                      href="http://localhost:5173/profile/{user.artistName}"
+              >{user.artistName}</a
               >
               - Joined on: {user.creationDate}
             </p>
@@ -181,8 +183,8 @@
       <div class="forum-container">
         {#each forums as forum}
           <div
-            class="single-forum"
-            data-verified={forum.verified ? "true" : "false"}
+                  class="single-forum"
+                  data-verified={forum.verified ? "true" : "false"}
           >
             <div class="forum-title">
               <p>{forum.forumTitle}</p>
@@ -193,24 +195,24 @@
             <div class="forum-verification">
               {#if forum.verified === true}
                 <ForumVerification
-                  id={forum._id}
-                  {jwt}
-                  isVeryfied={"Undo Verification"}
-                  {updateForums}
+                        id={forum._id}
+                        {jwt}
+                        isVeryfied={"Undo Verification"}
+                        {updateForums}
                 />
               {/if}
 
               {#if forum.verified === false}
                 <ForumVerification
-                  id={forum._id}
-                  {jwt}
-                  isVeryfied={"Verify Forum"}
-                  {updateForums}
+                        id={forum._id}
+                        {jwt}
+                        isVeryfied={"Verify Forum"}
+                        {updateForums}
                 />
               {/if}
             </div>
             <div class="forum-delete">
-              <DeleteAdmin id={forum._id} apiUrl={"forum"} {jwt} />
+              <DeleteAdmin id={forum._id} apiUrl={"forum"} {jwt}/>
             </div>
           </div>
         {/each}
@@ -221,7 +223,7 @@
   <div class="report">
     <h1>Report Section</h1>
     <div class="report-post">
-      <h2>Post Reports</h2>
+      <h2>Post Reports - Minimum 3 reports</h2>
       {#each posts as post}
         {#if post?.reported?.length >= 3}
           <div class="high-report">
@@ -246,7 +248,7 @@
         {/if}
       {/each}
     </div>
-    <h2>Comment reports</h2>
+    <h2>Comment reports - Minimum 3 reports</h2>
     {#each posts as post}
       {#each post.comments as a}
         {#if a?.reported?.length >= 3}

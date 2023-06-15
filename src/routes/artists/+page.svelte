@@ -3,7 +3,6 @@
     export let data;
 
     const artists = data.artists.data;
-    console.log(artists)
     const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
 
     // Designate each artist their profile picture with the full path to AWS S3.
