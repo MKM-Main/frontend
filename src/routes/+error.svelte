@@ -1,5 +1,6 @@
 <script>
   import { page } from "$app/stores";
+  //Use $ to get data from stores
   let urlPath = $page.url.pathname.split("/")[1];
   urlPath === "artists" ? (urlPath = "Artist") : "";
   const urlFullPath = $page.url.pathname.split("/")[2] || "URL";

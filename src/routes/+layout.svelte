@@ -12,6 +12,7 @@
   const profilePictureKey = data?.userData?.customMessage?.profilePictureKey;
   const imageSourcePrefix = env.PUBLIC_AWS_S3_IMAGE_SOURCE_PREFIX;
   let imageSource;
+
   if (profilePictureKey === "blank_profile.webp") {
     imageSource = `${imageSourcePrefix}${profilePictureKey}`;
   } else {
@@ -19,11 +20,12 @@
   }
 
   let conversation = data?.conversationData;
+  //$: for reactivity
   $: conversation = data?.conversationData;
 </script>
 
 <CookieConsent />
-<Header {artistName} {conversation} {imageSource} {jwt} {userRole} />
+<Header artistName={artistName} conversation={conversation} imageSource={imageSource} jwt={jwt} userRole={userRole} />
 <Toaster />
 <slot />
 <Footer />

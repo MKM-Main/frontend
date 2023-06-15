@@ -10,20 +10,19 @@
 
   const userRole = data?.userData?.customMessage?.role;
   const posts = data?.posts.posts;
-  const comments = posts?.map((post) => post.comments);
-
   const users = data?.users?.data;
 
   const jwt = data?.jwt;
 
   let forums = data?.forums.forum;
 
+  //Updates forum in the client
   const updateForums = (forumToUpdate) => {
     forums = forums.map((forum) => {
       if (forum._id === forumToUpdate._id) {
-        return forumToUpdate; // Update the existing forum
+        return forumToUpdate;
       }
-      return forum; // Keep the forum unchanged
+      return forum;
     });
   };
 
@@ -31,21 +30,25 @@
   let firstName, lastName, artistName, email, role;
   let userBody = { firstName, lastName, artistName, email, role };
 
+  //Checks and deletes for undefined values 
   Object.keys(userBody).forEach((key) =>
     userBody[key] === undefined ? delete userBody[key] : {}
   );
 
+  //Handle selecteded user
   function selectUser(event) {
     event.preventDefault();
     const userId = event.target.elements.userSelect.value;
     selectedUser = users.find((user) => user._id === userId);
   }
 
+  //Checks all posts for comments add to a count 
   const totalComments = posts.reduce(
     (count, post) => count + post.comments.length,
     0
   );
 
+  // Checks if a signup is recent based on the creation date
   function isRecentSignup(creationDate) {
     const currentDate = new Date();
     const parts = creationDate.split(", ")[0].split("/");
@@ -139,7 +142,7 @@
           {#if isRecentSignup(user.creationDate)}
             <p>
               <a
-                href="https://tunetower-6o9e.onrender.com/profile/{user.artistName}"
+                href="http://localhost:5173/profile/{user.artistName}"
                 >{user.artistName}</a
               >
               - Joined on: {user.creationDate}

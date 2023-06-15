@@ -14,6 +14,7 @@
   const jwt = data.jwt;
   const loggedInUser = data?.userData?.customMessage?.artistName;
 
+  
   const updateComments = (newComment) => {
     post.comments = [newComment, ...post.comments];
   };
@@ -24,6 +25,7 @@
     );
   };
 
+  //Post gets deleted. Must redirect to prevent crash
   const handleDeletedPostRedirect = () => {
     goto($page.url.pathname.substring(0, $page.url.pathname.lastIndexOf("/")));
   };

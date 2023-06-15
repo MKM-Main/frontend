@@ -1,8 +1,13 @@
 import { redirect } from "@sveltejs/kit";
 import { PUBLIC_BASE_URL } from "$env/static/public";
+
 let userRole;
-export const load = async ({ fetch, params, cookies }) => {
+
+
+export const load = async ({ fetch, cookies }) => {
   const jwt = cookies.get("jwt");
+  
+  //Checkning for admin role 
   const adminResponse = await fetch(`${PUBLIC_BASE_URL}api/admin`, {
     method: "GET",
     credentials: "include",
@@ -17,6 +22,7 @@ export const load = async ({ fetch, params, cookies }) => {
       userRole = data.userRole;
     });
 
+  //Restricted so only admins can access 
   if (userRole !== "admin") throw redirect(302, "/");
   const userResponse = await fetch(`${PUBLIC_BASE_URL}api/users`);
   const users = await userResponse.json();

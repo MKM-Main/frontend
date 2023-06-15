@@ -1,7 +1,8 @@
 <script>
   import { PUBLIC_BASE_URL } from "$env/static/public";
-  let forumTitle;
   export let jwt;
+
+  let forumTitle;
 
   export const requestForum = async () => {
     await fetch(`${PUBLIC_BASE_URL}api/forum`, {
@@ -13,7 +14,7 @@
         Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify({ forumTitle }),
-    }).then((res) => {});
+    })
   };
 </script>
 
@@ -28,8 +29,6 @@
     <button id="submit" type="submit">Request Forum</button>
   </form>
 </div>
-
-<!-- <button type="submit" on:click={() => requestForum()}>Request Forum</button> -->
 
 <style lang="scss">
   form {
