@@ -62,6 +62,7 @@
         .then((res) => res.json())
         .then((data) => {
           updateDiscographySection(data);
+          formData = new FormData()
         }),
       {
         loading: "Uploading discography",
