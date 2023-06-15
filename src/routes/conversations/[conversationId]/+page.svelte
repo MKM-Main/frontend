@@ -8,6 +8,7 @@
   import { PUBLIC_BASE_URL } from "$env/static/public";
 
   let userData;
+  //This function is created for getting the loggedin users information
   const fetchUserData = async () => {
     const res = await fetch(
       `${PUBLIC_BASE_URL}api/users/${loggedInUserArtistName}`
@@ -38,7 +39,7 @@
   let socketMessages = [];
 
   let profilePictureKey;
-
+  //Check if a user has a profilepicture key and if not then they will receive the blank.webp
   const checkForProfilePicture = (artistId, profilePictureKey) => {
     if (profilePictureKey === "blank_profile.webp") {
       return `${imageSourcePrefix}${profilePictureKey}`;
@@ -47,14 +48,17 @@
     }
   };
 
+  //Empties the socket array
   const emptySocketArray = () => {
     socketMessages = [];
   };
 
+  //Empties the socket version of the conversation array
   const emptySocketConversationArray = () => {
     socketConversationArray = [];
   };
 
+  //Sends message with sockets
   const sendMessage = (params) => {
     if (bodyArea.trim() !== "") {
       socket.emit("new message", [
@@ -66,6 +70,7 @@
     }
   };
 
+  //Listens for the event new message
   let userProfiles = {};
   socket.on("new message", async (data) => {
     const res = await fetch(
@@ -82,18 +87,21 @@
     await updateConversations();
   });
 
+  //Sends conversation to server
   const createConversation = async (action) => {
     socket.emit("new conversation", action);
   };
 
+  //Creates array with new socket conversation
   let socketConversationArray = [];
   socket.on("new conversation", async (data) => {
     socketConversationArray = data.conversation;
   });
 
+  //Array create for the modal with following
   let userModalFollowArray = [];
 
-  //Fetches the followers and following depending on the fetch action
+  //Fetches who the loggedin user is following
   const fetchUserFollowing = async () => {
     const res = await fetch(
       `${PUBLIC_BASE_URL}api/users/following/${loggedInUserArtistName}`
@@ -102,6 +110,7 @@
     userModalFollowArray = result;
   };
 
+  //Updates messages on the database
   const patchMessages = async (params) => {
     await fetch(`${PUBLIC_BASE_URL}api/conversations/messages/${params}`, {
       method: "PATCH",
@@ -121,6 +130,7 @@
       });
   };
 
+  //Fetches all conversations the loggedin user has
   const updateConversations = async () => {
     const res = await fetch(`${PUBLIC_BASE_URL}api/conversations`, {
       headers: {
@@ -133,6 +143,7 @@
     conversations = result;
   };
 
+  //Updates if a user opens a conversation. Then the conversation is marked as read
   const patchReadConversation = async (action) => {
     try {
       await fetch(`${PUBLIC_BASE_URL}api/conversations/read/${action}`, {
@@ -149,6 +160,8 @@
       console.error("Error updating conversation:", error);
     }
   };
+
+  //Fetches all message on a conversation_id, which updates the messages
   const updateMessages = async (action) => {
     const res = await fetch(`${PUBLIC_BASE_URL}api/conversations/${action}`, {
       method: "GET",
@@ -164,6 +177,7 @@
     messageList.scrollTop = messageList.scrollHeight;
   };
 
+  //If the loggedin user have an ongoing conversation with another user, the loggedin user will not be able to see the other user in the modal
   function conversationExists(artistName) {
     let exists = false;
     conversations.forEach((conversation) => {
