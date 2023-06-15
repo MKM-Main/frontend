@@ -1,6 +1,7 @@
 # Application set-up
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+1. create a .env file and insert the variables
+2. npm install
 
 ## Creating a project
 
